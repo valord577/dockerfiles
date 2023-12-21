@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM debian:12.2
+FROM debian:12.4
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -23,7 +23,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 EOT
 
 ARG OPENWRT_TOOLCHAIN_DL="https://mirrors.bfsu.edu.cn/openwrt"
-ENV OPENWRT_RELEASE_VERSION="23.05.0"
+ENV OPENWRT_RELEASE_VERSION="23.05.2"
 ENV OPENWRT_TOOLCHAIN_GCC="12.3.0"
 
 ENV OPENWRT_TOOLCHAIN_URL="${OPENWRT_TOOLCHAIN_DL}/releases/${OPENWRT_RELEASE_VERSION}/targets/mediatek/mt7622/openwrt-toolchain-${OPENWRT_RELEASE_VERSION}-mediatek-mt7622_gcc-${OPENWRT_TOOLCHAIN_GCC}_musl.Linux-x86_64.tar.xz"
@@ -44,7 +44,7 @@ ENV CC="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-gcc"
 ENV CXX="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-g++"
 ENV AR="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-ar"
 
-ENV GOLANG_SDK_URL="https://dl.google.com/go/go1.21.3.linux-amd64.tar.gz"
+ENV GOLANG_SDK_URL="https://dl.google.com/go/go1.21.5.linux-amd64.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT
@@ -60,3 +60,4 @@ go env -w GOSUMDB=sum.golang.google.cn
 EOT
 ENV GOARCH=arm64
 ENV CGO_ENABLED=1
+ENV GOTOOLCHAIN=local
