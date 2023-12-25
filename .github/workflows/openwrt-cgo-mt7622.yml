@@ -1,41 +1,17 @@
 name: openwrt-cgo-mt7622
-env:
-  IMAGE_PLATFORMS: linux/amd64
-
 on:
   push:
     branches:
       - main
     paths:
-      - '${{ github.workspace }}/Dockerfile'
+      - 'openwrt-cgo-mt7622/Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'openwrt-cgo-mt7622/Dockerfile'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Git Checkout
-        uses: actions/checkout@v4
-      - name: ENV & Workspace
-        run: env && echo -e "\n${PWD}\n" && ls -Alh
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          version: latest
-          platforms: ${{ env.IMAGE_PLATFORMS }}
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ vars.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSCODE }}
-      - name: Build Image and Push
-        uses: docker/build-push-action@v5
-        with:
-          pull: true
-          push: true
-          context: ${{ github.workspace }}/${{ github.workflow }}
-          platforms: ${{ env.IMAGE_PLATFORMS }}
-          tags: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:latest
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+    uses: ./.github/workflows/docker-buildx.yml
+    secrets: inherit
