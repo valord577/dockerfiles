@@ -2,7 +2,12 @@ name: openwrt-cgo-mt7622
 env:
   IMAGE_PLATFORMS: linux/amd64
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '${{ github.workspace }}/Dockerfile'
 
 jobs:
   build:
