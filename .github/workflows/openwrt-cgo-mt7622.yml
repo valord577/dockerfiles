@@ -1,4 +1,4 @@
-name: wrt-toolchain-mt7622
+name: openwrt-cgo-mt7622
 env:
   IMAGE_PLATFORMS: linux/amd64
 
