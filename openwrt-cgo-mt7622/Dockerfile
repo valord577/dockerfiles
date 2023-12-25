@@ -22,7 +22,7 @@ apt-get clean all -qqy
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 EOT
 
-ARG OPENWRT_TOOLCHAIN_DL="https://mirrors.bfsu.edu.cn/openwrt"
+ENV OPENWRT_TOOLCHAIN_DL="https://mirrors.bfsu.edu.cn/openwrt"
 ENV OPENWRT_RELEASE_VERSION="23.05.2"
 ENV OPENWRT_TOOLCHAIN_GCC="12.3.0"
 
@@ -35,16 +35,18 @@ RUN <<EOT
 set -e
 
 wget -q -O "toolchain.tar.xz" "${OPENWRT_TOOLCHAIN_URL}"
+trap 'rm -rf "toolchain" "toolchain.tar.xz"' EXIT INT TERM
+
 mkdir -p "toolchain" && tar xf "toolchain.tar.xz" -C "toolchain" --strip-components=1
 mv "toolchain/${OPENWRT_TOOLCHAIN_SYSROOT}" "${OPENWRT_TOOLCHAIN_ROOT}"
-rm -rf "toolchain" "toolchain.tar.xz"
 EOT
 ENV STAGING_DIR="${OPENWRT_TOOLCHAIN_ROOT}"
 ENV CC="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-gcc"
 ENV CXX="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-g++"
 ENV AR="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-ar"
 
-ENV GOLANG_SDK_URL="https://dl.google.com/go/go1.21.5.linux-amd64.tar.gz"
+ENV GOLANG_SDK="1.21.5"
+ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-amd64.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT
@@ -52,12 +54,11 @@ RUN <<EOT
 set -e
 
 wget -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
+trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
 mkdir -p "${GOLANG_SDK_ROOT}" && tar xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1
-rm -f "gosdk.tar.gz"
-
-go env -w GOPROXY=https://goproxy.cn,direct
-go env -w GOSUMDB=sum.golang.google.cn
 EOT
 ENV GOARCH=arm64
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local
+ENV GOPROXY=https://goproxy.cn,direct
+ENV GOSUMDB=sum.golang.google.cn

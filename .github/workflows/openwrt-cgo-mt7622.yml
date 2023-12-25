@@ -31,3 +31,6 @@ jobs:
           platforms: ${{ env.IMAGE_PLATFORMS }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:latest
+            ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
