@@ -1,0 +1,16 @@
+name: wrt-toolchain-mt7622
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+      - name: ENV & Workspace
+        run: env && echo -e "\n${PWD}\n" && ls -Alh
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
