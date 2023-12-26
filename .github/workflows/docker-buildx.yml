@@ -38,7 +38,7 @@ jobs:
           pull: true
           push: ${{ env._PUSH }}
           context: ${{ github.workspace }}/${{ github.workflow }}
-          platforms: ${{ env.IMAGE_PLATFORMS }}
+          platforms: ${{ inputs.platforms }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:latest
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:${{ github.sha }}
