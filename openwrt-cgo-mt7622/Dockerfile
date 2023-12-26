@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM debian:12.4
+FROM --platform=${TARGETPLATFORM} debian:12.4
+
+ARG TARGETOS
+ARG TARGETARCH
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -9,9 +12,9 @@ set -e
 
 rm -rf -- "/etc/apt/sources.list.d"
 cat > "/etc/apt/sources.list" <<- EOF
-deb http://mirrors.bfsu.edu.cn/debian/ bookworm main
-deb http://mirrors.bfsu.edu.cn/debian/ bookworm-updates main
-deb http://mirrors.bfsu.edu.cn/debian-security bookworm-security main
+deb http://mirrors.bfsu.edu.cn/debian/ bookworm main contrib non-free
+deb http://mirrors.bfsu.edu.cn/debian/ bookworm-updates main contrib non-free
+deb http://mirrors.bfsu.edu.cn/debian-security bookworm-security main contrib non-free
 EOF
 
 apt-get update -qq
@@ -21,6 +24,7 @@ apt-get clean all -qqy
 
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 EOT
+
 
 ENV OPENWRT_TOOLCHAIN_DL="https://mirrors.bfsu.edu.cn/openwrt"
 ENV OPENWRT_RELEASE_VERSION="23.05.2"
@@ -45,8 +49,9 @@ ENV CC="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-gcc"
 ENV CXX="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-g++"
 ENV AR="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-ar"
 
+
 ENV GOLANG_SDK="1.21.5"
-ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-amd64.tar.gz"
+ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT
@@ -60,5 +65,3 @@ EOT
 ENV GOARCH=arm64
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local
-ENV GOPROXY=https://goproxy.cn,direct
-ENV GOSUMDB=sum.golang.google.cn
