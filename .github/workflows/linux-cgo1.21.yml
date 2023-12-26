@@ -1,0 +1,19 @@
+name: linux-cgo1.21
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'linux-cgo1.21/Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'linux-cgo1.21/Dockerfile'
+
+jobs:
+  build:
+    uses: ./.github/workflows/docker-buildx.yml
+    with:
+      platforms: linux/amd64,linux/arm64
+    secrets: inherit
