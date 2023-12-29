@@ -17,7 +17,7 @@ on:
 
 jobs:
   build:
+    secrets: inherit
     uses: ./.github/workflows/docker-buildx.yml
     with:
       platforms: linux/amd64,linux/arm64
-    secrets: inherit
