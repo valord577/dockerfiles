@@ -12,9 +12,9 @@ set -e
 
 rm -rf -- "/etc/apt/sources.list.d"
 cat > "/etc/apt/sources.list" <<- EOF
-deb http://mirrors.bfsu.edu.cn/debian/ bookworm main contrib non-free
-deb http://mirrors.bfsu.edu.cn/debian/ bookworm-updates main contrib non-free
-deb http://mirrors.bfsu.edu.cn/debian-security bookworm-security main contrib non-free
+deb http://mirrors.bfsu.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
+deb http://mirrors.bfsu.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
+deb http://mirrors.bfsu.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
 EOF
 
 apt-get update -qq
