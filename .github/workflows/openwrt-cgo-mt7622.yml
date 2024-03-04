@@ -4,18 +4,18 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/docker-buildx.yml'
+      - '.github/workflows/_buildx.yml'
       - '.github/workflows/openwrt-cgo-mt7622.yml'
       - 'openwrt-cgo-mt7622/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
-      - '.github/workflows/docker-buildx.yml'
+      - '.github/workflows/_buildx.yml'
       - '.github/workflows/openwrt-cgo-mt7622.yml'
       - 'openwrt-cgo-mt7622/Dockerfile'
 
 jobs:
   build:
     secrets: inherit
-    uses: ./.github/workflows/docker-buildx.yml
+    uses: ./.github/workflows/_buildx.yml

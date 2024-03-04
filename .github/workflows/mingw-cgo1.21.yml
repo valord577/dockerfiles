@@ -4,20 +4,20 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/docker-buildx.yml'
+      - '.github/workflows/_buildx.yml'
       - '.github/workflows/mingw-cgo1.21.yml'
       - 'mingw-cgo1.21/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
-      - '.github/workflows/docker-buildx.yml'
+      - '.github/workflows/_buildx.yml'
       - '.github/workflows/mingw-cgo1.21.yml'
       - 'mingw-cgo1.21/Dockerfile'
 
 jobs:
   build:
     secrets: inherit
-    uses: ./.github/workflows/docker-buildx.yml
+    uses: ./.github/workflows/_buildx.yml
     with:
       platforms: linux/amd64,linux/arm64
