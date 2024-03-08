@@ -18,8 +18,6 @@ jobs:
         run: echo "_PUSH=true" >> "$GITHUB_ENV"
       - name: Git Checkout
         uses: actions/checkout@v4
-      - name: ENV & Workspace
-        run: env && echo -e "\n${PWD}\n" && ls -Alh
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx

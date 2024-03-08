@@ -43,7 +43,7 @@ ENV BASH_ENV="/opt/rh/scl_enable" \
     PROMPT_COMMAND=". /opt/rh/scl_enable"
 
 
-ENV GOLANG_SDK="1.21.7"
+ENV GOLANG_SDK="1.22.1"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
@@ -53,7 +53,7 @@ set -e
 
 wget -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
-mkdir -p "${GOLANG_SDK_ROOT}" && tar xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1
+mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 EOT
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local

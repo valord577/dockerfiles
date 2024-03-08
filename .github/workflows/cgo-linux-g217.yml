@@ -1,21 +1,23 @@
-name: openwrt-cgo-mt7622
+name: cgo-linux-g217
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/openwrt-cgo-mt7622.yml'
-      - 'openwrt-cgo-mt7622/Dockerfile'
+      - '.github/workflows/cgo-linux-g217.yml'
+      - 'cgo-linux-g217/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/openwrt-cgo-mt7622.yml'
-      - 'openwrt-cgo-mt7622/Dockerfile'
+      - '.github/workflows/cgo-linux-g217.yml'
+      - 'cgo-linux-g217/Dockerfile'
 
 jobs:
   build:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
+    with:
+      platforms: linux/amd64,linux/arm64
