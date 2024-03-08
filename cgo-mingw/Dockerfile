@@ -6,16 +6,10 @@ ARG TARGETARCH
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
+RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
-
-rm -rf -- "/etc/apt/sources.list.d"
-cat > "/etc/apt/sources.list" <<- EOF
-deb http://mirrors.bfsu.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
-deb http://mirrors.bfsu.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
-deb http://mirrors.bfsu.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
-EOF
 
 apt-get update -qq
 apt-get install -qqy --no-install-recommends \
@@ -25,10 +19,9 @@ apt-get clean all -qqy
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 EOT
 
-
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
 ENV MINGW_URL="${MINGW_URL}"
-ENV MINGW_VERSION="20231128"
+ENV MINGW_VERSION="20240306"
 ENV MINGW_DEFAULT="ucrt-ubuntu-20.04"
 ENV MINGW_ROOT="/opt/llvm-mingw"
 ENV PATH="${MINGW_ROOT}/bin:${PATH}"
@@ -67,7 +60,7 @@ ln -s "${MINGW_ROOT}/bin/pkg-config-crosswrapper" "${MINGW_ROOT}/bin/aarch64-w64
 EOT
 
 
-ENV GOLANG_SDK="1.21.7"
+ENV GOLANG_SDK="1.22.1"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"

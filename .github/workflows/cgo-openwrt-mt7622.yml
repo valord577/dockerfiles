@@ -1,23 +1,21 @@
-name: mingw-cgo1.21
+name: cgo-openwrt-mt7622
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/mingw-cgo1.21.yml'
-      - 'mingw-cgo1.21/Dockerfile'
+      - '.github/workflows/cgo-openwrt-mt7622.yml'
+      - 'cgo-openwrt-mt7622/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/mingw-cgo1.21.yml'
-      - 'mingw-cgo1.21/Dockerfile'
+      - '.github/workflows/cgo-openwrt-mt7622.yml'
+      - 'cgo-openwrt-mt7622/Dockerfile'
 
 jobs:
   build:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
-    with:
-      platforms: linux/amd64,linux/arm64

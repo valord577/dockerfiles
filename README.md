@@ -2,18 +2,18 @@
 
 #### Available Images
 
-* [linux-cgo1.21](linux-cgo1.21)
-  - Linux CGO 1.21.x Toolchain for GLIBC 2.17+
+* [cgo-linux-g217](cgo-linux-g217)
+  - CGO Toolchain for Linux GLIBC 2.17+
 
   [![image][0-1]][0-0]
 
-* [mingw-cgo1.21](mingw-cgo1.21)
-  - MinGW CGO 1.21.x Toolchain for Windows
+* [cgo-mingw](cgo-mingw)
+  - CGO Toolchain for MinGW
 
   [![image][2-1]][2-0]
 
-* [openwrt-cgo-mt7622](openwrt-cgo-mt7622)
-  - OpenWRT CGO Toolchain for MediaTek/MT7622
+* [cgo-openwrt-mt7622](cgo-openwrt-mt7622)
+  - CGO Toolchain for OpenWRT MediaTek/MT7622
 
   [![image][1-1]][1-0]
 
@@ -22,12 +22,12 @@
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
 
 
-[0-0]: https://hub.docker.com/r/valord577/linux-cgo1.21/tags
-[0-1]: https://img.shields.io/docker/v/valord577/linux-cgo1.21?label=Image%20Version
+[0-0]: https://hub.docker.com/r/valord577/cgo-linux-g217/tags
+[0-1]: https://img.shields.io/docker/v/valord577/cgo-linux-g217?label=Image%20Version
 
-[1-0]: https://hub.docker.com/r/valord577/openwrt-cgo-mt7622/tags
-[1-1]: https://img.shields.io/docker/v/valord577/openwrt-cgo-mt7622?label=Image%20Version
+[1-0]: https://hub.docker.com/r/valord577/cgo-openwrt-mt7622/tags
+[1-1]: https://img.shields.io/docker/v/valord577/cgo-openwrt-mt7622?label=Image%20Version
 
-[2-0]: https://hub.docker.com/r/valord577/mingw-cgo1.21/tags
-[2-1]: https://img.shields.io/docker/v/valord577/mingw-cgo1.21?label=Image%20Version
+[2-0]: https://hub.docker.com/r/valord577/cgo-mingw/tags
+[2-1]: https://img.shields.io/docker/v/valord577/cgo-mingw?label=Image%20Version
 

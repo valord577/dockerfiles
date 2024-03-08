@@ -1,19 +1,19 @@
-name: linux-cgo1.21
+name: cgo-mingw
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/linux-cgo1.21.yml'
-      - 'linux-cgo1.21/Dockerfile'
+      - '.github/workflows/cgo-mingw.yml'
+      - 'cgo-mingw/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/linux-cgo1.21.yml'
-      - 'linux-cgo1.21/Dockerfile'
+      - '.github/workflows/cgo-mingw.yml'
+      - 'cgo-mingw/Dockerfile'
 
 jobs:
   build:
