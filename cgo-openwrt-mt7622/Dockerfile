@@ -20,7 +20,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 EOT
 
 
-ENV OPENWRT_TOOLCHAIN_DL="https://mirrors.bfsu.edu.cn/openwrt"
+ENV OPENWRT_TOOLCHAIN_DL="https://downloads.openwrt.org"
 ENV OPENWRT_RELEASE_VERSION="23.05.2"
 ENV OPENWRT_TOOLCHAIN_GCC="12.3.0"
 
