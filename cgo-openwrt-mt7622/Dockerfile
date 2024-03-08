@@ -35,7 +35,7 @@ set -e
 wget -q -O "toolchain.tar.xz" "${OPENWRT_TOOLCHAIN_URL}"
 trap 'rm -rf "toolchain" "toolchain.tar.xz"' EXIT INT TERM
 
-mkdir -p "toolchain" && tar xf "toolchain.tar.xz" -C "toolchain" --strip-components=1
+mkdir -p "toolchain" && tar xvf "toolchain.tar.xz" -C "toolchain" --strip-components=1 --no-same-owner
 mv "toolchain/${OPENWRT_TOOLCHAIN_SYSROOT}" "${OPENWRT_TOOLCHAIN_ROOT}"
 EOT
 ENV STAGING_DIR="${OPENWRT_TOOLCHAIN_ROOT}"
@@ -54,7 +54,7 @@ set -e
 
 wget -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
-mkdir -p "${GOLANG_SDK_ROOT}" && tar xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1
+mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 EOT
 ENV GOARCH=arm64
 ENV CGO_ENABLED=1

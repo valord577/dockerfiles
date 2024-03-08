@@ -53,7 +53,7 @@ set -e
 
 wget -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
-mkdir -p "${GOLANG_SDK_ROOT}" && tar xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1
+mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 EOT
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local
