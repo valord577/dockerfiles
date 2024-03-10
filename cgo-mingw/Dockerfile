@@ -21,7 +21,7 @@ EOT
 
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
 ENV MINGW_URL="${MINGW_URL}"
-ENV MINGW_VERSION="20240306"
+ENV MINGW_VERSION="20240308"
 ENV MINGW_DEFAULT="ucrt-ubuntu-20.04"
 ENV MINGW_ROOT="/opt/llvm-mingw"
 ENV PATH="${MINGW_ROOT}/bin:${PATH}"
