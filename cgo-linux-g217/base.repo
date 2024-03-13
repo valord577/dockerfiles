@@ -1,0 +1,22 @@
+[base]
+name=CentOS-$releasever - Base
+baseurl=http://mirrors.bfsu.edu.cn/centos/$releasever/os/$basearch/
+gpgcheck=0
+
+[updates]
+name=CentOS-$releasever - Updates
+baseurl=http://mirrors.bfsu.edu.cn/centos/$releasever/updates/$basearch/
+gpgcheck=0
+
+[extras]
+name=CentOS-$releasever - Extras
+baseurl=http://mirrors.bfsu.edu.cn/centos/$releasever/extras/$basearch/
+gpgcheck=0
+enabled=1
+
+[centos-sclo-rh]
+name=CentOS-$releasever - SCLo rh
+baseurl=http://mirrors.bfsu.edu.cn/centos/$releasever/sclo/$basearch/rh/
+gpgcheck=0
+enabled=1
+

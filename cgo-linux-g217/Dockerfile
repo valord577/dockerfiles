@@ -4,17 +4,19 @@ FROM --platform=${TARGETPLATFORM} centos:7.9.2009
 ARG TARGETOS
 ARG TARGETARCH
 
+RUN rm -f -- /etc/yum.repos.d/**
+COPY "epel.repo" "/etc/yum.repos.d/epel.repo"
+COPY "base.repo" "/etc/yum.repos.d/base.repo"
+RUN [ "$(uname -m)" == "x86_64" ] || \
+  sed -i "s@centos/$releasever@centos-altarch/$releasever@g" /etc/yum.repos.d/base.repo
+
 ENV TZ=UTC
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-yum --noplugins --nogpgcheck makecache
 yum --noplugins --nogpgcheck -y install \
-  centos-release-scl-rh epel-release
-yum --noplugins --nogpgcheck -y install \
-  tzdata ca-certificates wget \
-  rh-git227-git \
+  tzdata ca-certificates wget rh-git227-git \
   devtoolset-10-gcc devtoolset-10-gcc-c++
 yum --noplugins --nogpgcheck clean all
 
