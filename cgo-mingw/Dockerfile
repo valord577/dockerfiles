@@ -6,13 +6,15 @@ ARG TARGETARCH
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
+RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
+RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
 apt-get update -qq
-apt-get install -qqy --no-install-recommends \
+apt-get install -qqy \
   git tzdata ca-certificates xz-utils wget pkgconf-bin
 apt-get clean all -qqy
 
@@ -32,7 +34,7 @@ set -e
 MINGW_LLVM_DOWNLOAD_URL="${MINGW_URL}/${MINGW_VERSION}/llvm-mingw-${MINGW_VERSION}-${MINGW_DEFAULT}-$(uname -m).tar.xz"
 wget -q -O "llvm-mingw.tar.xz" "${MINGW_LLVM_DOWNLOAD_URL}"
 trap 'rm -f -- "llvm-mingw.tar.xz"' EXIT INT TERM
-mkdir -p "${MINGW_ROOT}" && tar xvf "llvm-mingw.tar.xz" -C "${MINGW_ROOT}" --strip-components=1 --no-same-owner
+mkdir -p "${MINGW_ROOT}" && XZ_OPT='--threads=0' tar -xvf "llvm-mingw.tar.xz" -C "${MINGW_ROOT}" --strip-components=1 --no-same-owner
 
 PKG_CONFIG_WRPPER=$(cat <<- 'EOF'
 #! /bin/sh
