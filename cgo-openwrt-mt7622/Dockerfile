@@ -6,13 +6,15 @@ ARG TARGETARCH
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
+RUN echo -e 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
+RUN echo -e 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
 apt-get update -qq
-apt-get install -qqy --no-install-recommends \
+apt-get install -qqy \
   git tzdata ca-certificates xz-utils wget
 apt-get clean all -qqy
 
