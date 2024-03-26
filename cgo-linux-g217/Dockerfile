@@ -5,23 +5,27 @@ ARG TARGETOS
 ARG TARGETARCH
 
 RUN rm -f -- /etc/yum.repos.d/**
+COPY "yum.conf"  "/etc/yum.conf"
 COPY "epel.repo" "/etc/yum.repos.d/epel.repo"
 COPY "base.repo" "/etc/yum.repos.d/base.repo"
 RUN [ "$(uname -m)" == "x86_64" ] || \
   sed -i "s@centos/$releasever@centos-altarch/$releasever@g" /etc/yum.repos.d/base.repo
-
+RUN localedef -c -f UTF-8 -i en_US en_US.UTF-8
 ENV TZ=UTC
+RUN yum -y install tzdata \
+  && yum clean all
+RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-yum --noplugins --nogpgcheck -y install \
-  tzdata ca-certificates wget rh-git227-git \
-  devtoolset-10-gcc devtoolset-10-gcc-c++
-yum --noplugins --nogpgcheck clean all
-
-localedef -c -f UTF-8 -i en_US en_US.UTF-8
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+yum -y install \
+  wget rh-git227-git \
+  devtoolset-10-gcc  \
+  devtoolset-10-gcc-c++
+yum clean all
 
 cat > "/opt/rh/scl_enable" <<- EOF
 #!/usr/bin/env bash
@@ -37,7 +41,6 @@ cat > "/opt/rh/scl_enable" <<- EOF
 unset BASH_ENV PROMPT_COMMAND ENV
 source scl_source enable rh-git227
 source scl_source enable devtoolset-10
-
 EOF
 EOT
 ENV BASH_ENV="/opt/rh/scl_enable" \
@@ -53,9 +56,15 @@ RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-wget -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
+wget --no-check-certificate -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
 mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 EOT
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local
+
+
+# extra libraries
+RUN yum -y install \
+  ca-certificates \
+  && yum clean all
