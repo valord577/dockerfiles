@@ -21,3 +21,5 @@ jobs:
   build:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
+    with:
+      platforms: linux/amd64,linux/arm64
