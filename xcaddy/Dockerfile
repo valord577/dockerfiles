@@ -8,7 +8,7 @@ RUN <<EOT
 set -e
 
 export XCADDY_GO_BUILD_FLAGS="-ldflags '-w -s'"
-$(go env GOPATH)/bin/xcaddy build 'master' --output '/opt/caddy' \
+$(go env GOPATH)/bin/xcaddy build 'v2.7.6' --output '/opt/caddy' \
   --with github.com/caddy-dns/alidns
 EOT
 
@@ -21,6 +21,7 @@ ARG TARGETARCH
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
+RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
