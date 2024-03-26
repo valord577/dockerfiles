@@ -17,6 +17,11 @@
 
   [![image][1-1]][1-0]
 
+* [xcaddy](xcaddy)
+  - Caddy (with or without plugins) Builder
+
+  [![image][3-1]][3-0]
+
 
 [Maintained]: https://img.shields.io/badge/Maintained-brightgreen
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
@@ -30,4 +35,7 @@
 
 [2-0]: https://hub.docker.com/r/valord577/cgo-mingw/tags
 [2-1]: https://img.shields.io/docker/v/valord577/cgo-mingw?label=Image%20Version
+
+[3-0]: https://hub.docker.com/r/valord577/xcaddy/tags
+[3-1]: https://img.shields.io/docker/v/valord577/xcaddy?label=Image%20Version
 
