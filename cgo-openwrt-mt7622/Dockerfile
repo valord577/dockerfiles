@@ -9,17 +9,16 @@ ENV TZ=UTC \
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
-RUN <<EOT
-#!/usr/bin/env bash
-set -e
+RUN apt-get update -qq \
+  && apt-get install -qqy tzdata \
+  && apt-get clean all -qqy
+RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
-apt-get update -qq
-apt-get install -qqy \
-  git tzdata ca-certificates xz-utils wget
-apt-get clean all -qqy
 
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-EOT
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    xz-utils wget \
+  && apt-get clean all -qqy
 
 
 ENV OPENWRT_TOOLCHAIN_DL="https://downloads.openwrt.org"
@@ -34,7 +33,7 @@ RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-wget -q -O "toolchain.tar.xz" "${OPENWRT_TOOLCHAIN_URL}"
+wget --no-check-certificate -q -O "toolchain.tar.xz" "${OPENWRT_TOOLCHAIN_URL}"
 trap 'rm -rf "toolchain" "toolchain.tar.xz"' EXIT INT TERM
 
 mkdir -p "toolchain" && XZ_OPT='--threads=0' tar -xvf "toolchain.tar.xz" -C "toolchain" --strip-components=1 --no-same-owner
@@ -54,10 +53,17 @@ RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-wget -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
+wget --no-check-certificate -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
 mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 EOT
 ENV GOARCH=arm64
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local
+
+
+# extra libraries
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    git ca-certificates \
+  && apt-get clean all -qqy

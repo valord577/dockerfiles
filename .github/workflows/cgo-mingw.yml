@@ -6,14 +6,16 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/cgo-mingw.yml'
-      - 'cgo-mingw/Dockerfile'
+      - 'cgo-mingw/**'
+      - '!cgo-mingw/README.md'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/cgo-mingw.yml'
-      - 'cgo-mingw/Dockerfile'
+      - 'cgo-mingw/**'
+      - '!cgo-mingw/README.md'
 
 jobs:
   build:
