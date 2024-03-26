@@ -6,6 +6,7 @@ ARG TARGETARCH
 
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
+RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
@@ -22,7 +23,7 @@ RUN apt-get update -qq \
 
 
 ENV OPENWRT_TOOLCHAIN_DL="https://downloads.openwrt.org"
-ENV OPENWRT_RELEASE_VERSION="23.05.2"
+ENV OPENWRT_RELEASE_VERSION="23.05.3"
 ENV OPENWRT_TOOLCHAIN_GCC="12.3.0"
 
 ENV OPENWRT_TOOLCHAIN_URL="${OPENWRT_TOOLCHAIN_DL}/releases/${OPENWRT_RELEASE_VERSION}/targets/mediatek/mt7622/openwrt-toolchain-${OPENWRT_RELEASE_VERSION}-mediatek-mt7622_gcc-${OPENWRT_TOOLCHAIN_GCC}_musl.Linux-x86_64.tar.xz"
