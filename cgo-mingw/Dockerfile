@@ -62,7 +62,7 @@ ln -s "${MINGW_ROOT}/bin/pkg-config-crosswrapper" "${MINGW_ROOT}/bin/aarch64-w64
 EOT
 
 
-ENV GOLANG_SDK="1.22.1"
+ENV GOLANG_SDK="1.22.2"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
