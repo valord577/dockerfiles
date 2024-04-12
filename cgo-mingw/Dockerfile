@@ -23,7 +23,7 @@ RUN apt-get update -qq \
 
 
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
-ENV MINGW_VERSION="20240320"
+ENV MINGW_VERSION="20240404"
 ENV MINGW_DEFAULT="ucrt-ubuntu-20.04"
 ENV MINGW_ROOT="/opt/llvm-mingw"
 ENV PATH="${MINGW_ROOT}/bin:${PATH}"
