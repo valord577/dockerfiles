@@ -20,7 +20,7 @@ RUN apt-get update -qq \
   && apt-get install -qqy \
     xz-utils wget \
   && apt-get clean all -qqy
-
+ENV XZ_OPT='--threads=0'
 
 ENV OPENWRT_TOOLCHAIN_DL="https://downloads.openwrt.org"
 ENV OPENWRT_RELEASE_VERSION="23.05.3"
@@ -37,7 +37,7 @@ set -e
 wget --no-check-certificate -q -O "toolchain.tar.xz" "${OPENWRT_TOOLCHAIN_URL}"
 trap 'rm -rf "toolchain" "toolchain.tar.xz"' EXIT INT TERM
 
-mkdir -p "toolchain" && XZ_OPT='--threads=0' tar -xvf "toolchain.tar.xz" -C "toolchain" --strip-components=1 --no-same-owner
+mkdir -p "toolchain" && tar -xvf "toolchain.tar.xz" -C "toolchain" --strip-components=1 --no-same-owner
 mv "toolchain/${OPENWRT_TOOLCHAIN_SYSROOT}" "${OPENWRT_TOOLCHAIN_ROOT}"
 EOT
 ENV STAGING_DIR="${OPENWRT_TOOLCHAIN_ROOT}"

@@ -20,7 +20,7 @@ RUN apt-get update -qq \
   && apt-get install -qqy \
     xz-utils wget pkgconf-bin \
   && apt-get clean all -qqy
-
+  ENV XZ_OPT='--threads=0'
 
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
 ENV MINGW_VERSION="20240404"
@@ -34,7 +34,7 @@ set -e
 MINGW_LLVM_DOWNLOAD_URL="${MINGW_URL}/${MINGW_VERSION}/llvm-mingw-${MINGW_VERSION}-${MINGW_DEFAULT}-$(uname -m).tar.xz"
 wget --no-check-certificate -q -O "llvm-mingw.tar.xz" "${MINGW_LLVM_DOWNLOAD_URL}"
 trap 'rm -f -- "llvm-mingw.tar.xz"' EXIT INT TERM
-mkdir -p "${MINGW_ROOT}" && XZ_OPT='--threads=0' tar -xvf "llvm-mingw.tar.xz" -C "${MINGW_ROOT}" --strip-components=1 --no-same-owner
+mkdir -p "${MINGW_ROOT}" && tar -xvf "llvm-mingw.tar.xz" -C "${MINGW_ROOT}" --strip-components=1 --no-same-owner
 
 PKG_CONFIG_WRPPER=$(cat <<- 'EOF'
 #! /bin/sh
