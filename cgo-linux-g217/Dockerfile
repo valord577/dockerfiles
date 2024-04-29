@@ -15,7 +15,7 @@ ENV TZ=UTC
 RUN yum -y install tzdata \
   && yum clean all
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-
+ENV XZ_OPT='--threads=0'
 
 RUN <<EOT
 #!/usr/bin/env bash
