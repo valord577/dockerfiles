@@ -2,13 +2,13 @@
 ARG IMAGE_VER="e36adf48cbbdd49b03a183c545a6abc9cab0765a"
 FROM --platform=${TARGETPLATFORM} valord577/cgo-linux-g217:${IMAGE_VER} as builder
 
-RUN go install -v 'github.com/caddyserver/xcaddy/cmd/xcaddy@v0.4.1'
+RUN go install -v 'github.com/caddyserver/xcaddy/cmd/xcaddy@v0.4.2'
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
 export XCADDY_GO_BUILD_FLAGS="-ldflags '-w -s'"
-$(go env GOPATH)/bin/xcaddy build 'v2.7.6' --output '/opt/caddy' \
+$(go env GOPATH)/bin/xcaddy build 'v2.8.4' --output '/opt/caddy' \
   --with github.com/caddy-dns/alidns
 EOT
 
