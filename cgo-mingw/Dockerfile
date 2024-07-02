@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM --platform=${TARGETPLATFORM} debian:12.5
+FROM --platform=${TARGETPLATFORM} debian:12.6
 
 ARG TARGETOS
 ARG TARGETARCH
