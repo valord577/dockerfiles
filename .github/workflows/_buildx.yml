@@ -31,7 +31,7 @@ jobs:
           username: ${{ vars.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSCODE }}
       - name: Build Image and Push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           pull: true
           push: ${{ env._PUSH }}
