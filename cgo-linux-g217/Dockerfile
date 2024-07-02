@@ -9,7 +9,7 @@ COPY "yum.conf"  "/etc/yum.conf"
 COPY "epel.repo" "/etc/yum.repos.d/epel.repo"
 COPY "base.repo" "/etc/yum.repos.d/base.repo"
 RUN [ "$(uname -m)" == "x86_64" ] || \
-  sed -i "s@centos/$releasever@centos-altarch/$releasever@g" /etc/yum.repos.d/base.repo
+  sed -i "s@centos-vault/7@centos-vault/altarch/7@g" /etc/yum.repos.d/base.repo
 RUN localedef -c -f UTF-8 -i en_US en_US.UTF-8
 ENV TZ=UTC
 RUN yum -y install tzdata \
@@ -66,5 +66,5 @@ ENV GOTOOLCHAIN=local
 
 # extra libraries
 RUN yum -y install \
-  ca-certificates \
+  ca-certificates pkg-config zip unzip xz \
   && yum clean all
