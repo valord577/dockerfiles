@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG IMAGE_VER="f65cb6461e14f8b3e1c427e3140eb9ebcefdf74a"
+ARG IMAGE_VER="046450f7a422ddcea9ad4a5a23d86f94ba33e477"
 FROM --platform=${TARGETPLATFORM} valord577/cgo-linux-g217:${IMAGE_VER} as builder
 
 RUN go install -v 'github.com/caddyserver/xcaddy/cmd/xcaddy@v0.4.2'
