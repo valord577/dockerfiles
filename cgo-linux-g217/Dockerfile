@@ -48,7 +48,7 @@ ENV BASH_ENV="/opt/rh/scl_enable" \
     PROMPT_COMMAND=". /opt/rh/scl_enable"
 
 
-ENV GOLANG_SDK="1.22.4"
+ENV GOLANG_SDK="1.22.5"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
@@ -66,5 +66,5 @@ ENV GOTOOLCHAIN=local
 
 # extra libraries
 RUN yum -y install \
-  ca-certificates pkg-config zip unzip xz \
+  ca-certificates pkg-config zip unzip xz tree \
   && yum clean all

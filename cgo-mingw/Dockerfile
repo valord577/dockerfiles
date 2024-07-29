@@ -20,7 +20,7 @@ RUN apt-get update -qq \
   && apt-get install -qqy \
     xz-utils wget pkgconf-bin \
   && apt-get clean all -qqy
-  ENV XZ_OPT='--threads=0'
+ENV XZ_OPT='--threads=0'
 
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
 ENV MINGW_VERSION="20240619"
@@ -62,7 +62,7 @@ ln -s "${MINGW_ROOT}/bin/pkg-config-crosswrapper" "${MINGW_ROOT}/bin/aarch64-w64
 EOT
 
 
-ENV GOLANG_SDK="1.22.4"
+ENV GOLANG_SDK="1.22.5"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
@@ -82,5 +82,5 @@ ENV GOTOOLCHAIN=local
 # extra libraries
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    git ca-certificates \
+    git ca-certificates tree \
   && apt-get clean all -qqy

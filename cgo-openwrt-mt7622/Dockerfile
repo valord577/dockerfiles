@@ -23,7 +23,7 @@ RUN apt-get update -qq \
 ENV XZ_OPT='--threads=0'
 
 ENV OPENWRT_TOOLCHAIN_DL="https://downloads.openwrt.org"
-ENV OPENWRT_RELEASE_VERSION="23.05.3"
+ENV OPENWRT_RELEASE_VERSION="23.05.4"
 ENV OPENWRT_TOOLCHAIN_GCC="12.3.0"
 
 ENV OPENWRT_TOOLCHAIN_URL="${OPENWRT_TOOLCHAIN_DL}/releases/${OPENWRT_RELEASE_VERSION}/targets/mediatek/mt7622/openwrt-toolchain-${OPENWRT_RELEASE_VERSION}-mediatek-mt7622_gcc-${OPENWRT_TOOLCHAIN_GCC}_musl.Linux-x86_64.tar.xz"
@@ -46,7 +46,7 @@ ENV CXX="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-g++"
 ENV AR="${OPENWRT_TOOLCHAIN_ROOT}/bin/aarch64-openwrt-linux-ar"
 
 
-ENV GOLANG_SDK="1.22.4"
+ENV GOLANG_SDK="1.22.5"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
@@ -66,5 +66,5 @@ ENV GOTOOLCHAIN=local
 # extra libraries
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    git ca-certificates \
+    git ca-certificates tree \
   && apt-get clean all -qqy
