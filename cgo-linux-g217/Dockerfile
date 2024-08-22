@@ -48,7 +48,7 @@ ENV BASH_ENV="/opt/rh/scl_enable" \
     PROMPT_COMMAND=". /opt/rh/scl_enable"
 
 
-ENV GOLANG_SDK="1.22.5"
+ENV GOLANG_SDK="1.23.0"
 ENV GOLANG_SDK_URL="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
@@ -59,6 +59,9 @@ set -e
 wget --no-check-certificate -q -O "gosdk.tar.gz" "${GOLANG_SDK_URL}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
 mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
+
+# https://telemetry.go.dev/
+go telemetry off
 EOT
 ENV CGO_ENABLED=1
 ENV GOTOOLCHAIN=local
