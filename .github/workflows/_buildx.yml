@@ -6,10 +6,26 @@ on:
         default: linux/amd64
         required: false
         type: string
+      build-args:
+        default: '[]'
+        required: false
+        type: string
+      context:
+        default: ""
+        required: false
+        type: string
+      tagname:
+        default: ""
+        required: false
+        type: string
 
 jobs:
   _buildx:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}
     env:
       _PUSH: false
     steps:
@@ -36,17 +52,22 @@ jobs:
           registry: ${{ vars.REGISTRY_ALIYUN_ACR }}
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSCODE }}
+      - name: Parse _context_ / _tagname_
+        run: |
+          echo "_context_=${{ inputs.context == '' && github.workflow || inputs.context }}" >> $GITHUB_ENV
+          echo "_tagname_=${{ inputs.tagname == '' && github.workflow || inputs.tagname }}" >> $GITHUB_ENV
       - name: Build Image and Push
         uses: docker/build-push-action@v6
         with:
           pull: true
           push: ${{ env._PUSH }}
-          context: ${{ github.workspace }}/${{ github.workflow }}
+          context: ${{ github.workspace }}/${{ env._context_ }}
           platforms: ${{ inputs.platforms }}
+          build-args: ${{ fromJson(inputs.build-args) }}
           tags: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:latest
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:${{ github.sha }}
-            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:latest
-            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ github.workflow }}:${{ github.sha }}
+            ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
+            ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:${{ github.sha }}
+            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
+            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

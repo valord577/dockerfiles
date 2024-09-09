@@ -17,6 +17,16 @@
 
   [![image][1-1]][1-0]
 
+* [linux310-cross](linux-cross)
+  - Cross Toolchain for Linux 3.10 with GLIBC 2.17+ or MUSL
+
+  [![image][4-1]][4-0]
+
+* [linux419-cross](linux-cross)
+  - Cross Toolchain for Linux 4.19 with GLIBC 2.17+ or MUSL
+
+  [![image][5-1]][5-0]
+
 * [xcaddy](xcaddy)
   - Caddy (with or without plugins) Builder
 
@@ -38,4 +48,10 @@
 
 [3-0]: https://hub.docker.com/r/valord577/xcaddy/tags
 [3-1]: https://img.shields.io/docker/v/valord577/xcaddy?label=Image%20Version
+
+[4-0]: https://hub.docker.com/r/valord577/linux310-cross/tags
+[4-1]: https://img.shields.io/docker/v/valord577/linux310-cross?label=Image%20Version
+
+[5-0]: https://hub.docker.com/r/valord577/linux419-cross/tags
+[5-1]: https://img.shields.io/docker/v/valord577/linux419-cross?label=Image%20Version
 
