@@ -3,6 +3,7 @@ ARG TARGETOS
 ARG TARGETARCH
 
 FROM debian:12.7 AS base
+SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
 ENV XZ_OPT='--threads=0'
@@ -87,7 +88,12 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
 
 
 
-FROM base
+FROM base AS toolchain
+ENV CC="clang" CXX="clang++"
+RUN apt-get update -qq \
+  && apt-get install -qqy clang llvm lld \
+  && apt-get clean all -qqy
+
 ENV CROSS_TOOLCHAIN_ROOT="${CT_REPO}"
 WORKDIR "${CT_REPO}"
 COPY --from=ct-amd64-glibc ${CT_PREFIX} .
@@ -123,7 +129,7 @@ fi
 
 EOF
 )
-echo -e "${PKG_CONFIG_WRPPER}" > "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}" && chmod +x "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}"
+echo -e "${PKG_CONFIG_WRPPER}" > "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}"; chmod +x "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}"
 ln -sfn "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.aarch64-unknown-linux-gnu"
 ln -sfn "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.aarch64-unknown-linux-musl"
 ln -sfn "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.x86_64-pc-linux-gnu"
@@ -172,9 +178,9 @@ echo -e "${TOOLCHAIN_FILE_CMAKE_AMD64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CM
 echo -e "${TOOLCHAIN_FILE_CMAKE_AMD64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64-pc-linux-musl"
 EOT
 
-ENV CC="clang" CXX="clang++"
+FROM toolchain
 RUN apt-get update -qq \
   && apt-get install -qqy \
-  tree patchelf curl zip unzip xz-utils git pkgconf-bin file \
-  make clang llvm lld ccache python3 python3-venv cmake \
+  tree patchelf curl zip unzip xz-utils git file \
+  make ccache python3 python3-venv cmake pkgconf-bin \
   && apt-get clean all -qqy
