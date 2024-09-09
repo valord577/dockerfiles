@@ -22,5 +22,6 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
-      build-args: 'LINUX_UAPI_VERSION=310'
+      build-args: |
+        LINUX_UAPI_VERSION=310
       context: 'linux-cross'
