@@ -7,7 +7,7 @@ on:
         required: false
         type: string
       build-args:
-        default: '[]'
+        default: ''
         required: false
         type: string
       context:
@@ -63,7 +63,7 @@ jobs:
           push: ${{ env._PUSH }}
           context: ${{ github.workspace }}/${{ env._context_ }}
           platforms: ${{ inputs.platforms }}
-          build-args: ${{ fromJson(inputs.build-args) }}
+          build-args: ${{ inputs.build-args }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:${{ github.sha }}
