@@ -18,6 +18,10 @@ on:
         default: ""
         required: false
         type: string
+      target:
+        default: ""
+        required: false
+        type: string
 
 jobs:
   _buildx:
@@ -62,6 +66,7 @@ jobs:
           pull: true
           push: ${{ env._PUSH }}
           context: ${{ github.workspace }}/${{ env._context_ }}
+          target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}
           build-args: ${{ inputs.build-args }}
           tags: |

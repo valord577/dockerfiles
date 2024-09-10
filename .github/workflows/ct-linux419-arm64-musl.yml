@@ -1,0 +1,28 @@
+name: ct-linux419-arm64-musl
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/ct-linux419-arm64-musl.yml'
+      - 'cross-toolchain-linux-base/.config.linux419.musl.arm64'
+      - 'cross-toolchain-linux-base/Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/ct-linux419-arm64-musl.yml'
+      - 'cross-toolchain-linux-base/.config.linux419.musl.arm64'
+      - 'cross-toolchain-linux-base/Dockerfile'
+
+jobs:
+  build:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      build-args: |
+        LINUX_UAPI_VERSION=419
+      context: 'cross-toolchain-linux-base'
+      target: 'target-ct-arm64-musl'
