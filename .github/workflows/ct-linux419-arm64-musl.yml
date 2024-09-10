@@ -6,16 +6,16 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/ct-linux419-arm64-musl.yml'
-      - 'cross-toolchain-linux-base/.config.linux419.musl.arm64'
-      - 'cross-toolchain-linux-base/Dockerfile'
+      - 'cross-toolchain-linux-basic/.config.linux419.musl.arm64'
+      - 'cross-toolchain-linux-basic/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/ct-linux419-arm64-musl.yml'
-      - 'cross-toolchain-linux-base/.config.linux419.musl.arm64'
-      - 'cross-toolchain-linux-base/Dockerfile'
+      - 'cross-toolchain-linux-basic/.config.linux419.musl.arm64'
+      - 'cross-toolchain-linux-basic/Dockerfile'
 
 jobs:
   build:
