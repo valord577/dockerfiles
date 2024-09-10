@@ -100,6 +100,7 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
   mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
   rm -rf ./lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
+  rm -rf ${CROSS_TRIPLE}/lib/ldscripts; \
   rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
   rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
 FROM base AS target-ct-amd64-musl
@@ -118,6 +119,7 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
   mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
   rm -rf ./lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
+  rm -rf ${CROSS_TRIPLE}/lib/ldscripts; \
   rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
   rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
 FROM base AS target-ct-arm64-musl
