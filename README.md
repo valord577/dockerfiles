@@ -27,6 +27,11 @@
 
   [![image][5-1]][5-0]
 
+* [jellyfin](v-jellyfin)
+  - Portable Jellyfin
+
+  [![image][6-1]][6-0]
+
 * [xcaddy](xcaddy)
   - Caddy (with or without plugins) Builder
 
@@ -54,4 +59,7 @@
 
 [5-0]: https://hub.docker.com/r/valord577/linux419-cross/tags
 [5-1]: https://img.shields.io/docker/v/valord577/linux419-cross?label=Image%20Version
+
+[6-0]: https://hub.docker.com/r/valord577/jellyfin/tags
+[6-1]: https://img.shields.io/docker/v/valord577/jellyfin?label=Image%20Version
 

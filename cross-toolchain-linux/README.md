@@ -2,7 +2,7 @@ cross-toolchain-linux
 ------
 
 * Cross Toolchain Basic (Mixed Sysroot) for Linux with GLIBC or MUSL
-* Push to `Docker Hub Tags`
+* Push to `Docker Hub`
   - [ct-linux310](https://hub.docker.com/r/valord577/ct-linux310/tags)
   - [ct-linux419](https://hub.docker.com/r/valord577/ct-linux419/tags)
 

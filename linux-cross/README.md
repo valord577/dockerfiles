@@ -2,7 +2,7 @@ linux-cross
 ------
 
 * Cross Toolchain for Linux with GLIBC or MUSL included Mixed Sysroot
-* Push to `Docker Hub Tags`
+* Push to `Docker Hub`
   - [linux310-cross](https://hub.docker.com/r/valord577/linux310-cross/tags)
   - [linux419-cross](https://hub.docker.com/r/valord577/linux419-cross/tags)
 
