@@ -2,7 +2,7 @@ cross-toolchain-linux-basic
 ------
 
 * Cross Toolchain Basic (Single Sysroot) for Linux with GLIBC or MUSL
-* Push to `Docker Hub Tags`
+* Push to `Docker Hub`
   - [ct-linux310-amd64-gnu](https://hub.docker.com/r/valord577/ct-linux310-amd64-gnu/tags)
   - [ct-linux310-arm64-gnu](https://hub.docker.com/r/valord577/ct-linux310-arm64-gnu/tags)
   - [ct-linux310-amd64-musl](https://hub.docker.com/r/valord577/ct-linux310-amd64-musl/tags)
