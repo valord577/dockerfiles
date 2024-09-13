@@ -1,8 +1,4 @@
 # syntax=docker/dockerfile:1
-ARG TARGETOS
-ARG TARGETARCH
-ARG CONTAINER_REGISTRY_PREFIX
-
 FROM debian:12.7 AS base
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
