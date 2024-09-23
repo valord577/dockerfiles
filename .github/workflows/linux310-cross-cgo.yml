@@ -1,0 +1,26 @@
+name: linux310-cross-cgo
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/linux310-cross-cgo.yml'
+      - 'linux-cross-cgo/Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/linux310-cross-cgo.yml'
+      - 'linux-cross-cgo/Dockerfile'
+
+jobs:
+  build:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      build-args: |
+        LINUX_UAPI_VERSION=310
+      context: 'linux-cross-cgo'
+      tagname: 'linux-cross-cgo'
