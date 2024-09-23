@@ -35,15 +35,13 @@ RUN <<EOT
 set -e
 
 CGOTOOL_WRPPER=$(cat <<- 'EOF'
-#! /bin/sh
+#!/usr/bin/env bash
 set -e
 
 basename="${0##*/}"
 triplet="${basename##cgotool-wrapper\.}"
 
-if [ false ]; then
-  :
-elif [[ "${triplet}" =~ ^x86_64.*$ ]]; then
+if [[ "${triplet}" =~ ^x86_64.*$ ]]; then
   export GOARCH=amd64; export GOAMD64=v3
 elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
   export GOARCH=arm64
