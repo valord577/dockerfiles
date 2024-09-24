@@ -11,6 +11,20 @@ RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
+case ${TARGETARCH} in
+  "arm64")
+    triple="aarch64-unknown-linux-musl"
+    ;;
+  "amd64")
+    triple="x86_64-pc-linux-musl"
+    ;;
+  *)
+    printf "\e[1m\e[31m%s\e[0m\n" "Unsupported TARGETARCH: '${TARGETARCH}'."
+    exit 1
+    ;;
+esac
+
+
 # git config --global http.proxy http://192.168.1.241:8118
 # git config --global https.proxy $(git config --global --get http.proxy)
 git clone --no-checkout --single-branch --depth=1 \
@@ -30,19 +44,6 @@ set +x
 
 # export GOPROXY=https://goproxy.cn,direct; export GOSUMDB=sum.golang.google.cn
 go mod init caddy; go mod tidy; export GO111MODULE=on
-
-case ${TARGETARCH} in
-  "arm64")
-    triple="aarch64-unknown-linux-musl"
-    ;;
-  "amd64")
-    triple="x86_64-pc-linux-musl"
-    ;;
-  *)
-    printf "\e[1m\e[31m%s\e[0m\n" "Unsupported TARGETARCH: '${TARGETARCH}'."
-    exit 1
-    ;;
-esac
 ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${triple} build -v -o caddy_${TARGETARCH}
 EOT
 
