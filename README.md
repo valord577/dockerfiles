@@ -29,6 +29,11 @@
 
   [![image][7-1]][7-0]
 
+* [mingw-cross-ucrt](mingw-cross)
+  - Cross Toolchain for LLVM MinGW with UCRT
+
+  [![image][0-1]][0-0]
+
 * [jellyfin](serv-jellyfin)
   - Portable Jellyfin
 
@@ -43,6 +48,9 @@
 [Maintained]: https://img.shields.io/badge/Maintained-brightgreen
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
 
+
+[0-0]: https://hub.docker.com/r/valord577/mingw-cross-ucrt/tags
+[0-1]: https://img.shields.io/docker/v/valord577/mingw-cross-ucrt?label=Image%20Version
 
 [1-0]: https://hub.docker.com/r/valord577/cgo-openwrt-mt7622/tags
 [1-1]: https://img.shields.io/docker/v/valord577/cgo-openwrt-mt7622?label=Image%20Version
