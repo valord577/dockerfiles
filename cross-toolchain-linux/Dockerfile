@@ -24,8 +24,9 @@ RUN apt-get update -qq \
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 ENV CC="clang" CXX="clang++"
+RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
-  && apt-get install -qqy clang llvm lld \
+  && apt-get install -qqy clang llvm lld pkgconf-bin \
   && apt-get clean all -qqy
 
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
