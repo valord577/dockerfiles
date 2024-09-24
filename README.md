@@ -1,11 +1,8 @@
 ## The valord577's dockerfiles.
 
+> :warning: :warning: :warning: [Deprecated Images](.deprecated/README.md)
+
 #### Available Images
-
-* [cgo-linux-g217](cgo-linux-g217)
-  - CGO Toolchain for Linux GLIBC 2.17+
-
-  [![image][0-1]][0-0]
 
 * [cgo-mingw](cgo-mingw)
   - CGO Toolchain for MinGW
@@ -46,9 +43,6 @@
 [Maintained]: https://img.shields.io/badge/Maintained-brightgreen
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
 
-
-[0-0]: https://hub.docker.com/r/valord577/cgo-linux-g217/tags
-[0-1]: https://img.shields.io/docker/v/valord577/cgo-linux-g217?label=Image%20Version
 
 [1-0]: https://hub.docker.com/r/valord577/cgo-openwrt-mt7622/tags
 [1-1]: https://img.shields.io/docker/v/valord577/cgo-openwrt-mt7622?label=Image%20Version
