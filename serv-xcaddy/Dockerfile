@@ -2,6 +2,8 @@
 ARG CONTAINER_REGISTRY_PREFIX
 ARG TOOLCHAIN_IMAGE_VERSION="d46508bd7f90eccb7bf7594a66d254c287d11851"
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/linux-cross-cgo:${TOOLCHAIN_IMAGE_VERSION} AS builder
+ARG TARGETOS
+ARG TARGETARCH
 
 ENV CADDYSERV_VERSION="v2.8.4"
 WORKDIR "/caddysrc"
@@ -28,8 +30,20 @@ set +x
 
 # export GOPROXY=https://goproxy.cn,direct; export GOSUMDB=sum.golang.google.cn
 go mod init caddy; go mod tidy; export GO111MODULE=on
-${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-musl build -v -o caddy_arm64
-${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-musl       build -v -o caddy_amd64
+
+case ${TARGETARCH} in
+  "arm64")
+    triple="aarch64-unknown-linux-musl"
+    ;;
+  "amd64")
+    triple="x86_64-pc-linux-musl"
+    ;;
+  *)
+    printf "\e[1m\e[31m%s\e[0m\n" "Unsupported TARGETARCH: '${TARGETARCH}'."
+    exit 1
+    ;;
+esac
+${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${triple} build -v -o caddy_${TARGETARCH}
 EOT
 
 
