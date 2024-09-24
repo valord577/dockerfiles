@@ -37,8 +37,8 @@
 
   [![image][6-1]][6-0]
 
-* [xcaddy](xcaddy)
-  - Caddy (with or without plugins) Builder
+* [xcaddy](serv-xcaddy)
+  - Portable Caddy Server with(out) Plugin(s)
 
   [![image][3-1]][3-0]
 
