@@ -32,7 +32,7 @@
 
   [![image][7-1]][7-0]
 
-* [jellyfin](v-jellyfin)
+* [jellyfin](serv-jellyfin)
   - Portable Jellyfin
 
   [![image][6-1]][6-0]

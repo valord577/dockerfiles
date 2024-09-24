@@ -5,15 +5,15 @@ on:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/v-jellyfin.yml'
-      - 'v-jellyfin/Dockerfile'
+      - '.github/workflows/serv-jellyfin.yml'
+      - 'serv-jellyfin/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/v-jellyfin.yml'
-      - 'v-jellyfin/Dockerfile'
+      - '.github/workflows/serv-jellyfin.yml'
+      - 'serv-jellyfin/Dockerfile'
 
 jobs:
   build:
@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: linux/amd64,linux/arm64
-      context: 'v-jellyfin'
+      context: 'serv-jellyfin'
