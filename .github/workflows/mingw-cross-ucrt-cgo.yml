@@ -1,21 +1,19 @@
-name: cgo-mingw
+name: mingw-cross-ucrt-cgo
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/cgo-mingw.yml'
-      - 'cgo-mingw/**'
-      - '!cgo-mingw/README.md'
+      - '.github/workflows/mingw-cross-ucrt-cgo.yml'
+      - 'mingw-cross-cgo/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/cgo-mingw.yml'
-      - 'cgo-mingw/**'
-      - '!cgo-mingw/README.md'
+      - '.github/workflows/mingw-cross-ucrt-cgo.yml'
+      - 'mingw-cross-cgo/Dockerfile'
 
 jobs:
   build:
@@ -23,3 +21,5 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: linux/amd64,linux/arm64
+      context: 'mingw-cross-cgo'
+      tagname: 'mingw-cross-cgo'
