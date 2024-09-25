@@ -1,4 +1,4 @@
-name: jellyfin
+name: serv-jellyfin
 on:
   push:
     branches:
@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: linux/amd64,linux/arm64
-      context: 'serv-jellyfin'
+      tagname: 'jellyfin'
