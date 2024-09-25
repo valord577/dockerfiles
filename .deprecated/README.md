@@ -5,6 +5,11 @@
 
   ![s][Deprecated] [![image][GoToDocker]](https://hub.docker.com/r/valord577/cgo-linux-g217/tags)
 
+* [cgo-mingw](cgo-mingw)
+  - CGO Toolchain for MinGW
+
+  ![s][Deprecated] [![image][GoToDocker]](https://hub.docker.com/r/valord577/cgo-mingw/tags)
+
 
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
 [GoToDocker]: https://img.shields.io/badge/Image%20Version-Go%20to%20Docker%20Hub-blue
