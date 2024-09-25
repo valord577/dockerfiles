@@ -25,7 +25,7 @@
   [![image][5-1]][5-0]
 
 * [linux-cross-cgo](linux-cross-cgo)
-  - CGO Cross Toolchain Based on [linux310-cross](linux-cross)
+  - CGO Cross Toolchain Based on [ct-linux310](cross-toolchain-linux)
 
   [![image][7-1]][7-0]
 
