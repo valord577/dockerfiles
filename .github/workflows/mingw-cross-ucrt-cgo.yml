@@ -22,4 +22,3 @@ jobs:
     with:
       platforms: linux/amd64,linux/arm64
       context: 'mingw-cross-cgo'
-      tagname: 'mingw-cross-cgo'

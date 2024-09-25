@@ -29,10 +29,10 @@
 
   ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-ucrt/tags)
 
-* [mingw-cross-cgo](mingw-cross-cgo)
+* [mingw-cross-ucrt-cgo](mingw-cross-cgo)
   - CGO Cross Toolchain Based on [ct-mingw-ucrt](cross-toolchain-mingw)
 
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-cgo/tags)
+  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-ucrt-cgo/tags)
 
 * [jellyfin](serv-jellyfin)
   - Portable Jellyfin
