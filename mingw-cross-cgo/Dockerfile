@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG LINUX_UAPI_VERSION="310"
-ARG TOOLCHAIN_IMAGE_VERSION="48236811d75b294beb3275d05b115f5e3cf2d11f"
+ARG WINDOWS_C_RUNTIME="ucrt"
+ARG TOOLCHAIN_IMAGE_VERSION="976a02a900f1b2d91a35c2ee8ea384fb376960d0"
 
-FROM ${CONTAINER_REGISTRY_PREFIX}valord577/ct-linux${LINUX_UAPI_VERSION}:${TOOLCHAIN_IMAGE_VERSION}
+FROM ${CONTAINER_REGISTRY_PREFIX}valord577/ct-mingw-${WINDOWS_C_RUNTIME}:${TOOLCHAIN_IMAGE_VERSION}
 RUN apt-get update -qq \
   && apt-get install -qqy \
   tree patchelf curl zip unzip xz-utils git file \
@@ -29,8 +29,9 @@ go telemetry off
 # remove unused files...
 rm -rf -- ${GOLANG_SDK_ROOT}/test
 EOT
+ENV GOOS=windows
 
-ENV CROSS_TOOLCHAIN_CGOTOOL_PREFIX="${CROSS_TOOLCHAIN_ROOT}/cgotool-wrapper"
+ENV CROSS_TOOLCHAIN_CGOTOOL_PREFIX="${CROSS_TOOLCHAIN_ROOT}/bin/cgotool-wrapper"
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
@@ -46,14 +47,17 @@ if [[ "${triplet}" =~ ^x86_64.*$ ]]; then
   export GOARCH=amd64; export GOAMD64=v3
 elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
   export GOARCH=arm64
+elif [[ "${triplet}" =~ ^i686.*$ ]]; then
+  export GOARCH=386
+elif [[ "${triplet}" =~ ^armv7.*$ ]]; then
+  export GOARCH=arm
 fi
 
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
-export AR="/usr/bin/llvm-ar"
-export CGO_LDFLAGS="$(go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld"
-export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
-export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
+export AR="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-ar"
+export CC="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang"
+export CXX="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang++"
 export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
 
 exec go "$@"
@@ -61,8 +65,8 @@ exec go "$@"
 EOF
 )
 echo -e "${CGOTOOL_WRPPER}" > "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"; chmod +x "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-gnu"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-musl"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-gnu"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-musl"
+ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.i686-w64-mingw32"
+ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-w64-mingw32"
+ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.armv7-w64-mingw32"
+ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-w64-mingw32"
 EOT
