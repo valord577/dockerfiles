@@ -9,18 +9,13 @@
 
   ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/cgo-openwrt-mt7622/tags)
 
-* [linux310-cross](linux-cross)
-  - Cross Toolchain for Linux 3.10 with GLIBC 2.17 or MUSL
+* [linux-cross](linux-cross)
+  - C/Cpp Cross Toolchain Based on [cross-sysroot-linux](cross-sysroot-linux)
 
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/linux310-cross/tags)
-
-* [linux419-cross](linux-cross)
-  - Cross Toolchain for Linux 4.19 with GLIBC 2.17 or MUSL
-
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/linux419-cross/tags)
+  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/linux-cross/tags)
 
 * [linux-cross-cgo](linux-cross-cgo)
-  - CGO Cross Toolchain Based on [ct-linux310](cross-toolchain-linux)
+  - CGO Cross Toolchain Based on [cross-sysroot-linux](cross-sysroot-linux)
 
   ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/linux-cross-cgo/tags)
 

@@ -1,18 +1,18 @@
-name: linux310-cross
+name: linux-cross
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/linux310-cross.yml'
+      - '.github/workflows/linux-cross.yml'
       - 'linux-cross/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/linux310-cross.yml'
+      - '.github/workflows/linux-cross.yml'
       - 'linux-cross/Dockerfile'
 
 jobs:
@@ -20,6 +20,4 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
-      build-args: |
-        LINUX_UAPI_VERSION=310
-      context: 'linux-cross'
+      platforms: 'linux/amd64,linux/arm64'

@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG LINUX_UAPI_VERSION="310"
-ARG TOOLCHAIN_IMAGE_VERSION="48236811d75b294beb3275d05b115f5e3cf2d11f"
+ARG TOOLCHAIN_IMAGE_VERSION="7de5d80b451feafa1cf863417fca64fae2e35cd4"
+FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
 
-FROM ${CONTAINER_REGISTRY_PREFIX}valord577/ct-linux${LINUX_UAPI_VERSION}:${TOOLCHAIN_IMAGE_VERSION}
 RUN apt-get update -qq \
   && apt-get install -qqy \
   tree patchelf curl zip unzip xz-utils git file \
@@ -12,7 +11,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.1"
+ENV GOLANG_SDK="1.23.2"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT
@@ -51,9 +50,9 @@ fi
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="/usr/bin/llvm-ar"
-export CGO_LDFLAGS="$(go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld"
-export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
-export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
+export CGO_LDFLAGS="$(go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
+export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} "
+export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}"
 export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
 
 exec go "$@"

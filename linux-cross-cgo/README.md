@@ -1,7 +1,7 @@
 linux-cross-cgo
 ------
 
-* CGO Cross Toolchain for Linux with GLIBC or MUSL included Mixed Sysroot
+* CGO Cross Toolchain for Linux
 * Push to `Docker Hub`
   - [linux-cross-cgo](https://hub.docker.com/r/valord577/linux-cross-cgo/tags)
 
