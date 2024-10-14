@@ -13,22 +13,22 @@ RUN apt-get update -qq \
   && apt-get install -qqy tzdata ca-certificates \
   && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-ENV CT_REPO="/crosstool"
-ENV CT_PREFIX="${CT_REPO}/release"
+ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
+WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
+ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
 
 
 FROM base AS crosstool-base
+RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
   && apt-get install -qqy \
   curl unzip xz-utils git pkgconf-bin autoconf automake \
   gcc g++ flex texinfo bzip2 help2man file patch gawk \
   make libtool-bin python3 bison libncurses-dev ccache \
   && apt-get clean all -qqy
-RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 
 ENV CT_TAG_NAME="crosstool-ng-1.26.0"
-ENV CT_LOCAL_TARBALLS_DIR="${CT_REPO}/src"
-WORKDIR "${CT_REPO}"
+ENV CT_LOCAL_TARBALLS_DIR="${CROSS_TOOLCHAIN_ROOT}/src"
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
@@ -44,12 +44,8 @@ export PKG_CONFIG=$(command -v pkgconf)
 make -j
 EOT
 
-
-
-ARG LINUX_UAPI_VERSION="310"
-
 FROM crosstool-base AS ct-amd64-glibc
-COPY ".config.linux${LINUX_UAPI_VERSION}.glibc217.amd64" ".config"
+COPY ".config.linux.glibc217.amd64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -63,11 +59,10 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
   rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
   rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
 FROM base AS target-ct-amd64-glibc
-WORKDIR "${CT_REPO}"
 COPY --from=ct-amd64-glibc ${CT_PREFIX} .
 
 FROM crosstool-base AS ct-arm64-glibc
-COPY ".config.linux${LINUX_UAPI_VERSION}.glibc217.arm64" ".config"
+COPY ".config.linux.glibc217.arm64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -81,11 +76,27 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
   rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
   rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
 FROM base AS target-ct-arm64-glibc
-WORKDIR "${CT_REPO}"
 COPY --from=ct-arm64-glibc ${CT_PREFIX} .
 
+FROM crosstool-base AS ct-armhf-glibc
+COPY ".config.linux.glibc217.armhf" ".config"
+RUN ./ct-ng show-config; ./ct-ng source;
+# due to the limited usage of GH action, build step by step
+RUN ./ct-ng +kernel_headers; \
+  ./ct-ng cc_core; ./ct-ng libc_main; \
+  ./ct-ng cc_for_build; ./ct-ng cc_for_host;
+ENV CROSS_TRIPLE="arm-unknown-linux-gnueabihf"
+RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
+  mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
+  rm -rf ./lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
+  rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
+  rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
+  rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
+FROM base AS target-ct-armhf-glibc
+COPY --from=ct-armhf-glibc ${CT_PREFIX} .
+
 FROM crosstool-base AS ct-amd64-musl
-COPY ".config.linux${LINUX_UAPI_VERSION}.musl.amd64" ".config"
+COPY ".config.linux.musl.amd64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -100,11 +111,10 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
   rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
   rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
 FROM base AS target-ct-amd64-musl
-WORKDIR "${CT_REPO}"
 COPY --from=ct-amd64-musl ${CT_PREFIX} .
 
 FROM crosstool-base AS ct-arm64-musl
-COPY ".config.linux${LINUX_UAPI_VERSION}.musl.arm64" ".config"
+COPY ".config.linux.musl.arm64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -119,5 +129,4 @@ RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
   rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
   rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
 FROM base AS target-ct-arm64-musl
-WORKDIR "${CT_REPO}"
 COPY --from=ct-arm64-musl ${CT_PREFIX} .
