@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG WINDOWS_C_RUNTIME="ucrt"
-ARG TOOLCHAIN_IMAGE_VERSION="976a02a900f1b2d91a35c2ee8ea384fb376960d0"
+ARG TOOLCHAIN_IMAGE_VERSION="7566c58c81be08eccef6e69a5f6e48fbf2c87b88"
+FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
-FROM ${CONTAINER_REGISTRY_PREFIX}valord577/ct-mingw-${WINDOWS_C_RUNTIME}:${TOOLCHAIN_IMAGE_VERSION}
 RUN apt-get update -qq \
   && apt-get install -qqy \
   tree patchelf curl zip unzip xz-utils git file \
@@ -12,7 +11,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.1"
+ENV GOLANG_SDK="1.23.2"
 ENV GOLANG_SDK_ROOT="/opt/go"
 ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT

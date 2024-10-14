@@ -73,6 +73,5 @@ jobs:
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:${{ github.sha }}
             ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
-            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

@@ -1,18 +1,18 @@
-name: mingw-cross-ucrt
+name: mingw-cross
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/mingw-cross-ucrt.yml'
+      - '.github/workflows/mingw-cross.yml'
       - 'mingw-cross/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/mingw-cross-ucrt.yml'
+      - '.github/workflows/mingw-cross.yml'
       - 'mingw-cross/Dockerfile'
 
 jobs:
@@ -20,5 +20,4 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
-      platforms: linux/amd64,linux/arm64
-      context: 'mingw-cross'
+      platforms: 'linux/amd64,linux/arm64'

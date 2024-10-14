@@ -1,14 +1,14 @@
 mingw-cross
 ------
 
-* Cross Toolchain for LLVM MinGW included Mixed Sysroot
+* C/Cpp Cross Toolchain for LLVM MinGW
 * Push to `Docker Hub`
-  - [mingw-cross-ucrt](https://hub.docker.com/r/valord577/mingw-cross-ucrt/tags)
+  - [mingw-cross](https://hub.docker.com/r/valord577/mingw-cross/tags)
 
 How to build 
 ------
 
 ```shell
 export DOCKER_BUILDKIT=1
-docker build -t "mingw-cross-ucrt" .
+docker build -t "mingw-cross" .
 ```

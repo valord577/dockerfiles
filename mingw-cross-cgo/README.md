@@ -1,14 +1,14 @@
 mingw-cross-cgo
 ------
 
-* CGO Cross Toolchain for LLVM MinGW included Mixed Sysroot
+* CGO Cross Toolchain for LLVM MinGW
 * Push to `Docker Hub`
-  - [mingw-cross-ucrt-cgo](https://hub.docker.com/r/valord577/mingw-cross-ucrt-cgo/tags)
+  - [mingw-cross-cgo](https://hub.docker.com/r/valord577/mingw-cross-cgo/tags)
 
 How to build 
 ------
 
 ```shell
 export DOCKER_BUILDKIT=1
-docker build -t "mingw-cross-ucrt-cgo" .
+docker build -t "mingw-cross-cgo" .
 ```
