@@ -1,0 +1,23 @@
+name: cross-sysroot-mingw
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/cross-sysroot-mingw.yml'
+      - 'cross-sysroot-mingw/Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/cross-sysroot-mingw.yml'
+      - 'cross-sysroot-mingw/Dockerfile'
+
+jobs:
+  build:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      platforms: 'linux/amd64,linux/arm64'
