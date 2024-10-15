@@ -108,7 +108,7 @@ TOOLCHAIN_FILE_CMAKE_ARM64_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TA
 TOOLCHAIN_FILE_CMAKE_ARM64_MUSL=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-musl@g")
 TOOLCHAIN_FILE_CMAKE_AMD64_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-gnu@g")
 TOOLCHAIN_FILE_CMAKE_AMD64_MUSL=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-musl@g")
-TOOLCHAIN_FILE_CMAKE_ARMHF_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g")
+TOOLCHAIN_FILE_CMAKE_ARMHF_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@arm@g" | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g")
 
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-musl"
