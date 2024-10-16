@@ -13,7 +13,6 @@ ARG TARGETARCH
 
 ENV GOLANG_SDK="1.23.2"
 ENV GOLANG_SDK_ROOT="/opt/go"
-ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
@@ -24,7 +23,7 @@ trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
 mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 
 # https://telemetry.go.dev/
-go telemetry off
+${GOLANG_SDK_ROOT}/bin/go telemetry off
 # remove unused files...
 rm -rf -- ${GOLANG_SDK_ROOT}/test
 EOT
@@ -50,18 +49,50 @@ fi
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="/usr/bin/llvm-ar"
-export CGO_LDFLAGS="$(go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
+export CGO_LDFLAGS="$(${GOLANG_SDK_ROOT}/bin/go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
 export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
 export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
 export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
 
-exec go "$@"
+exec "${GOLANG_SDK_ROOT}/bin/go" "$@"
 
 EOF
 )
 echo -e "${CGOTOOL_WRPPER}" > "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"; chmod +x "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-gnu"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-musl"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-gnu"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-musl"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-gnu"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-musl"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-gnu"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-musl"
+EOT
+
+
+ENV PKG_ARCH=""
+ENV PKG_LIBC=""
+RUN <<EOT
+#!/usr/bin/env bash
+set -e
+
+CROSSGO_WRPPER=$(cat <<- 'EOF'
+#!/usr/bin/env bash
+set -e
+
+PKG_LIBC=${PKG_LIBC:-"gnu"}
+PKG_ARCH=${PKG_ARCH:-"$(${GOLANG_SDK_ROOT}/bin/go env GOARCH)"}
+case ${PKG_ARCH} in
+  "amd64")
+    TARGET_TRIPLE="x86_64-pc-linux-${PKG_LIBC}"
+    ;;
+  "arm64")
+    TARGET_TRIPLE="aarch64-unknown-linux-${PKG_LIBC}"
+    ;;
+  *)
+    printf "\e[1m\e[31m%s\e[0m\n" "Unsupported PKG_ARCH: '${PKG_ARCH}'."
+    exit 1
+    ;;
+esac
+
+exec "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${TARGET_TRIPLE}" "$@"
+EOF
+)
+echo -e "${CROSSGO_WRPPER}" > "/usr/local/bin/go"; chmod +x "/usr/local/bin/go"
 EOT
