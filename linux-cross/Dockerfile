@@ -10,5 +10,5 @@ RUN apt-get update -qq \
     xz-utils python3 python3-venv \
     binutils-aarch64-linux-gnu \
     binutils-x86-64-linux-gnu  \
-    binutils-aarch64-linux-gnu \
+    binutils-arm-linux-gnueabihf \
   && apt-get clean all -qqy
