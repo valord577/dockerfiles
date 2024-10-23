@@ -5,6 +5,10 @@ FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-  tree patchelf curl zip unzip xz-utils git nasm \
-  make python3 python3-venv cmake file autoconf \
+    file tree patchelf curl zip unzip \
+    autoconf git nasm make cmake \
+    xz-utils python3 python3-venv \
+    binutils-aarch64-linux-gnu \
+    binutils-x86-64-linux-gnu  \
+    binutils-aarch64-linux-gnu \
   && apt-get clean all -qqy
