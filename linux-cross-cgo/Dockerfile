@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="3e1f43e63fc1cde7fa92c69e7833015de4792624"
+ARG TOOLCHAIN_IMAGE_VERSION="c68126d669977033901b56c54022c0645b9cc0d8"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
 
 RUN apt-get update -qq \
@@ -11,7 +11,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.2"
+ENV GOLANG_SDK="1.23.3"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -20,7 +20,7 @@ set -e
 _GOLANG_SDK_URL_="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 curl --fail-with-body -sSL -o "gosdk.tar.gz" --url "${_GOLANG_SDK_URL_}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
-mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
+mkdir -p "${GOLANG_SDK_ROOT}" && tar xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 
 # https://telemetry.go.dev/
 ${GOLANG_SDK_ROOT}/bin/go telemetry off
@@ -49,9 +49,9 @@ fi
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="/usr/bin/llvm-ar"
-export CGO_LDFLAGS="$(${GOLANG_SDK_ROOT}/bin/go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
-export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
-export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT} --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot"
+export CGO_LDFLAGS="$(${GOLANG_SDK_ROOT}/bin/go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
+export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
+export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
 export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
 
 exec "${GOLANG_SDK_ROOT}/bin/go" "$@"
@@ -66,8 +66,7 @@ ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTO
 EOT
 
 
-ENV PKG_ARCH=""
-ENV PKG_LIBC=""
+
 RUN <<EOT
 #!/usr/bin/env bash
 set -e

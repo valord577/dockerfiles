@@ -1,14 +1,51 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="3e1f43e63fc1cde7fa92c69e7833015de4792624"
+ARG TOOLCHAIN_IMAGE_VERSION="c68126d669977033901b56c54022c0645b9cc0d8"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
 
+# Install Cmake
+ARG CMAKE_URL="https://cmake.org/files"
+ENV CMAKE_X="3"
+ENV CMAKE_Y="30"
+ENV CMAKE_Z="5"
+ENV CMAKE_ROOT="/opt/cmake"
+RUN <<EOT
+#!/usr/bin/env bash
+set -e
+
+_CMAKE_URL_="${CMAKE_URL}/v${CMAKE_X}.${CMAKE_Y}/cmake-${CMAKE_X}.${CMAKE_Y}.${CMAKE_Z}-linux-$(uname -m).tar.gz"
+curl --fail-with-body -sSL -o "1.tar.gz" --url "${_CMAKE_URL_}"
+trap 'rm -rf "1.tar.gz"' EXIT INT TERM
+mkdir -p "${CMAKE_ROOT}"; tar xf "1.tar.gz" -C "${CMAKE_ROOT}" --strip-components=1 --no-same-owner
+
+# remove unused files...
+rm -f "${CMAKE_ROOT}/bin/ccmake"
+rm -f "${CMAKE_ROOT}/bin/cmake-gui"
+
+rm -rf "${CMAKE_ROOT}/man"
+rm -rf "${CMAKE_ROOT}/doc"
+
+rm -rf "${CMAKE_ROOT}/share/aclocal"
+rm -rf "${CMAKE_ROOT}/share/applications"
+rm -rf "${CMAKE_ROOT}/share/bash-completion"
+rm -rf "${CMAKE_ROOT}/share/emacs"
+rm -rf "${CMAKE_ROOT}/share/icons"
+rm -rf "${CMAKE_ROOT}/share/mime"
+rm -rf "${CMAKE_ROOT}/share/vim"
+EOT
+ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
+
+
+RUN ln -sf /usr/bin/clang-cpp-14 /usr/local/bin/clang-cpp
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    file tree patchelf curl zip unzip \
-    autoconf git nasm make cmake \
-    xz-utils python3 python3-venv \
+    file tree patchelf curl zip unzip xz-utils \
     binutils-aarch64-linux-gnu \
     binutils-x86-64-linux-gnu  \
     binutils-arm-linux-gnueabihf \
+  && apt-get clean all -qqy
+
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    git nasm autoconf make python3 python3-venv \
   && apt-get clean all -qqy
