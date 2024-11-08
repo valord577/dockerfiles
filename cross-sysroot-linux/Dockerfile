@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="6a5d9b8db8c21b39d1655aa536d7566f5512e967"
+ARG TOOLCHAIN_IMAGE_VERSION="d5097a417437f2ef8c50c46f77bb19214dafcef8"
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-amd64-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-amd64-glibc
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-arm64-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-arm64-glibc
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-armhf-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-armhf-glibc
@@ -26,7 +26,7 @@ RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ENV CC="clang" CXX="clang++"
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
-  && apt-get install -qqy ccache clang llvm lld pkgconf-bin \
+  && apt-get install -qqy curl ccache clang llvm lld pkgconf-bin \
   && apt-get clean all -qqy
 
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
@@ -49,12 +49,8 @@ set -e
 basename="${0##*/}"
 triplet="${basename##pkgconf-wrapper\.}"
 
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/lib64"
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot/lib64"
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot/usr/lib64"
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr/lib"
 PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/lib"
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot/lib"
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/sysroot/usr/lib"
 export PKG_CONFIG_LIBDIR
 
 if command -v pkgconf >/dev/null 2>&1 ; then
@@ -83,17 +79,14 @@ set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR "__TARGET_ARCH__")
 set(CMAKE_CROSSCOMPILING TRUE)
 
-set(CROSS_ROOT "$ENV{CROSS_TOOLCHAIN_ROOT}")
 set(CROSS_TARGET_TRIPLE "__TARGET_TRIPLE__")
-set(CMAKE_C_COMPILER   "/usr/bin/clang"   "--target=${CROSS_TARGET_TRIPLE}" "--gcc-toolchain=${CROSS_ROOT}")
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++" "--target=${CROSS_TARGET_TRIPLE}" "--gcc-toolchain=${CROSS_ROOT}")
+set(CROSS_ROOT "$ENV{CROSS_TOOLCHAIN_ROOT}")
+set(CMAKE_SYSROOT "${CROSS_ROOT}/${CROSS_TARGET_TRIPLE}")
 
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=/usr/bin/ld.lld")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=/usr/bin/ld.lld")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=/usr/bin/ld.lld")
-#set(CMAKE_STATIC_LINKER_FLAGS_INIT "-fuse-ld=/usr/bin/ld.lld")
+set(CMAKE_C_COMPILER   "clang"   "--target=${CROSS_TARGET_TRIPLE}" "--gcc-toolchain=${CMAKE_SYSROOT}/usr" "__EXTRA_FLAGS__")
+set(CMAKE_CXX_COMPILER "clang++" "--target=${CROSS_TARGET_TRIPLE}" "--gcc-toolchain=${CMAKE_SYSROOT}/usr" "__EXTRA_FLAGS__")
+set(CMAKE_LINKER_TYPE  "LLD")
 
-set(CMAKE_SYSROOT "${CROSS_ROOT}/${CROSS_TARGET_TRIPLE}/sysroot")
 set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}" )
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -104,11 +97,32 @@ set(PKG_CONFIG_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/pkgconf-wrapper.${CROSS_TAR
 
 EOF
 )
-TOOLCHAIN_FILE_CMAKE_ARM64_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-gnu@g")
-TOOLCHAIN_FILE_CMAKE_ARM64_MUSL=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-musl@g")
-TOOLCHAIN_FILE_CMAKE_AMD64_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-gnu@g")
-TOOLCHAIN_FILE_CMAKE_AMD64_MUSL=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-musl@g")
-TOOLCHAIN_FILE_CMAKE_ARMHF_GNU=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s@__TARGET_ARCH__@arm@g" | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g")
+
+TOOLCHAIN_FILE_CMAKE_ARM64_GNU=$(
+  echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
+  sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-gnu@g" | \
+  sed "s@__EXTRA_FLAGS__@@g"
+)
+TOOLCHAIN_FILE_CMAKE_ARM64_MUSL=$(
+  echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
+  sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-musl@g" | \
+  sed "s@__EXTRA_FLAGS__@@g"
+)
+TOOLCHAIN_FILE_CMAKE_AMD64_GNU=$(
+  echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
+  sed "s@__TARGET_ARCH__@x86_64@g"  | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-gnu@g" | \
+  sed "s@__EXTRA_FLAGS__@@g"
+)
+TOOLCHAIN_FILE_CMAKE_AMD64_MUSL=$(
+  echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
+  sed "s@__TARGET_ARCH__@x86_64@g"  | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-musl@g" | \
+  sed "s@__EXTRA_FLAGS__@@g"
+)
+TOOLCHAIN_FILE_CMAKE_ARMHF_GNU=$(
+  echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
+  sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g" | \
+  sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4@g"
+)
 
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-musl"
@@ -126,8 +140,9 @@ TOOLCHAIN_FILE_MESON=$(cat <<- 'EOF'
 [constants]
 prefix = '/usr/bin'
 triple = '__TARGET_TRIPLE__'
-sys_root = '@DIRNAME@' / triple / 'sysroot'
-c_args = ['--target=' + triple, '--gcc-toolchain=@DIRNAME@', '--sysroot=' + sys_root]
+sys_root = '@DIRNAME@' / triple
+gcc_root = '@DIRNAME@' / triple / 'usr'
+c_args = ['--target=' + triple, '--gcc-toolchain=' + gcc_root, '--sysroot=' + sys_root, __EXTRA_FLAGS__]
 cpp_args = c_args + []
 
 [host_machine]
@@ -159,11 +174,32 @@ cpp_link_args = c_link_args + []
 
 EOF
 )
-TOOLCHAIN_FILE_MESON_ARM64_GNU=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-gnu@g")
-TOOLCHAIN_FILE_MESON_ARM64_MUSL=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-musl@g")
-TOOLCHAIN_FILE_MESON_AMD64_GNU=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-gnu@g")
-TOOLCHAIN_FILE_MESON_AMD64_MUSL=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s@__TARGET_ARCH__@x86_64@g" | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-musl@g")
-TOOLCHAIN_FILE_MESON_ARMHF_GNU=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s@__TARGET_ARCH__@arm@g" | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g")
+
+TOOLCHAIN_FILE_MESON_ARM64_GNU=$(
+  echo -e "${TOOLCHAIN_FILE_MESON}" | \
+  sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-gnu@g" | \
+  sed "s@__EXTRA_FLAGS__@''@g"
+)
+TOOLCHAIN_FILE_MESON_ARM64_MUSL=$(
+  echo -e "${TOOLCHAIN_FILE_MESON}" | \
+  sed "s@__TARGET_ARCH__@aarch64@g" | sed "s@__TARGET_TRIPLE__@aarch64-unknown-linux-musl@g" | \
+  sed "s@__EXTRA_FLAGS__@''@g"
+)
+TOOLCHAIN_FILE_MESON_AMD64_GNU=$(
+  echo -e "${TOOLCHAIN_FILE_MESON}" | \
+  sed "s@__TARGET_ARCH__@x86_64@g"  | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-gnu@g" | \
+  sed "s@__EXTRA_FLAGS__@''@g"
+)
+TOOLCHAIN_FILE_MESON_AMD64_MUSL=$(
+  echo -e "${TOOLCHAIN_FILE_MESON}" | \
+  sed "s@__TARGET_ARCH__@x86_64@g"  | sed "s@__TARGET_TRIPLE__@x86_64-pc-linux-musl@g" | \
+  sed "s@__EXTRA_FLAGS__@''@g"
+)
+TOOLCHAIN_FILE_MESON_ARMHF_GNU=$(
+  echo -e "${TOOLCHAIN_FILE_MESON}" | \
+  sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g" | \
+  sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4'@g"
+)
 
 echo -e "${TOOLCHAIN_FILE_MESON_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64-unknown-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_MESON_ARM64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64-unknown-linux-musl"
