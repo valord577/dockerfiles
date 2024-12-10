@@ -579,7 +579,7 @@ CT_GCC_PATCH_GLOBAL=y
 # CT_GCC_PATCH_LOCAL_BUNDLED is not set
 # CT_GCC_PATCH_NONE is not set
 CT_GCC_PATCH_ORDER="global"
-CT_GCC_V_13=y
+# CT_GCC_V_13 is not set
 # CT_GCC_V_12 is not set
 # CT_GCC_V_11 is not set
 # CT_GCC_V_10 is not set
@@ -588,36 +588,35 @@ CT_GCC_V_13=y
 # CT_GCC_V_7 is not set
 # CT_GCC_V_6 is not set
 # CT_GCC_V_5 is not set
-# CT_GCC_V_4_9 is not set
-CT_GCC_VERSION="13.2.0"
+CT_GCC_V_4_9=y
+CT_GCC_VERSION="4.9.4"
 CT_GCC_MIRRORS="$(CT_Mirrors GNU gcc/gcc-${CT_GCC_VERSION}) $(CT_Mirrors sourceware gcc/releases/gcc-${CT_GCC_VERSION})"
 CT_GCC_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_GCC_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_GCC_ARCHIVE_FORMATS=".tar.xz .tar.gz"
+CT_GCC_ARCHIVE_FORMATS=".tar.bz2 .tar.gz"
 CT_GCC_SIGNATURE_FORMAT=""
-CT_GCC_later_than_13=y
-CT_GCC_13_or_later=y
-CT_GCC_later_than_12=y
-CT_GCC_12_or_later=y
-CT_GCC_later_than_11=y
-CT_GCC_11_or_later=y
-CT_GCC_later_than_10=y
-CT_GCC_10_or_later=y
-CT_GCC_later_than_9=y
-CT_GCC_9_or_later=y
-CT_GCC_later_than_8=y
-CT_GCC_8_or_later=y
-CT_GCC_later_than_7=y
-CT_GCC_7_or_later=y
-CT_GCC_later_than_6=y
-CT_GCC_6_or_later=y
-CT_GCC_later_than_5=y
-CT_GCC_5_or_later=y
+CT_GCC_13_or_older=y
+CT_GCC_older_than_13=y
+CT_GCC_12_or_older=y
+CT_GCC_older_than_12=y
+CT_GCC_11_or_older=y
+CT_GCC_older_than_11=y
+CT_GCC_10_or_older=y
+CT_GCC_older_than_10=y
+CT_GCC_9_or_older=y
+CT_GCC_older_than_9=y
+CT_GCC_8_or_older=y
+CT_GCC_older_than_8=y
+CT_GCC_7_or_older=y
+CT_GCC_older_than_7=y
+CT_GCC_6_or_older=y
+CT_GCC_older_than_6=y
+CT_GCC_5_or_older=y
+CT_GCC_older_than_5=y
 CT_GCC_later_than_4_9=y
 CT_GCC_4_9_or_later=y
 CT_CC_GCC_ENABLE_PLUGINS=y
 CT_CC_GCC_GOLD=y
-CT_CC_GCC_HAS_LIBMPX=y
 CT_CC_GCC_ENABLE_CXX_FLAGS=""
 CT_CC_GCC_CORE_EXTRA_CONFIG_ARRAY=""
 CT_CC_GCC_EXTRA_CONFIG_ARRAY=""
@@ -630,26 +629,22 @@ CT_CC_GCC_CONFIG_TLS=m
 #
 CT_CC_GCC_USE_GRAPHITE=y
 CT_CC_GCC_USE_LTO=y
-CT_CC_GCC_LTO_ZSTD=m
 
 #
 # Settings for libraries running on target
 #
-# CT_CC_GCC_ENABLE_DEFAULT_PIE is not set
 # CT_CC_GCC_ENABLE_TARGET_OPTSPACE is not set
 # CT_CC_GCC_LIBMUDFLAP is not set
 # CT_CC_GCC_LIBGOMP is not set
 # CT_CC_GCC_LIBSSP is not set
 # CT_CC_GCC_LIBQUADMATH is not set
 # CT_CC_GCC_LIBSANITIZER is not set
-CT_CC_GCC_LIBMPX=y
 CT_CC_GCC_LIBSTDCXX_VERBOSE=m
 
 #
 # Misc. obscure options.
 #
 CT_CC_CXA_ATEXIT=y
-CT_CC_GCC_TM_CLONE_REGISTRY=m
 # CT_CC_GCC_DISABLE_PCH is not set
 CT_CC_GCC_SJLJ_EXCEPTIONS=m
 CT_CC_GCC_LDBL_128=m
@@ -694,7 +689,27 @@ CT_ALL_DEBUG_CHOICES="DUMA GDB LTRACE STRACE"
 # Companion libraries
 #
 # CT_COMPLIBS_CHECK is not set
-# CT_COMP_LIBS_CLOOG is not set
+CT_COMP_LIBS_CLOOG=y
+CT_COMP_LIBS_CLOOG_PKG_KSYM="CLOOG"
+CT_CLOOG_DIR_NAME="cloog"
+CT_CLOOG_PKG_NAME="cloog"
+CT_CLOOG_SRC_RELEASE=y
+# CT_CLOOG_SRC_DEVEL is not set
+# CT_CLOOG_SRC_CUSTOM is not set
+CT_CLOOG_PATCH_GLOBAL=y
+# CT_CLOOG_PATCH_BUNDLED is not set
+# CT_CLOOG_PATCH_LOCAL is not set
+# CT_CLOOG_PATCH_BUNDLED_LOCAL is not set
+# CT_CLOOG_PATCH_LOCAL_BUNDLED is not set
+# CT_CLOOG_PATCH_NONE is not set
+CT_CLOOG_PATCH_ORDER="global"
+CT_CLOOG_V_0_18_4=y
+CT_CLOOG_VERSION="0.18.4"
+CT_CLOOG_MIRRORS="http://www.bastoul.net/cloog/pages/download"
+CT_CLOOG_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
+CT_CLOOG_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
+CT_CLOOG_ARCHIVE_FORMATS=".tar.gz"
+CT_CLOOG_SIGNATURE_FORMAT=""
 CT_COMP_LIBS_EXPAT=y
 CT_COMP_LIBS_EXPAT_PKG_KSYM="EXPAT"
 CT_EXPAT_DIR_NAME="expat"
@@ -790,28 +805,18 @@ CT_ISL_PATCH_GLOBAL=y
 # CT_ISL_PATCH_LOCAL_BUNDLED is not set
 # CT_ISL_PATCH_NONE is not set
 CT_ISL_PATCH_ORDER="global"
-CT_ISL_V_0_26=y
-# CT_ISL_V_0_25 is not set
-# CT_ISL_V_0_24 is not set
-# CT_ISL_V_0_23 is not set
-# CT_ISL_V_0_22 is not set
-# CT_ISL_V_0_21 is not set
-# CT_ISL_V_0_20 is not set
-# CT_ISL_V_0_19 is not set
-# CT_ISL_V_0_18 is not set
-# CT_ISL_V_0_17 is not set
-# CT_ISL_V_0_16 is not set
-# CT_ISL_V_0_15 is not set
-CT_ISL_VERSION="0.26"
+CT_ISL_V_0_15=y
+CT_ISL_VERSION="0.15"
 CT_ISL_MIRRORS="https://libisl.sourceforge.io"
 CT_ISL_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_ISL_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
 CT_ISL_ARCHIVE_FORMATS=".tar.xz .tar.bz2 .tar.gz"
 CT_ISL_SIGNATURE_FORMAT=""
-CT_ISL_later_than_0_18=y
-CT_ISL_0_18_or_later=y
-CT_ISL_later_than_0_15=y
+CT_ISL_0_18_or_older=y
+CT_ISL_older_than_0_18=y
 CT_ISL_0_15_or_later=y
+CT_ISL_0_15_or_older=y
+CT_ISL_REQUIRE_0_15_or_older=y
 # CT_COMP_LIBS_LIBELF is not set
 CT_COMP_LIBS_LIBICONV=y
 CT_COMP_LIBS_LIBICONV_PKG_KSYM="LIBICONV"
@@ -961,6 +966,7 @@ CT_GETTEXT_NEEDED=y
 CT_GMP_NEEDED=y
 CT_MPFR_NEEDED=y
 CT_ISL_NEEDED=y
+CT_CLOOG_NEEDED=y
 CT_MPC_NEEDED=y
 CT_NCURSES_NEEDED=y
 CT_ZLIB_NEEDED=y
@@ -970,6 +976,7 @@ CT_GETTEXT=y
 CT_GMP=y
 CT_MPFR=y
 CT_ISL=y
+CT_CLOOG=y
 CT_MPC=y
 CT_NCURSES=y
 CT_ZLIB=y

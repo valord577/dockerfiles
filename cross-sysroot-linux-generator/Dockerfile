@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM debian:12.7 AS base
+FROM debian:12.8 AS base
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -41,7 +41,7 @@ export CXX='ccache g++'
 export PKG_CONFIG=$(command -v pkgconf)
 ./bootstrap
 ./configure --disable-rpath --disable-nls --enable-local
-make -j
+make -j $(nproc)
 EOT
 
 FROM crosstool-base AS ct-amd64-glibc
@@ -52,23 +52,18 @@ RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 ENV CROSS_TRIPLE="x86_64-pc-linux-gnu"
-RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
-  mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
-  rm -rf ./lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
-  rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
-RUN cd ${CT_PREFIX}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libitm.spec; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libstdc++.so*gdb.py; \
-  mv lib/gcc ${CROSS_TRIPLE}/sysroot/usr/lib; \
+RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
+  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
+  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
+  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
+  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
   rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/sysroot/usr/include; \
-  rm -rf lib ${CROSS_TRIPLE}/{include,lib,lib64}; \
-  mv ${CROSS_TRIPLE}/sysroot/** ${CROSS_TRIPLE}; rm -rf ${CROSS_TRIPLE}/sysroot;
+  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
 FROM base AS target-ct-amd64-glibc
 COPY --from=ct-amd64-glibc ${CT_PREFIX} .
 
@@ -80,23 +75,18 @@ RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 ENV CROSS_TRIPLE="aarch64-unknown-linux-gnu"
-RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
-  mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
-  rm -rf ./lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
-  rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
-RUN cd ${CT_PREFIX}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libitm.spec; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libstdc++.so*gdb.py; \
-  mv lib/gcc ${CROSS_TRIPLE}/sysroot/usr/lib; \
+RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
+  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
+  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
+  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
+  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
   rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/sysroot/usr/include; \
-  rm -rf lib ${CROSS_TRIPLE}/{include,lib,lib64}; \
-  mv ${CROSS_TRIPLE}/sysroot/** ${CROSS_TRIPLE}; rm -rf ${CROSS_TRIPLE}/sysroot;
+  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
 FROM base AS target-ct-arm64-glibc
 COPY --from=ct-arm64-glibc ${CT_PREFIX} .
 
@@ -108,23 +98,18 @@ RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 ENV CROSS_TRIPLE="arm-unknown-linux-gnueabihf"
-RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
-  mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
-  rm -rf ./lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
-  rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
-RUN cd ${CT_PREFIX}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libitm.spec; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libstdc++.so*gdb.py; \
-  mv lib/gcc ${CROSS_TRIPLE}/sysroot/usr/lib; \
+RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
+  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
+  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
+  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
+  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
   rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/sysroot/usr/include; \
-  rm -rf lib ${CROSS_TRIPLE}/{include,lib,lib64}; \
-  mv ${CROSS_TRIPLE}/sysroot/** ${CROSS_TRIPLE}; rm -rf ${CROSS_TRIPLE}/sysroot;
+  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
 FROM base AS target-ct-armhf-glibc
 COPY --from=ct-armhf-glibc ${CT_PREFIX} .
 
@@ -136,24 +121,18 @@ RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 ENV CROSS_TRIPLE="x86_64-pc-linux-musl"
-RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
-  mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
-  rm -rf ./lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
-  rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
-  rm -rf ${CROSS_TRIPLE}/lib/ldscripts; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
-RUN cd ${CT_PREFIX}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libitm.spec; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libstdc++.so*gdb.py; \
-  mv lib/gcc ${CROSS_TRIPLE}/sysroot/usr/lib; \
+RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
+  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
+  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
+  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
+  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
   rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/sysroot/usr/include; \
-  rm -rf lib ${CROSS_TRIPLE}/{include,lib,lib64}; \
-  mv ${CROSS_TRIPLE}/sysroot/** ${CROSS_TRIPLE}; rm -rf ${CROSS_TRIPLE}/sysroot;
+  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
 FROM base AS target-ct-amd64-musl
 COPY --from=ct-amd64-musl ${CT_PREFIX} .
 
@@ -165,23 +144,17 @@ RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 ENV CROSS_TRIPLE="aarch64-unknown-linux-musl"
-RUN cd ${CT_PREFIX}; mkdir lib; mv ${CROSS_TRIPLE} tmp; \
-  mv tmp/lib/gcc ./lib; mv tmp/${CROSS_TRIPLE} .; rm -rf tmp; \
-  rm -rf ./lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
-  rm -rf ${CROSS_TRIPLE}/{bin,debug-root}; \
-  rm -rf ${CROSS_TRIPLE}/lib/ldscripts; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/{etc,sbin,var}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/usr/{bin,libexec,sbin,share};
-RUN cd ${CT_PREFIX}; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libitm.spec; \
-  rm -rf ${CROSS_TRIPLE}/sysroot/lib/libstdc++.so*gdb.py; \
-  mv lib/gcc ${CROSS_TRIPLE}/sysroot/usr/lib; \
+RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
+  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
+  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
+  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
+  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/sysroot/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
+  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
   rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/sysroot/usr/include; \
-  rm -rf lib ${CROSS_TRIPLE}/{include,lib,lib64}; \
-  mv ${CROSS_TRIPLE}/sysroot/** ${CROSS_TRIPLE}; rm -rf ${CROSS_TRIPLE}/sysroot;
+  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
 FROM base AS target-ct-arm64-musl
 COPY --from=ct-arm64-musl ${CT_PREFIX} .
