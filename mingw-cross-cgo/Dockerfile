@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="7566c58c81be08eccef6e69a5f6e48fbf2c87b88"
+ARG TOOLCHAIN_IMAGE_VERSION="330f49f00ac847a3a294e68b52209827daf2bc1a"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
 RUN apt-get update -qq \
@@ -11,9 +11,8 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.2"
+ENV GOLANG_SDK="1.23.4"
 ENV GOLANG_SDK_ROOT="/opt/go"
-ENV PATH="${GOLANG_SDK_ROOT}/bin:${PATH}"
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
@@ -21,10 +20,10 @@ set -e
 _GOLANG_SDK_URL_="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
 curl --fail-with-body -sSL -o "gosdk.tar.gz" --url "${_GOLANG_SDK_URL_}"
 trap 'rm -rf "gosdk.tar.gz"' EXIT INT TERM
-mkdir -p "${GOLANG_SDK_ROOT}" && tar xvf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
+mkdir -p "${GOLANG_SDK_ROOT}" && tar xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner
 
 # https://telemetry.go.dev/
-go telemetry off
+${GOLANG_SDK_ROOT}/bin/go telemetry off
 # remove unused files...
 rm -rf -- ${GOLANG_SDK_ROOT}/test
 EOT
@@ -39,6 +38,11 @@ CGOTOOL_WRPPER=$(cat <<- 'EOF'
 #!/usr/bin/env bash
 set -e
 
+_go_exec_="${GOLANG_SDK_ROOT}/bin/go"
+# { command -v go >/dev/null 2>&1; } && \
+#   { _go_exec_="$(command -v go)"; }
+
+
 basename="${0##*/}"
 triplet="${basename##cgotool-wrapper\.}"
 
@@ -49,17 +53,19 @@ elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
 elif [[ "${triplet}" =~ ^i686.*$ ]]; then
   export GOARCH=386
 elif [[ "${triplet}" =~ ^armv7.*$ ]]; then
-  export GOARCH=arm
+  export GOARCH=arm; export GOARM='7,hardfloat'
+  __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4'
 fi
 
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-ar"
-export CC="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang"
-export CXX="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang++"
+export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=${CROSS_TOOLCHAIN_ROOT}/bin/ld.lld"
+export CC="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang ${__EXTRA_FLAGS__}"
+export CXX="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang++ ${__EXTRA_FLAGS__}"
 export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
 
-exec go "$@"
+exec "${_go_exec_}" "$@"
 
 EOF
 )
@@ -68,4 +74,44 @@ ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.i
 ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-w64-mingw32"
 ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.armv7-w64-mingw32"
 ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-w64-mingw32"
+EOT
+
+
+
+RUN <<EOT
+#!/usr/bin/env bash
+set -e
+
+CROSSGO_WRPPER=$(cat <<- 'EOF'
+#!/usr/bin/env bash
+set -e
+
+_go_exec_="${GOLANG_SDK_ROOT}/bin/go"
+# { command -v go >/dev/null 2>&1; } && \
+#   { _go_exec_="$(command -v go)"; }
+
+
+PKG_ARCH=${PKG_ARCH:-${CPU_ARCH:-"$(${_go_exec_} env GOARCH)"}}
+
+case ${PKG_ARCH} in
+  "amd64")
+    TARGET_TRIPLE="x86_64"
+    ;;
+  "arm64")
+    TARGET_TRIPLE="aarch64"
+    ;;
+  "armv7" | "arm")
+    TARGET_TRIPLE="armv7"
+    ;;
+  *)
+    printf "\e[1m\e[31m%s\e[0m\n" "Unsupported PKG_ARCH: '${PKG_ARCH}'."
+    exit 1
+    ;;
+esac
+
+exec "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${TARGET_TRIPLE}-w64-mingw32" "$@"
+
+EOF
+)
+echo -e "${CROSSGO_WRPPER}" > "/usr/local/bin/go"; chmod +x "/usr/local/bin/go"
 EOT
