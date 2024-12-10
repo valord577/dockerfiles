@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="c68126d669977033901b56c54022c0645b9cc0d8"
+ARG TOOLCHAIN_IMAGE_VERSION="bdaa1dd94dc4325f21280c29dd8a4ab08470d2cb"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
 
 RUN apt-get update -qq \
@@ -11,7 +11,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.3"
+ENV GOLANG_SDK="1.23.4"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -37,6 +37,11 @@ CGOTOOL_WRPPER=$(cat <<- 'EOF'
 #!/usr/bin/env bash
 set -e
 
+_go_exec_="${GOLANG_SDK_ROOT}/bin/go"
+# { command -v go >/dev/null 2>&1; } && \
+#   { _go_exec_="$(command -v go)"; }
+
+
 basename="${0##*/}"
 triplet="${basename##cgotool-wrapper\.}"
 
@@ -44,23 +49,27 @@ if [[ "${triplet}" =~ ^x86_64.*$ ]]; then
   export GOARCH=amd64; export GOAMD64=v3
 elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
   export GOARCH=arm64
+elif [[ "${triplet}" =~ ^arm.*$ ]]; then
+  export GOARCH=arm; export GOARM='7,hardfloat'
+  __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4'
 fi
 
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="/usr/bin/llvm-ar"
-export CGO_LDFLAGS="$(${GOLANG_SDK_ROOT}/bin/go env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
-export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
-export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
-export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
+export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
+export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet} ${__EXTRA_FLAGS__}"
+export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet} ${__EXTRA_FLAGS__}"
+export PKG_CONFIG="${CROSS_TOOLCHAIN_ROOT}/pkgconf-wrapper.${triplet}"
 
-exec "${GOLANG_SDK_ROOT}/bin/go" "$@"
+exec "${_go_exec_}" "$@"
 
 EOF
 )
 echo -e "${CGOTOOL_WRPPER}" > "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"; chmod +x "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-gnu"
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-unknown-linux-musl"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.arm-unknown-linux-gnueabihf"
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-gnu"
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_CGOTOOL_PREFIX})" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-pc-linux-musl"
 EOT
@@ -75,14 +84,24 @@ CROSSGO_WRPPER=$(cat <<- 'EOF'
 #!/usr/bin/env bash
 set -e
 
+_go_exec_="${GOLANG_SDK_ROOT}/bin/go"
+# { command -v go >/dev/null 2>&1; } && \
+#   { _go_exec_="$(command -v go)"; }
+
+
 PKG_LIBC=${PKG_LIBC:-"gnu"}
-PKG_ARCH=${PKG_ARCH:-"$(${GOLANG_SDK_ROOT}/bin/go env GOARCH)"}
+PKG_ARCH=${PKG_ARCH:-${CPU_ARCH:-"$(${_go_exec_} env GOARCH)"}}
+
+
 case ${PKG_ARCH} in
   "amd64")
     TARGET_TRIPLE="x86_64-pc-linux-${PKG_LIBC}"
     ;;
   "arm64")
     TARGET_TRIPLE="aarch64-unknown-linux-${PKG_LIBC}"
+    ;;
+  "armv7" | "arm")
+    TARGET_TRIPLE="arm-unknown-linux-gnueabihf"
     ;;
   *)
     printf "\e[1m\e[31m%s\e[0m\n" "Unsupported PKG_ARCH: '${PKG_ARCH}'."
@@ -91,6 +110,7 @@ case ${PKG_ARCH} in
 esac
 
 exec "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${TARGET_TRIPLE}" "$@"
+
 EOF
 )
 echo -e "${CROSSGO_WRPPER}" > "/usr/local/bin/go"; chmod +x "/usr/local/bin/go"

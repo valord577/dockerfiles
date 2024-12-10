@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="c68126d669977033901b56c54022c0645b9cc0d8"
+ARG TOOLCHAIN_IMAGE_VERSION="bdaa1dd94dc4325f21280c29dd8a4ab08470d2cb"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
 ARG CMAKE_URL="https://cmake.org/files"
 ENV CMAKE_X="3"
 ENV CMAKE_Y="30"
-ENV CMAKE_Z="5"
+ENV CMAKE_Z="6"
 ENV CMAKE_ROOT="/opt/cmake"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -47,5 +47,5 @@ RUN apt-get update -qq \
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    git nasm autoconf make python3 python3-venv \
+    git nasm make python3 python3-venv \
   && apt-get clean all -qqy
