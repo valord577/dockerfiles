@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM debian:12.7
+FROM debian:12.8
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -21,7 +21,7 @@ RUN apt-get update -qq \
   && apt-get clean all -qqy
 
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
-ARG MINGW_VERSION="20240619"
+ARG MINGW_VERSION="20241203"
 ARG MINGW_DEFAULT="ucrt-ubuntu-20.04"
 ENV MINGW_ROOT="/opt/llvm-mingw"
 ENV PATH="${MINGW_ROOT}/bin:${PATH}"
