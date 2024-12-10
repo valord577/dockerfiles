@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="d5097a417437f2ef8c50c46f77bb19214dafcef8"
+ARG TOOLCHAIN_IMAGE_VERSION="4def53b03cf792a2e7ac1c2de7d5bb09127cc790"
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-amd64-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-amd64-glibc
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-arm64-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-arm64-glibc
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-armhf-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-armhf-glibc
@@ -8,7 +8,7 @@ FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sys
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-arm64-musl:${TOOLCHAIN_IMAGE_VERSION} AS ct-arm64-musl
 
 
-FROM debian:12.7
+FROM debian:12.8
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
