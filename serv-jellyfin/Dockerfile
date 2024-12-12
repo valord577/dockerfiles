@@ -20,7 +20,7 @@ RUN apk update \
   && apk cache -f --no-interactive purge \
   && apk cache -f --no-interactive clean
 
-ARG _JELLYFIN_VER_="10.9.11"
+ARG _JELLYFIN_VER_="10.10.3"
 ARG _JELLYFIN_ROOT_="/opt"
 WORKDIR "${_JELLYFIN_ROOT_}"
 RUN <<EOT
