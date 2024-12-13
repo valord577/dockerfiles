@@ -34,6 +34,11 @@
 
   ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/jellyfin/tags)
 
+* [netatalk](serv-netatalk)
+  - Portable Netatalk
+
+  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/netatalk/tags)
+
 * [xcaddy](serv-xcaddy)
   - Portable Caddy Server with(out) Plugin(s)
 
