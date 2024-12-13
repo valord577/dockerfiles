@@ -24,9 +24,9 @@ RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-PYPI_MIRROR="-i https://mirrors.bfsu.edu.cn/pypi/web/simple"
-git config --global http.proxy http://192.168.1.241:8118
-git config --global https.proxy $(git config --global --get http.proxy)
+# PYPI_MIRROR="-i https://mirrors.bfsu.edu.cn/pypi/web/simple"
+# git config --global http.proxy http://192.168.1.241:8118
+# git config --global https.proxy $(git config --global --get http.proxy)
 git clone --no-checkout --single-branch --depth=1 \
   https://github.com/Netatalk/netatalk.git .
 git fetch --tags --prune --prune-tags --no-recurse-submodules --depth=1
