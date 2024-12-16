@@ -19,5 +19,9 @@ echo "${AFP_USR}:${AFP_PASS}" | chpasswd
 
 # fix permissions
 chmod 2775 /mnt; chown -R "${AFP_USR}:${AFP_GRP}" /mnt
+# remove lock files
+rm -f /var/lock/netatalk
+rm -f /var/lock/atalkd
+rm -f /var/lock/papd
 
 netatalk -d
