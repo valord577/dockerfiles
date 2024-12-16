@@ -81,6 +81,5 @@ RUN apk update \
   && apk cache -f --no-interactive purge \
   && apk cache -f --no-interactive clean
 COPY --from=builder /staging /
-COPY afp.conf /usr/local/etc/afp.conf
 COPY entrypoint.sh /entrypoint.sh
 CMD ["/entrypoint.sh"]
