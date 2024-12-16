@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
+if [ -z "${AFP_USER}" ]; then
+  AFP_USER="afpu"
+fi
 if [ -z "${AFP_PASS}" ]; then
-  printf "\e[1m\e[31m%s\e[0m\n" "Invalid AFP_PASS: '${AFP_PASS}'."
+  printf "\e[1m\e[31m%s\e[0m\n" "Required AFP_PASS: '${AFP_PASS}'."
   exit 1
 fi
 
-AFP_USR="afpu"
+
+AFP_USR="${AFP_USER}"
 AFP_GRP="afpg"
 
 if ! grep -e "^${AFP_USR}" /etc/passwd 2>&1 >/dev/null; then
