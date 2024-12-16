@@ -6,11 +6,18 @@ if [ -z "${AFP_PASS}" ]; then
   exit 1
 fi
 
-adduser -D -H afpu
-addgroup afpg; addgroup afpu afpg
-echo "afpu:${AFP_PASS}" | chpasswd
+AFP_USR="afpu"
+AFP_GRP="afpg"
+
+if ! grep -e "^${AFP_USR}" /etc/passwd 2>&1 >/dev/null; then
+  adduser -D -H ${AFP_USR}
+fi
+if ! grep -e "^${AFP_GRP}" /etc/group 2>&1 >/dev/null; then
+  addgroup ${AFP_GRP}; addgroup ${AFP_USR} ${AFP_GRP}
+fi
+echo "${AFP_USR}:${AFP_PASS}" | chpasswd
 
 # fix permissions
-chmod 2775 /mnt; chown -R "afpu:afpg" /mnt
+chmod 2775 /mnt; chown -R "${AFP_USR}:${AFP_GRP}" /mnt
 
 netatalk -d
