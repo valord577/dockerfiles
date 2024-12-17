@@ -7,7 +7,6 @@ on:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-netatalk.yml'
       - 'serv-netatalk/Dockerfile'
-      - 'serv-netatalk/afp.conf'
       - 'serv-netatalk/entrypoint.sh'
   pull_request:
     branches:
@@ -16,7 +15,6 @@ on:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-netatalk.yml'
       - 'serv-netatalk/Dockerfile'
-      - 'serv-netatalk/afp.conf'
       - 'serv-netatalk/entrypoint.sh'
 
 jobs:
