@@ -19,5 +19,6 @@ on:
 
 jobs:
   build:
+    if: ${{ false }}
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml

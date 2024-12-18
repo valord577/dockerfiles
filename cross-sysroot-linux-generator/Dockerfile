@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 FROM debian:12.8 AS base
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
@@ -36,16 +35,19 @@ set -e
 git clone --no-checkout --single-branch --depth=1 https://github.com/crosstool-ng/crosstool-ng.git .
 git fetch --tags --prune --prune-tags --no-recurse-submodules --depth=1; git checkout ${CT_TAG_NAME}
 
-export CC='ccache gcc'
-export CXX='ccache g++'
-export PKG_CONFIG=$(command -v pkgconf)
 ./bootstrap
 ./configure --disable-rpath --disable-nls --enable-local
 make -j $(nproc)
 EOT
 
+
+
+ARG SYSROOT_LINUX_HEADER_UAPI="310"
+ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
+
+
 FROM crosstool-base AS ct-amd64-glibc
-COPY ".config.linux.glibc217.amd64" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.glibc217.amd64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -68,7 +70,7 @@ FROM base AS target-ct-amd64-glibc
 COPY --from=ct-amd64-glibc ${CT_PREFIX} .
 
 FROM crosstool-base AS ct-arm64-glibc
-COPY ".config.linux.glibc217.arm64" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.glibc217.arm64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -91,7 +93,7 @@ FROM base AS target-ct-arm64-glibc
 COPY --from=ct-arm64-glibc ${CT_PREFIX} .
 
 FROM crosstool-base AS ct-armhf-glibc
-COPY ".config.linux.glibc217.armhf" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.glibc217.armhf" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -114,7 +116,7 @@ FROM base AS target-ct-armhf-glibc
 COPY --from=ct-armhf-glibc ${CT_PREFIX} .
 
 FROM crosstool-base AS ct-amd64-musl
-COPY ".config.linux.musl.amd64" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.musl.amd64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
@@ -137,7 +139,7 @@ FROM base AS target-ct-amd64-musl
 COPY --from=ct-amd64-musl ${CT_PREFIX} .
 
 FROM crosstool-base AS ct-arm64-musl
-COPY ".config.linux.musl.arm64" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.musl.arm64" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \

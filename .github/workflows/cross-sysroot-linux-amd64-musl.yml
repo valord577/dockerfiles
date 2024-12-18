@@ -23,4 +23,5 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       context: 'cross-sysroot-linux-generator'
+      latest: false
       target: 'target-ct-amd64-musl'
