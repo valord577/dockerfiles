@@ -18,8 +18,8 @@ on:
       - 'cross-sysroot-linux-generator/Dockerfile'
 
 env:
-  SYSROOT_LINUX_HEADER_UAPI=310
-  SYSROOT_LIBSTDCXX_GCC_VER=4
+  SYSROOT_LINUX_HEADER_UAPI: '310'
+  SYSROOT_LIBSTDCXX_GCC_VER: '4'
 
 jobs:
   target-ct-amd64-glibc:
