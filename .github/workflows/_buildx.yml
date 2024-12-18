@@ -67,6 +67,7 @@ jobs:
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSCODE }}
       - name: Build Image and Push
+        if: ${{ inputs.tagvers != '' }}
         uses: docker/build-push-action@v6
         with:
           pull: true
