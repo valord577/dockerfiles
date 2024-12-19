@@ -9,6 +9,5 @@ How to build
 ------
 
 ```shell
-export DOCKER_BUILDKIT=1
 docker build -t "linux-cross-cgo" .
 ```

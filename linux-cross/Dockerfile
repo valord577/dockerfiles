@@ -1,7 +1,8 @@
-# syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="bdaa1dd94dc4325f21280c29dd8a4ab08470d2cb"
-FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
+ARG SYSROOT_LINUX_HEADER_UAPI="310"
+ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
+ARG TOOLCHAIN_IMAGE_VERSION="latest"
+FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
 ARG CMAKE_URL="https://cmake.org/files"
@@ -36,16 +37,15 @@ EOT
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 
-RUN ln -sf /usr/bin/clang-cpp-14 /usr/local/bin/clang-cpp
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    file tree patchelf curl zip unzip xz-utils \
-    binutils-aarch64-linux-gnu \
-    binutils-x86-64-linux-gnu  \
+    binutils-aarch64-linux-gnu   \
+    binutils-x86-64-linux-gnu    \
     binutils-arm-linux-gnueabihf \
   && apt-get clean all -qqy
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
+    file tree patchelf curl zip unzip xz-utils \
     git nasm make python3 python3-venv \
   && apt-get clean all -qqy

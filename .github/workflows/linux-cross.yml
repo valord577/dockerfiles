@@ -16,9 +16,33 @@ on:
       - 'linux-cross/Dockerfile'
 
 jobs:
-  build:
-    if: ${{ false }}
+  linux310-gcc4:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: 'linux/amd64,linux/arm64'
+      tagname: 'linux310-gcc4-cross'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=4
+        TOOLCHAIN_IMAGE_VERSION=c270dc503668ca772ae6835ada98c77a802a1175
+  linux310-gcc7:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      platforms: 'linux/amd64,linux/arm64'
+      tagname: 'linux310-gcc7-cross'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=7
+        TOOLCHAIN_IMAGE_VERSION=c270dc503668ca772ae6835ada98c77a802a1175
+  linux419-gcc4:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      platforms: 'linux/amd64,linux/arm64'
+      tagname: 'linux419-gcc4-cross'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=419
+        SYSROOT_LIBSTDCXX_GCC_VER=4
+        TOOLCHAIN_IMAGE_VERSION=c270dc503668ca772ae6835ada98c77a802a1175

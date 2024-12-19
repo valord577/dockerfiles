@@ -3,12 +3,13 @@ linux-cross
 
 * C/Cpp Cross Toolchain for Linux
 * Push to `Docker Hub`
-  - [linux-cross](https://hub.docker.com/r/valord577/linux-cross/tags)
+  - [linux310-gcc4](https://hub.docker.com/r/valord577/linux310-gcc4-cross/tags)
+  - [linux310-gcc7](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)
+  - [linux419-gcc4](https://hub.docker.com/r/valord577/linux419-gcc4-cross/tags)
 
 How to build 
 ------
 
 ```shell
-export DOCKER_BUILDKIT=1
 docker build -t "linux-cross" .
 ```
