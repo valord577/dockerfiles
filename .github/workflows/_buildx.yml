@@ -78,8 +78,6 @@ jobs:
           build-args: ${{ inputs.build-args }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:${{ inputs.tagvers }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
       - name: Build Image and Push (latest)
         if: ${{ env._PUSH == 'true' && inputs.latest }}
         uses: docker/build-push-action@v6
