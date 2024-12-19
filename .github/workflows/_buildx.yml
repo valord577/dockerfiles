@@ -3,21 +3,29 @@ on:
   workflow_call:
     inputs:
       platforms:
-        default: linux/amd64
+        default: "linux/amd64"
         required: false
         type: string
       build-args:
-        default: ''
+        default: ""
         required: false
         type: string
       context:
-        default: ""
+        default: ${{ github.workflow }}
         required: false
         type: string
       tagname:
-        default: ""
+        default: ${{ github.workflow }}
         required: false
         type: string
+      tagvers:
+        default: ${{ github.sha }}
+        required: false
+        type: string
+      latest:
+        default: true
+        required: false
+        type: boolean
       target:
         default: ""
         required: false
@@ -46,32 +54,42 @@ jobs:
           version: latest
           platforms: ${{ inputs.platforms }}
       - name: Login to Docker Hub
+        if: ${{ env._PUSH == 'true' }}
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSCODE }}
       - name: Login to Aliyun ACR
+        if: ${{ env._PUSH == 'true' && inputs.latest }}
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_ALIYUN_ACR }}
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSCODE }}
-      - name: Parse _context_ / _tagname_
-        run: |
-          echo "_context_=${{ inputs.context == '' && github.workflow || inputs.context }}" >> $GITHUB_ENV
-          echo "_tagname_=${{ inputs.tagname == '' && github.workflow || inputs.tagname }}" >> $GITHUB_ENV
       - name: Build Image and Push
+        if: ${{ inputs.tagvers != '' }}
         uses: docker/build-push-action@v6
         with:
           pull: true
           push: ${{ env._PUSH }}
-          context: ${{ github.workspace }}/${{ env._context_ }}
+          context: ${{ github.workspace }}/${{ inputs.context }}
           target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}
           build-args: ${{ inputs.build-args }}
           tags: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:${{ github.sha }}
-            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ env._tagname_ }}:latest
+            ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:${{ inputs.tagvers }}
+      - name: Build Image and Push (latest)
+        if: ${{ env._PUSH == 'true' && inputs.latest }}
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: ${{ env._PUSH }}
+          context: ${{ github.workspace }}/${{ inputs.context }}
+          target: ${{ inputs.target }}
+          platforms: ${{ inputs.platforms }}
+          build-args: ${{ inputs.build-args }}
+          tags: |
+            ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:latest
+            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max

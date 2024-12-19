@@ -1,0 +1,75 @@
+name: cross-sysroot-linux310-gcc4
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/cross-sysroot-linux310-gcc4-generator.yml'
+      - 'cross-sysroot-linux-generator/.config.linux310.*'
+      - 'cross-sysroot-linux-generator/Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/cross-sysroot-linux310-gcc4-generator.yml'
+      - 'cross-sysroot-linux-generator/.config.linux310.*'
+      - 'cross-sysroot-linux-generator/Dockerfile'
+
+jobs:
+  target-ct-amd64-glibc:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      context: 'cross-sysroot-linux-generator'
+      tagvers: 'target-ct-amd64-glibc'
+      latest: false
+      target: 'target-ct-amd64-glibc'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=4
+  target-ct-arm64-glibc:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      context: 'cross-sysroot-linux-generator'
+      tagvers: 'target-ct-arm64-glibc'
+      latest: false
+      target: 'target-ct-arm64-glibc'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=4
+  target-ct-armhf-glibc:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      context: 'cross-sysroot-linux-generator'
+      tagvers: 'target-ct-armhf-glibc'
+      latest: false
+      target: 'target-ct-armhf-glibc'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=4
+  target-ct-amd64-musl:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      context: 'cross-sysroot-linux-generator'
+      tagvers: 'target-ct-amd64-musl'
+      latest: false
+      target: 'target-ct-amd64-musl'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=4
+  target-ct-arm64-musl:
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      context: 'cross-sysroot-linux-generator'
+      tagvers: 'target-ct-arm64-musl'
+      latest: false
+      target: 'target-ct-arm64-musl'
+      build-args: |
+        SYSROOT_LINUX_HEADER_UAPI=310
+        SYSROOT_LIBSTDCXX_GCC_VER=4
