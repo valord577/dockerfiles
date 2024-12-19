@@ -21,6 +21,7 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: 'linux/amd64,linux/arm64'
+      tagname: 'cross-sysroot-linux310-gcc4'
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=310
         SYSROOT_LIBSTDCXX_GCC_VER=4
@@ -29,6 +30,7 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: 'linux/amd64,linux/arm64'
+      tagname: 'cross-sysroot-linux310-gcc7'
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=310
         SYSROOT_LIBSTDCXX_GCC_VER=7
@@ -37,6 +39,7 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: 'linux/amd64,linux/arm64'
+      tagname: 'cross-sysroot-linux419-gcc4'
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=419
         SYSROOT_LIBSTDCXX_GCC_VER=4
