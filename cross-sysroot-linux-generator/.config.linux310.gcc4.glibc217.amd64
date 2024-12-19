@@ -126,7 +126,7 @@ CT_LOG_WARN=y
 # CT_LOG_ALL is not set
 # CT_LOG_DEBUG is not set
 CT_LOG_LEVEL_MAX="WARN"
-CT_LOG_SEE_TOOLS_WARN=y
+# CT_LOG_SEE_TOOLS_WARN is not set
 # CT_LOG_PROGRESS_BAR is not set
 # CT_LOG_TO_FILE is not set
 # end of Paths and misc options

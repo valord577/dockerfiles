@@ -101,7 +101,7 @@ RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 ENV CROSS_TRIPLE="arm-unknown-linux-gnueabihf"
 RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
-  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
+  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,usr} ${CROSS_TRIPLE}/; \
   rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
   rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
   mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
