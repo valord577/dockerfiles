@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 FROM alpine:3.20.3
 ENV TZ=UTC
 ENV XZ_OPT='--threads=0'
