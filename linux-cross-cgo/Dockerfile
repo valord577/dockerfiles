@@ -1,11 +1,12 @@
-# syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="bdaa1dd94dc4325f21280c29dd8a4ab08470d2cb"
-FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux:${TOOLCHAIN_IMAGE_VERSION}
+ARG SYSROOT_LINUX_HEADER_UAPI="310"
+ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
+ARG TOOLCHAIN_IMAGE_VERSION="latest"
+FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-  tree patchelf curl zip unzip xz-utils git file \
+    tree patchelf curl zip unzip xz-utils git file \
   && apt-get clean all -qqy
 
 ARG TARGETOS
@@ -56,8 +57,8 @@ fi
 
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
-export AR="/usr/bin/llvm-ar"
-export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=/usr/bin/ld.lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
+export AR="llvm-ar"
+export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=lld --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet}"
 export CC="clang --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet} ${__EXTRA_FLAGS__}"
 export CXX="clang++ --target=${triplet} --gcc-toolchain=${CROSS_TOOLCHAIN_ROOT}/${triplet}/usr --sysroot=${CROSS_TOOLCHAIN_ROOT}/${triplet} ${__EXTRA_FLAGS__}"
 export PKG_CONFIG="${CROSS_TOOLCHAIN_ROOT}/pkgconf-wrapper.${triplet}"
