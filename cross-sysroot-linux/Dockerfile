@@ -1,11 +1,10 @@
-# syntax=docker/dockerfile:1
-ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="4def53b03cf792a2e7ac1c2de7d5bb09127cc790"
-FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-amd64-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-amd64-glibc
-FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-arm64-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-arm64-glibc
-FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-armhf-gnu:${TOOLCHAIN_IMAGE_VERSION}  AS ct-armhf-glibc
-FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-amd64-musl:${TOOLCHAIN_IMAGE_VERSION} AS ct-amd64-musl
-FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux-arm64-musl:${TOOLCHAIN_IMAGE_VERSION} AS ct-arm64-musl
+ARG SYSROOT_LINUX_HEADER_UAPI="310"
+ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
+FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-amd64-glibc  AS ct-amd64-glibc
+FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-arm64-glibc  AS ct-arm64-glibc
+FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-armhf-glibc  AS ct-armhf-glibc
+FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-amd64-musl   AS ct-amd64-musl
+FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-arm64-musl   AS ct-arm64-musl
 
 
 FROM debian:12.8
@@ -23,10 +22,15 @@ RUN apt-get update -qq \
   && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
+
+ENV LLVM_TOOL_VERSION="16"
+ENV LLVM_TOOL_DIR="/usr/lib/llvm-${LLVM_TOOL_VERSION}"
+ENV PATH="${PATH}:${LLVM_TOOL_DIR}/bin"
 ENV CC="clang" CXX="clang++"
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
-  && apt-get install -qqy curl ccache clang llvm lld pkgconf-bin \
+  && apt-get install -qqy curl ccache pkgconf-bin \
+    clang-${LLVM_TOOL_VERSION} llvm-${LLVM_TOOL_VERSION} lld-${LLVM_TOOL_VERSION} \
   && apt-get clean all -qqy
 
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
@@ -138,7 +142,7 @@ set -e
 
 TOOLCHAIN_FILE_MESON=$(cat <<- 'EOF'
 [constants]
-prefix = '/usr/bin'
+prefix = ''
 triple = '__TARGET_TRIPLE__'
 sys_root = '@DIRNAME@' / triple
 gcc_root = '@DIRNAME@' / triple / 'usr'
@@ -169,7 +173,7 @@ pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
 cmake = 'cmake'
 
 [built-in options]
-c_link_args = ['-fuse-ld=' + prefix / 'ld.lld', '--sysroot=' + sys_root]
+c_link_args = ['-fuse-ld=lld', '--sysroot=' + sys_root]
 cpp_link_args = c_link_args + []
 
 EOF
