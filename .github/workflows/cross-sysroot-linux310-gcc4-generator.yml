@@ -24,10 +24,3 @@ jobs:
     with:
       SYSROOT_LINUX_HEADER_UAPI: "310"
       SYSROOT_LIBSTDCXX_GCC_VER: "4"
-      context: 'cross-sysroot-linux-generator'
-      tagvers: 'target-ct-amd64-glibc'
-      latest: false
-      target: 'target-ct-amd64-glibc'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=310
-        SYSROOT_LIBSTDCXX_GCC_VER=4
