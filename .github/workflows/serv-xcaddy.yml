@@ -23,3 +23,7 @@ jobs:
     with:
       platforms: 'linux/amd64,linux/arm64'
       tagname: 'xcaddy'
+    steps:
+      - name: Catch Cross SYSROOT Files
+        run: |
+          docker images

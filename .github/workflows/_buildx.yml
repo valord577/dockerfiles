@@ -22,6 +22,10 @@ on:
         default: ${{ github.sha }}
         required: false
         type: string
+      tagpush:
+        default: true
+        required: false
+        type: boolean
       latest:
         default: true
         required: false
@@ -39,11 +43,11 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}
     env:
-      _PUSH: false
+      _tagpush_checked_: false
     steps:
-      - name: Set ENV `_PUSH=true`
-        if: ${{ github.event_name == 'push' }}
-        run: echo "_PUSH=true" >> "$GITHUB_ENV"
+      - name: Set ENV `_tagpush_checked_=true`
+        if: ${{ github.event_name == 'push' && inputs.tagpush }}
+        run: echo "_tagpush_checked_=true" >> "$GITHUB_ENV"
       - name: Git Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -54,13 +58,13 @@ jobs:
           version: latest
           platforms: ${{ inputs.platforms }}
       - name: Login to Docker Hub
-        if: ${{ env._PUSH == 'true' }}
+        if: ${{ env._tagpush_checked_ == 'true' }}
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSCODE }}
       - name: Login to Aliyun ACR
-        if: ${{ env._PUSH == 'true' && inputs.latest }}
+        if: ${{ env._tagpush_checked_ == 'true' && inputs.latest }}
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_ALIYUN_ACR }}
@@ -71,7 +75,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           pull: true
-          push: ${{ env._PUSH }}
+          push: ${{ env._tagpush_checked_ }}
           context: ${{ github.workspace }}/${{ inputs.context }}
           target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}
@@ -79,11 +83,11 @@ jobs:
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:${{ inputs.tagvers }}
       - name: Build Image and Push (latest)
-        if: ${{ env._PUSH == 'true' && inputs.latest }}
+        if: ${{ env._tagpush_checked_ == 'true' && inputs.latest }}
         uses: docker/build-push-action@v6
         with:
           pull: true
-          push: ${{ env._PUSH }}
+          push: ${{ env._tagpush_checked_ }}
           context: ${{ github.workspace }}/${{ inputs.context }}
           target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}

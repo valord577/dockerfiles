@@ -17,6 +17,7 @@ on:
 
 jobs:
   linux310-gcc4:
+    if: ${{ false }}
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
