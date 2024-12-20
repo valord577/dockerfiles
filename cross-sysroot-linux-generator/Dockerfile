@@ -59,7 +59,7 @@ RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
   rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
   rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
   mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
   mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
@@ -82,7 +82,7 @@ RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
   rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
   rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
   mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
   mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
@@ -105,7 +105,7 @@ RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
   rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
   rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
   mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
   mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
@@ -128,7 +128,7 @@ RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
   rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
   rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
   mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
   mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
@@ -151,7 +151,7 @@ RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
   rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
   rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
   mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include-fixed,install-tools,plugin}; \
+  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
   mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
   cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
   mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
