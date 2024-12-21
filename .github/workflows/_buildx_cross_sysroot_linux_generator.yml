@@ -36,6 +36,7 @@ jobs:
         with:
           pull: true
           push: false
+          load: true
           context: cross-sysroot-linux-generator
           target: ${{ matrix.target }}
           build-args: |
