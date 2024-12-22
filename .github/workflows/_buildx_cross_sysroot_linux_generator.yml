@@ -9,6 +9,15 @@ on:
         required: true
         type: string
 
+env:
+  GH_TOKEN: ${{ github.token }}
+  GH_OSSUTIL_AK: ${{ secrets.GH_OSSUTIL_AK }}
+  GH_OSSUTIL_SK: ${{ secrets.GH_OSSUTIL_SK }}
+  GH_OSSUTIL_BUCKET: ${{ secrets.GH_OSSUTIL_BUCKET }}
+  GH_OSSUTIL_REGION: ${{ secrets.GH_OSSUTIL_REGION }}
+  GH_OSSUTIL_PKGS: ${{ secrets.GH_OSSUTIL_PKGS }}
+  GH_OSSUTIL_CNAME: ${{ secrets.GH_OSSUTIL_CNAME }}
+
 jobs:
   _buildx:
     strategy:
@@ -24,6 +33,8 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ github.workspace }}
+    env:
+      _archive_: crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}-${{ matrix.target }}
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -44,14 +55,22 @@ jobs:
             SYSROOT_LIBSTDCXX_GCC_VER=${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
           tags: |
             ${{ github.workflow }}:${{ github.sha }}
-      - name: Catch Cross Sysroot - ${{ matrix.target }}
+      - name: Catch Cross Sysroot
         run: |
           docker images
           docker create --name sysroot-gen ${{ github.workflow }}:${{ github.sha }}
           docker cp -a sysroot-gen:/crosstool .; docker rm sysroot-gen
-      - name: Push Cross Sysroot - ${{ matrix.target }}
+
+          # keep file permissions and case sensitivity
+          tar -cvf ${{ env._archive_ }}.tar crosstool
+      - name: Push Cross Sysroot
         uses: actions/upload-artifact@v4
         with:
-          name: crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}-${{ matrix.target }}
-          path: crosstool
+          name: ${{ env._archive_ }}
+          path: ${{ env._archive_ }}.tar
           if-no-files-found: error
+      - name: Commit to Pre-compiled Storage
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          zip -ry "${{ env._archive_ }}.zip" crosstool
+          ./.github/oss_v4.py push "${{ env._archive_ }}.zip" "${{ env._archive_ }}.zip"

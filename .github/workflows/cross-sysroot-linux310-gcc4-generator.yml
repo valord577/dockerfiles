@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/cross-sysroot-linux310-gcc4-generator.yml'
+      - '.github/oss_v4.py'
       - 'cross-sysroot-linux-generator/.config.linux310.*'
       - 'cross-sysroot-linux-generator/Dockerfile'
   pull_request:
@@ -14,6 +15,7 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/cross-sysroot-linux310-gcc4-generator.yml'
+      - '.github/oss_v4.py'
       - 'cross-sysroot-linux-generator/.config.linux310.*'
       - 'cross-sysroot-linux-generator/Dockerfile'
 
