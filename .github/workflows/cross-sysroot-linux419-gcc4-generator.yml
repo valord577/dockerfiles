@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/cross-sysroot-linux419-gcc4-generator.yml'
+      - '.github/oss_v4.py'
       - 'cross-sysroot-linux-generator/.config.linux419.*'
       - 'cross-sysroot-linux-generator/Dockerfile'
   pull_request:
@@ -14,62 +15,14 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/cross-sysroot-linux419-gcc4-generator.yml'
+      - '.github/oss_v4.py'
       - 'cross-sysroot-linux-generator/.config.linux419.*'
       - 'cross-sysroot-linux-generator/Dockerfile'
 
 jobs:
-  target-ct-amd64-glibc:
+  build:
     secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
+    uses: ./.github/workflows/_buildx_cross_sysroot_linux_generator.yml
     with:
-      context: 'cross-sysroot-linux-generator'
-      tagvers: 'target-ct-amd64-glibc'
-      latest: false
-      target: 'target-ct-amd64-glibc'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
-  target-ct-arm64-glibc:
-    secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
-    with:
-      context: 'cross-sysroot-linux-generator'
-      tagvers: 'target-ct-arm64-glibc'
-      latest: false
-      target: 'target-ct-arm64-glibc'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
-  target-ct-armhf-glibc:
-    secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
-    with:
-      context: 'cross-sysroot-linux-generator'
-      tagvers: 'target-ct-armhf-glibc'
-      latest: false
-      target: 'target-ct-armhf-glibc'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
-  target-ct-amd64-musl:
-    secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
-    with:
-      context: 'cross-sysroot-linux-generator'
-      tagvers: 'target-ct-amd64-musl'
-      latest: false
-      target: 'target-ct-amd64-musl'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
-  target-ct-arm64-musl:
-    secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
-    with:
-      context: 'cross-sysroot-linux-generator'
-      tagvers: 'target-ct-arm64-musl'
-      latest: false
-      target: 'target-ct-arm64-musl'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
+      SYSROOT_LINUX_HEADER_UAPI: "419"
+      SYSROOT_LIBSTDCXX_GCC_VER: "4"
