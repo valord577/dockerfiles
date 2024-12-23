@@ -1,45 +1,37 @@
 name: cross-sysroot-linux
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/_buildx_cross_sysroot_linux.yml'
       - '.github/workflows/cross-sysroot-linux.yml'
       - 'cross-sysroot-linux/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
-      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/_buildx_cross_sysroot_linux.yml'
       - '.github/workflows/cross-sysroot-linux.yml'
       - 'cross-sysroot-linux/Dockerfile'
 
 jobs:
   linux310-gcc4:
     secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
+    uses: ./.github/workflows/_buildx_cross_sysroot_linux.yml
     with:
-      platforms: 'linux/amd64,linux/arm64'
-      tagname: 'cross-sysroot-linux310-gcc4'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=310
-        SYSROOT_LIBSTDCXX_GCC_VER=4
+      SYSROOT_LINUX_HEADER_UAPI: "310"
+      SYSROOT_LIBSTDCXX_GCC_VER: "4"
   linux310-gcc7:
     secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
+    uses: ./.github/workflows/_buildx_cross_sysroot_linux.yml
     with:
-      platforms: 'linux/amd64,linux/arm64'
-      tagname: 'cross-sysroot-linux310-gcc7'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=310
-        SYSROOT_LIBSTDCXX_GCC_VER=7
+      SYSROOT_LINUX_HEADER_UAPI: "310"
+      SYSROOT_LIBSTDCXX_GCC_VER: "7"
   linux419-gcc4:
     secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
+    uses: ./.github/workflows/_buildx_cross_sysroot_linux.yml
     with:
-      platforms: 'linux/amd64,linux/arm64'
-      tagname: 'cross-sysroot-linux419-gcc4'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
+      SYSROOT_LINUX_HEADER_UAPI: "419"
+      SYSROOT_LIBSTDCXX_GCC_VER: "4"

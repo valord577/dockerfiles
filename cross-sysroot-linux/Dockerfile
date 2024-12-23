@@ -1,12 +1,3 @@
-ARG SYSROOT_LINUX_HEADER_UAPI="310"
-ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
-FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-amd64-glibc  AS ct-amd64-glibc
-FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-arm64-glibc  AS ct-arm64-glibc
-FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-armhf-glibc  AS ct-armhf-glibc
-FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-amd64-musl   AS ct-amd64-musl
-FROM --platform=${BUILDPLATFORM} valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:target-ct-arm64-musl   AS ct-arm64-musl
-
-
 FROM debian:12.8
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
@@ -33,13 +24,17 @@ RUN apt-get update -qq \
     clang-${LLVM_TOOL_VERSION} llvm-${LLVM_TOOL_VERSION} lld-${LLVM_TOOL_VERSION} \
   && apt-get clean all -qqy
 
+
+ARG SYSROOT_LINUX_HEADER_UAPI="310"
+ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
-COPY --from=ct-amd64-glibc ${CROSS_TOOLCHAIN_ROOT} .
-COPY --from=ct-arm64-glibc ${CROSS_TOOLCHAIN_ROOT} .
-COPY --from=ct-armhf-glibc ${CROSS_TOOLCHAIN_ROOT} .
-COPY --from=ct-amd64-musl  ${CROSS_TOOLCHAIN_ROOT} .
-COPY --from=ct-arm64-musl  ${CROSS_TOOLCHAIN_ROOT} .
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-glibc.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-glibc.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-armhf-glibc.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-musl.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-musl.tar.gz  /
+
 
 ENV CROSS_TOOLCHAIN_PKGCONF_PREFIX="${CROSS_TOOLCHAIN_ROOT}/pkgconf-wrapper"
 RUN <<EOT
@@ -91,7 +86,6 @@ set(CMAKE_C_COMPILER   "clang"   "--target=${CROSS_TARGET_TRIPLE}" "--gcc-toolch
 set(CMAKE_CXX_COMPILER "clang++" "--target=${CROSS_TARGET_TRIPLE}" "--gcc-toolchain=${CMAKE_SYSROOT}/usr" "__EXTRA_FLAGS__")
 set(CMAKE_LINKER_TYPE  "LLD")
 
-set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}" )
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
