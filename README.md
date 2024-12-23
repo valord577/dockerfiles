@@ -19,9 +19,9 @@
 * [linux-cross](linux-cross)
   - C/Cpp Cross Toolchain for Linux
 
-  ![s][Maintained] [![image][Linux310_GCC4]](https://hub.docker.com/r/valord577/linux-cross/tags)  
-  ![s][Maintained] [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux-cross/tags)  
-  ![s][Maintained] [![image][Linux419_GCC4]](https://hub.docker.com/r/valord577/linux-cross/tags)  
+  ![s][Maintained] [![image][Linux310_GCC4]](https://hub.docker.com/r/valord577/linux310-gcc4-cross/tags)  
+  ![s][Maintained] [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)  
+  ![s][Maintained] [![image][Linux419_GCC4]](https://hub.docker.com/r/valord577/linux419-gcc4-cross/tags)  
 
 <!--
 * [mingw-cross](mingw-cross)
