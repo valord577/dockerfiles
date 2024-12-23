@@ -4,7 +4,6 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/_buildx.yml'
       - '.github/workflows/_buildx_cross_sysroot_linux_generator.yml'
       - '.github/workflows/cross-sysroot-linux419-gcc4-generator.yml'
       - '.github/oss_v4.py'
@@ -14,7 +13,6 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/_buildx.yml'
       - '.github/workflows/_buildx_cross_sysroot_linux_generator.yml'
       - '.github/workflows/cross-sysroot-linux419-gcc4-generator.yml'
       - '.github/oss_v4.py'
