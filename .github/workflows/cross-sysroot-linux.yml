@@ -26,8 +26,6 @@ jobs:
     outputs:
       pkgver: ${{ steps.set-pkgver.outputs.pkgver }}
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
       - name: Set ENV `DOCKER_BUILD_VERSION`
         id: set-pkgver
         run: |
