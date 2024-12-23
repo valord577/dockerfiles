@@ -25,14 +25,15 @@ jobs:
         working-directory: ${{ github.workspace }}
     outputs:
       pkgver: ${{ steps.set-pkgver.outputs.pkgver }}
-    - name: Set ENV `DOCKER_BUILD_VERSION`
-      id: set-pkgver
-      run: |
-        _COMMIT_SHA_=${{ github.sha }}
+    steps:
+      - name: Set ENV `DOCKER_BUILD_VERSION`
+        id: set-pkgver
+        run: |
+          _COMMIT_SHA_=${{ github.sha }}
 
-        DOCKER_BUILD_VERSION="$(date -u '+%Y%m%dT%H%M%SZ' )-${_COMMIT_SHA_:0:7}"
-        printf "\e[1m\e[33m%s\e[0m\n" "DOCKER_BUILD_VERSION: $DOCKER_BUILD_VERSION"
-        echo "DOCKER_BUILD_VERSION=$DOCKER_BUILD_VERSION" >> "$GITHUB_OUTPUT"
+          DOCKER_BUILD_VERSION="$(date -u '+%Y%m%dT%H%M%SZ' )-${_COMMIT_SHA_:0:7}"
+          printf "\e[1m\e[33m%s\e[0m\n" "DOCKER_BUILD_VERSION: $DOCKER_BUILD_VERSION"
+          echo "DOCKER_BUILD_VERSION=$DOCKER_BUILD_VERSION" >> "$GITHUB_OUTPUT"
   linux310-gcc4:
     needs: _preset
     secrets: inherit
