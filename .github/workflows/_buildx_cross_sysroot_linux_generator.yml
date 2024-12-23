@@ -72,5 +72,5 @@ jobs:
       - name: Commit to Pre-compiled Storage
         if: ${{ github.event_name == 'push' }}
         run: |
-          zip -ry "${{ env._archive_ }}.zip" crosstool
-          ./.github/oss_v4.py push "${{ env._archive_ }}.zip" "${{ env._archive_ }}.zip"
+          tar -zcvf ${{ env._archive_ }}.tar.gz crosstool
+          ./.github/oss_v4.py push "${{ env._archive_ }}.tar.gz" "${{ env._archive_ }}.tar.gz"
