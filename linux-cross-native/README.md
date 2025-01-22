@@ -1,7 +1,7 @@
 linux-cross
 ------
 
-* C/Cpp Cross Toolchain for Linux
+* Cross Toolchain for Linux - Native
 
   [![image][Linux310_GCC4]](https://hub.docker.com/r/valord577/linux310-gcc4-cross/tags)  
   [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)  
