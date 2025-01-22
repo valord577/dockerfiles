@@ -1,4 +1,4 @@
-linux-cross
+linux-cross-native
 ------
 
 * Cross Toolchain for Linux - Native
@@ -11,7 +11,7 @@ How to build
 ------
 
 ```shell
-docker build -t "linux-cross" .
+docker build -t "linux-cross-native" .
 ```
 
 

@@ -1,6 +1,5 @@
-# syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="330f49f00ac847a3a294e68b52209827daf2bc1a"
+ARG TOOLCHAIN_IMAGE_VERSION="91c0455fb1f6035ff116deea896e8888c776b754"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
@@ -38,10 +37,11 @@ ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    file tree patchelf curl zip unzip xz-utils \
+    libc6-dev \
   && apt-get clean all -qqy
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
+    file tree patchelf curl zip unzip xz-utils \
     git nasm make python3 python3-venv \
   && apt-get clean all -qqy

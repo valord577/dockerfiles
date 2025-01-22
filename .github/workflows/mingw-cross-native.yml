@@ -1,23 +1,22 @@
-name: mingw-cross
+name: mingw-cross-native
 on:
   push:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/mingw-cross.yml'
-      - 'mingw-cross/Dockerfile'
+      - '.github/workflows/mingw-cross-native.yml'
+      - 'mingw-cross-native/Dockerfile'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/mingw-cross.yml'
-      - 'mingw-cross/Dockerfile'
+      - '.github/workflows/mingw-cross-native.yml'
+      - 'mingw-cross-native/Dockerfile'
 
 jobs:
   build:
-    if: ${{ false }}
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
