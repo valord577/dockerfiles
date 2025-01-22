@@ -12,12 +12,12 @@
 -->
 
 * [linux-cross-cgo](linux-cross-cgo)
-  - CGO Cross Toolchain for Linux
+  - Cross Toolchain for Linux - CGO
 
   ![s][Maintained] [![image][Linux310_GCC4_CGO]](https://hub.docker.com/r/valord577/linux-cross-cgo/tags)  
 
 * [linux-cross-native](linux-cross-native)
-  - C/Cpp Cross Toolchain for Linux
+  - Cross Toolchain for Linux - Native
 
   ![s][Maintained] [![image][Linux310_GCC4]](https://hub.docker.com/r/valord577/linux310-gcc4-cross/tags)  
   ![s][Maintained] [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)  

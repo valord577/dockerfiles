@@ -1,5 +1,4 @@
-# syntax=docker/dockerfile:1
-FROM debian:12.8
+FROM debian:12.9
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -14,14 +13,16 @@ RUN apt-get update -qq \
   && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
+
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    curl xz-utils pkgconf-bin \
+    curl ccache pkgconf-bin xz-utils \
   && apt-get clean all -qqy
 
+
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
-ARG MINGW_VERSION="20241203"
+ARG MINGW_VERSION="20250114"
 ARG MINGW_DEFAULT="ucrt-ubuntu-20.04"
 ENV MINGW_ROOT="/opt/llvm-mingw"
 ENV PATH="${MINGW_ROOT}/bin:${PATH}"
@@ -35,12 +36,28 @@ trap 'rm -f -- "1.tar.xz"' EXIT INT TERM
 mkdir -p "${MINGW_ROOT}" && tar -xvf "1.tar.xz" -C "${MINGW_ROOT}" --strip-components=1 --no-same-owner
 
 # remove unused files...
+rm -rf -- ${MINGW_ROOT}/i686-w64-mingw32
+rm -rf -- ${MINGW_ROOT}/armv7-w64-mingw32
+
+rm -rf -- ${MINGW_ROOT}/share
+rm -rf -- ${MINGW_ROOT}/**/share
+
+rm -rf -- ${MINGW_ROOT}/bin/analyze-build
 rm -rf -- ${MINGW_ROOT}/bin/clangd
 rm -rf -- ${MINGW_ROOT}/bin/clang-format
+rm -rf -- ${MINGW_ROOT}/bin/clang-tidy
+rm -rf -- ${MINGW_ROOT}/bin/git-clang-format
+rm -rf -- ${MINGW_ROOT}/bin/intercept-build
 rm -rf -- ${MINGW_ROOT}/bin/lldb*
+rm -rf -- ${MINGW_ROOT}/bin/run-clang-tidy
+rm -rf -- ${MINGW_ROOT}/bin/scan-build-py
+
+rm -rf -- ${MINGW_ROOT}/lib/libear
+rm -rf -- ${MINGW_ROOT}/lib/libscanbuild
 rm -rf -- ${MINGW_ROOT}/lib/liblldbIntelFeatures.so*
 rm -rf -- ${MINGW_ROOT}/lib/liblldb.so*
 EOT
+
 
 ENV CROSS_TOOLCHAIN_ROOT="${MINGW_ROOT}"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
@@ -56,9 +73,9 @@ set -e
 
 basename="${0##*/}"
 triplet="${basename##pkgconf-wrapper\.}"
+triplet="${triplet}-w64-mingw32"
 
 PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/${triplet}/lib"
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${CROSS_TOOLCHAIN_ROOT}/lib"
 export PKG_CONFIG_LIBDIR
 
 if command -v pkgconf >/dev/null 2>&1 ; then
@@ -70,10 +87,8 @@ fi
 EOF
 )
 echo -e "${PKGCONF_WRPPER}" > "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}"; chmod +x "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}"
-ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.aarch64-w64-mingw32"
-ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.armv7-w64-mingw32"
-ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.x86_64-w64-mingw32"
-ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.i686-w64-mingw32"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.x86_64"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.aarch64"
 EOT
 
 ENV CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE="${CROSS_TOOLCHAIN_ROOT}/toolchain-cmake-template"
@@ -88,29 +103,69 @@ set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR "__TARGET_ARCH__")
 set(CMAKE_CROSSCOMPILING TRUE)
 
-set(CROSS_ROOT "$ENV{CROSS_TOOLCHAIN_ROOT}")
 set(CROSS_TARGET_TRIPLE "__TARGET_ARCH__-w64-mingw32")
+set(CROSS_ROOT "$ENV{CROSS_TOOLCHAIN_ROOT}")
+set(CMAKE_SYSROOT "${CROSS_ROOT}/${CROSS_TARGET_TRIPLE}")
+
 set(CMAKE_C_COMPILER   "${CROSS_ROOT}/bin/${CROSS_TARGET_TRIPLE}-clang")
 set(CMAKE_CXX_COMPILER "${CROSS_ROOT}/bin/${CROSS_TARGET_TRIPLE}-clang++")
 set(CMAKE_RC_COMPILER  "${CROSS_ROOT}/bin/${CROSS_TARGET_TRIPLE}-windres")
 
-set(CMAKE_FIND_ROOT_PATH "${CROSS_ROOT}/${CROSS_TARGET_TRIPLE}")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-set(PKG_CONFIG_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/pkgconf-wrapper.${CROSS_TARGET_TRIPLE}" CACHE FILEPATH "pkgconf executable")
+set(PKG_CONFIG_EXECUTABLE "${CMAKE_CURRENT_LIST_DIR}/pkgconf-wrapper.__TARGET_ARCH__" CACHE FILEPATH "pkgconf executable")
 
 EOF
 )
-TOOLCHAIN_FILE_CMAKE_X86_32=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s#__TARGET_ARCH__#i686#g")
 TOOLCHAIN_FILE_CMAKE_X86_64=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s#__TARGET_ARCH__#x86_64#g")
-TOOLCHAIN_FILE_CMAKE_ARM_32=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s#__TARGET_ARCH__#armv7#g")
 TOOLCHAIN_FILE_CMAKE_ARM_64=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s#__TARGET_ARCH__#aarch64#g")
 
-echo -e "${TOOLCHAIN_FILE_CMAKE_X86_32}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.i686-w64-mingw32"
-echo -e "${TOOLCHAIN_FILE_CMAKE_X86_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64-w64-mingw32"
-echo -e "${TOOLCHAIN_FILE_CMAKE_ARM_32}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.armv7-w64-mingw32"
-echo -e "${TOOLCHAIN_FILE_CMAKE_ARM_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-w64-mingw32"
+echo -e "${TOOLCHAIN_FILE_CMAKE_X86_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64"
+echo -e "${TOOLCHAIN_FILE_CMAKE_ARM_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64"
+EOT
+
+ENV CROSS_TOOLCHAIN_FILE_PREFIX_MESON="${CROSS_TOOLCHAIN_ROOT}/toolchain-meson-template"
+RUN <<EOT
+#!/usr/bin/env bash
+set -e
+
+TOOLCHAIN_FILE_MESON=$(cat <<- 'EOF'
+[constants]
+prefix = '@DIRNAME@' / 'bin'
+triple = '__TARGET_ARCH__-w64-mingw32'
+
+[host_machine]
+system = 'windows'
+kernel = 'nt'
+cpu_family = '__TARGET_ARCH__'
+cpu = '__TARGET_ARCH__'
+endian = 'little'
+
+[properties]
+needs_exe_wrapper = false
+
+[binaries]
+c = ['ccache', prefix / triple + '-clang']
+cpp = ['ccache', prefix / triple + '-clang++']
+ar = prefix / triple + '-ar'
+as = prefix / triple + '-as'
+nm = prefix / triple + '-nm'
+ld = prefix / triple + '-ld'
+objcopy = prefix / triple + '-objcopy'
+strip =   prefix / triple + '-strip'
+ranlib =  prefix / triple + '-ranlib'
+pkg-config = '@DIRNAME@/pkgconf-wrapper.__TARGET_ARCH__'
+cmake = 'cmake'
+
+EOF
+)
+
+TOOLCHAIN_FILE_MESON_X86_64=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s#__TARGET_ARCH__#x86_64#g")
+TOOLCHAIN_FILE_MESON_ARM_64=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s#__TARGET_ARCH__#aarch64#g")
+
+echo -e "${TOOLCHAIN_FILE_MESON_X86_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.x86_64"
+echo -e "${TOOLCHAIN_FILE_MESON_ARM_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64"
 EOT

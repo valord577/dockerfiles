@@ -1,7 +1,7 @@
 linux-cross-cgo
 ------
 
-* CGO Cross Toolchain for Linux
+* Cross Toolchain for Linux - CGO
 
   [![image][Linux310_GCC4_CGO]](https://hub.docker.com/r/valord577/linux-cross-cgo/tags)  
 
