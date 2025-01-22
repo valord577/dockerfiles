@@ -23,12 +23,10 @@
   ![s][Maintained] [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)  
   ![s][Maintained] [![image][Linux419_GCC4]](https://hub.docker.com/r/valord577/linux419-gcc4-cross/tags)  
 
-<!--
 * [mingw-cross-cgo](mingw-cross-cgo)
-  - CGO Cross Toolchain for LLVM MinGW Based on [cross-sysroot-mingw](cross-sysroot-mingw)
+  - Cross Toolchain for LLVM MinGW - CGO
 
   ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-cgo/tags)
--->
 
 * [mingw-cross-native](mingw-cross-native)
   - Cross Toolchain for LLVM MinGW - Native

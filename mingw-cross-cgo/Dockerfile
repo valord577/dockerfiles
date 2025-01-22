@@ -1,6 +1,5 @@
-# syntax=docker/dockerfile:1
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="330f49f00ac847a3a294e68b52209827daf2bc1a"
+ARG TOOLCHAIN_IMAGE_VERSION="91c0455fb1f6035ff116deea896e8888c776b754"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
 RUN apt-get update -qq \
@@ -11,7 +10,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.4"
+ENV GOLANG_SDK="1.23.5"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -29,6 +28,7 @@ rm -rf -- ${GOLANG_SDK_ROOT}/test
 EOT
 ENV GOOS=windows
 
+
 ENV CROSS_TOOLCHAIN_CGOTOOL_PREFIX="${CROSS_TOOLCHAIN_ROOT}/bin/cgotool-wrapper"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -44,36 +44,30 @@ _go_exec_="${GOLANG_SDK_ROOT}/bin/go"
 
 
 basename="${0##*/}"
-triplet="${basename##cgotool-wrapper\.}"
+triplet_arch="${basename##cgotool-wrapper\.}"
+triplet="${triplet_arch}-w64-mingw32"
 
 if [[ "${triplet}" =~ ^x86_64.*$ ]]; then
   export GOARCH=amd64; export GOAMD64=v3
 elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
   export GOARCH=arm64
-elif [[ "${triplet}" =~ ^i686.*$ ]]; then
-  export GOARCH=386
-elif [[ "${triplet}" =~ ^armv7.*$ ]]; then
-  export GOARCH=arm; export GOARM='7,hardfloat'
-  __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4'
 fi
 
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-ar"
-export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=${CROSS_TOOLCHAIN_ROOT}/bin/ld.lld"
-export CC="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang ${__EXTRA_FLAGS__}"
-export CXX="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang++ ${__EXTRA_FLAGS__}"
-export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet}"
+export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-ld"
+export CC="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang"
+export CXX="${CROSS_TOOLCHAIN_ROOT}/bin/${triplet}-clang++"
+export PKG_CONFIG="${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.${triplet_arch}"
 
 exec "${_go_exec_}" "$@"
 
 EOF
 )
 echo -e "${CGOTOOL_WRPPER}" > "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"; chmod +x "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.i686-w64-mingw32"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64-w64-mingw32"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.armv7-w64-mingw32"
-ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64-w64-mingw32"
+ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.x86_64"
+ln -sfn "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}" "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.aarch64"
 EOT
 
 
@@ -100,16 +94,13 @@ case ${PKG_ARCH} in
   "arm64")
     TARGET_TRIPLE="aarch64"
     ;;
-  "armv7" | "arm")
-    TARGET_TRIPLE="armv7"
-    ;;
   *)
     printf "\e[1m\e[31m%s\e[0m\n" "Unsupported PKG_ARCH: '${PKG_ARCH}'."
     exit 1
     ;;
 esac
 
-exec "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${TARGET_TRIPLE}-w64-mingw32" "$@"
+exec "${CROSS_TOOLCHAIN_CGOTOOL_PREFIX}.${TARGET_TRIPLE}" "$@"
 
 EOF
 )

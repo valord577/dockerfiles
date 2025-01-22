@@ -12,7 +12,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.23.4"
+ENV GOLANG_SDK="1.23.5"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -28,6 +28,7 @@ ${GOLANG_SDK_ROOT}/bin/go telemetry off
 # remove unused files...
 rm -rf -- ${GOLANG_SDK_ROOT}/test
 EOT
+
 
 ENV CROSS_TOOLCHAIN_CGOTOOL_PREFIX="${CROSS_TOOLCHAIN_ROOT}/cgotool-wrapper"
 RUN <<EOT
