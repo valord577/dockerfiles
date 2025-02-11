@@ -3,9 +3,9 @@ cross-sysroot-linux
 
 * Cross Toolchain Mixed Sysroot Files for Linux
 
-  [![image][Linux310_GCC4]](https://hub.docker.com/r/valord577/linux310-gcc4-cross/tags)  
-  [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)  
-  [![image][Linux419_GCC4]](https://hub.docker.com/r/valord577/linux419-gcc4-cross/tags)  
+  [![image][Linux310_GCC4]](https://hub.docker.com/r/valord577/cross-sysroot-linux310-gcc4/tags)  
+  [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/cross-sysroot-linux310-gcc7/tags)  
+  [![image][Linux419_GCC4]](https://hub.docker.com/r/valord577/cross-sysroot-linux419-gcc4/tags)  
 
 How to build 
 ------
