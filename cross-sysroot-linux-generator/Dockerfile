@@ -1,4 +1,4 @@
-FROM debian:12.8 AS base
+FROM debian:12 AS base
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -26,14 +26,17 @@ RUN apt-get update -qq \
   make libtool-bin python3 bison libncurses-dev ccache \
   && apt-get clean all -qqy
 
-ENV CT_TAG_NAME="crosstool-ng-1.26.0"
+ENV CT_TAG_NAME="crosstool-ng-1.27.0"
 ENV CT_LOCAL_TARBALLS_DIR="${CROSS_TOOLCHAIN_ROOT}/src"
 RUN <<EOT
 #!/usr/bin/env bash
 set -e
 
-git clone --no-checkout --single-branch --depth=1 https://github.com/crosstool-ng/crosstool-ng.git .
-git fetch --tags --prune --prune-tags --no-recurse-submodules --depth=1; git checkout ${CT_TAG_NAME}
+git config --global --add safe.directory "*"
+git init
+git remote add x https://github.com/crosstool-ng/crosstool-ng.git
+git fetch --no-tags --prune --no-recurse-submodules --depth=1 x +refs/tags/${CT_TAG_NAME}
+git checkout FETCH_HEAD
 
 ./bootstrap
 ./configure --disable-rpath --disable-nls --enable-local

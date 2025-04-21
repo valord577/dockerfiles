@@ -11,12 +11,11 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
-  GH_OSSUTIL_AK: ${{ secrets.GH_OSSUTIL_AK }}
-  GH_OSSUTIL_SK: ${{ secrets.GH_OSSUTIL_SK }}
-  GH_OSSUTIL_BUCKET: ${{ secrets.GH_OSSUTIL_BUCKET }}
-  GH_OSSUTIL_REGION: ${{ secrets.GH_OSSUTIL_REGION }}
-  GH_OSSUTIL_PKGS: ${{ secrets.GH_OSSUTIL_PKGS }}
-  GH_OSSUTIL_CNAME: ${{ secrets.GH_OSSUTIL_CNAME }}
+  S3_R2_ACCOUNT_ID: ${{ secrets.S3_R2_ACCOUNT_ID }}
+  S3_R2_ACCESS_KEY: ${{ secrets.S3_R2_ACCESS_KEY }}
+  S3_R2_SECRET_KEY: ${{ secrets.S3_R2_SECRET_KEY }}
+  S3_R2_STORAGE_BUCKET: ${{ secrets.S3_R2_STORAGE_BUCKET }}
+  S3_R2_STORAGE_REGION: ${{ secrets.S3_R2_STORAGE_REGION }}
 
 jobs:
   _buildx:
@@ -36,13 +35,22 @@ jobs:
     env:
       _archive_: crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}-${{ matrix.target }}
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-      - name: Set up Docker Buildx
+      - name: clone source
+        run: |
+          git config --global --add safe.directory "*"
+
+          git init
+          git remote add x ${{github.server_url}}/${{ github.repository }}.git
+          git fetch --no-tags --prune --no-recurse-submodules --depth=1 x +${{ github.sha }}
+          git checkout FETCH_HEAD
+      - name: setup rclone for s3 (cloudflare r2)
+        run: |
+          ./.github/rclone.py
+      - name: setup docker buildx
         uses: docker/setup-buildx-action@v3
         with:
           version: latest
-      - name: Build Cross Sysroot - ${{ matrix.target }}
+      - name: cross sysroot build - ${{ matrix.target }}
         uses: docker/build-push-action@v6
         with:
           pull: true
@@ -55,7 +63,7 @@ jobs:
             SYSROOT_LIBSTDCXX_GCC_VER=${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
           tags: |
             ${{ github.workflow }}:${{ github.sha }}
-      - name: Catch Cross Sysroot
+      - name: cross sysroot catch
         run: |
           docker images
           docker create --name sysroot-gen ${{ github.workflow }}:${{ github.sha }}
@@ -63,14 +71,14 @@ jobs:
 
           # keep file permissions and case sensitivity
           tar -cvf ${{ env._archive_ }}.tar crosstool
-      - name: Push Cross Sysroot
+      - name: cross sysroot upload
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env._archive_ }}
           path: ${{ env._archive_ }}.tar
           if-no-files-found: error
-      - name: Commit to Pre-compiled Storage
+      - name: commit to pre-compiled storage
         if: ${{ github.event_name == 'push' }}
         run: |
           tar -zcvf ${{ env._archive_ }}.tar.gz crosstool
-          ./.github/oss_v4.py push "${{ env._archive_ }}.tar.gz" "${{ env._archive_ }}.tar.gz"
+          ./.github/rclone copy "${{ env._archive_ }}.tar.gz" "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/"
