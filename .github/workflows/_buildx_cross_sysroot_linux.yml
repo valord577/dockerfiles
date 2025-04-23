@@ -14,12 +14,11 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
-  GH_OSSUTIL_AK: ${{ secrets.GH_OSSUTIL_AK }}
-  GH_OSSUTIL_SK: ${{ secrets.GH_OSSUTIL_SK }}
-  GH_OSSUTIL_BUCKET: ${{ secrets.GH_OSSUTIL_BUCKET }}
-  GH_OSSUTIL_REGION: ${{ secrets.GH_OSSUTIL_REGION }}
-  GH_OSSUTIL_PKGS: ${{ secrets.GH_OSSUTIL_PKGS }}
-  GH_OSSUTIL_CNAME: ${{ secrets.GH_OSSUTIL_CNAME }}
+  S3_R2_ACCOUNT_ID: ${{ secrets.S3_R2_ACCOUNT_ID }}
+  S3_R2_ACCESS_KEY: ${{ secrets.S3_R2_ACCESS_KEY }}
+  S3_R2_SECRET_KEY: ${{ secrets.S3_R2_SECRET_KEY }}
+  S3_R2_STORAGE_BUCKET: ${{ secrets.S3_R2_STORAGE_BUCKET }}
+  S3_R2_STORAGE_REGION: ${{ secrets.S3_R2_STORAGE_REGION }}
 
 jobs:
   _buildx:
@@ -32,42 +31,51 @@ jobs:
       _PUSH: false
       _image_name_: cross-sysroot-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
     steps:
-      - name: Set ENV `_PUSH=true`
+      - name: set env `_PUSH=true`
         if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         run: echo "_PUSH=true" >> "$GITHUB_ENV"
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-      - name: Set up Docker QEMU
+      - name: clone source
+        run: |
+          git config --global --add safe.directory "*"
+
+          git init
+          git remote add x ${{github.server_url}}/${{ github.repository }}.git
+          git fetch --no-tags --prune --no-recurse-submodules --depth=1 x +${{ github.sha }}
+          git checkout FETCH_HEAD
+      - name: setup rclone for s3 (cloudflare r2)
+        run: |
+          ./.github/rclone.py
+      - name: setup docker qemu
         uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
+      - name: setup docker buildx
         uses: docker/setup-buildx-action@v3
         with:
           version: latest
           platforms: linux/amd64,linux/arm64
-      - name: Login to Docker Hub
+      - name: login to `Docker Hub`
         if: ${{ env._PUSH == 'true' }}
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSCODE }}
-      - name: Login to Aliyun ACR
+      - name: login to `Aliyun ACR`
         if: ${{ env._PUSH == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_ALIYUN_ACR }}
           username: ${{ secrets.ALIYUN_ACR_USERNAME }}
           password: ${{ secrets.ALIYUN_ACR_PASSCODE }}
-      - name: Pull Cross Sysroot
+      - name: cross sysroot pull...
         working-directory: ${{ github.workspace }}/cross-sysroot-linux
         run: |
           _archive_prefix_="crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}"
 
-          ${{ github.workspace }}/.github/oss_v4.py pull "${_archive_prefix_}-target-ct-amd64-glibc.tar.gz" "${_archive_prefix_}-target-ct-amd64-glibc.tar.gz"
-          ${{ github.workspace }}/.github/oss_v4.py pull "${_archive_prefix_}-target-ct-arm64-glibc.tar.gz" "${_archive_prefix_}-target-ct-arm64-glibc.tar.gz"
-          ${{ github.workspace }}/.github/oss_v4.py pull "${_archive_prefix_}-target-ct-armhf-glibc.tar.gz" "${_archive_prefix_}-target-ct-armhf-glibc.tar.gz"
-          ${{ github.workspace }}/.github/oss_v4.py pull "${_archive_prefix_}-target-ct-amd64-musl.tar.gz"  "${_archive_prefix_}-target-ct-amd64-musl.tar.gz"
-          ${{ github.workspace }}/.github/oss_v4.py pull "${_archive_prefix_}-target-ct-arm64-musl.tar.gz"  "${_archive_prefix_}-target-ct-arm64-musl.tar.gz"
-      - name: Build Image and Push
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-amd64-glibc.tar.gz" "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-arm64-glibc.tar.gz" "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-armhf-glibc.tar.gz" "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-amd64-musl.tar.gz"  "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-arm64-musl.tar.gz"  "."
+      - name: build image and push[${{ env._PUSH }}]
         uses: docker/build-push-action@v6
         with:
           pull: true

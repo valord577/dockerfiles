@@ -26,7 +26,7 @@ jobs:
     outputs:
       pkgver: ${{ steps.set-pkgver.outputs.pkgver }}
     steps:
-      - name: Set ENV `DOCKER_BUILD_VERSION`
+      - name: set env `DOCKER_BUILD_VERSION`
         id: set-pkgver
         run: |
           DOCKER_BUILD_VERSION="$(date -u '+%Y%m%dT%H%M%SZ' )-${GITHUB_SHA:0:7}"
