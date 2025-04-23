@@ -1,4 +1,4 @@
-FROM debian:12.8
+FROM debian:12
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
