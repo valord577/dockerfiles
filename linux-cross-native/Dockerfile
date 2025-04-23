@@ -1,14 +1,14 @@
 ARG CONTAINER_REGISTRY_PREFIX
 ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
-ARG TOOLCHAIN_IMAGE_VERSION="20241223T061436Z-02a231a"
+ARG TOOLCHAIN_IMAGE_VERSION="20250423T082928Z-962b083"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
 ARG CMAKE_URL="https://cmake.org/files"
 ENV CMAKE_X="3"
 ENV CMAKE_Y="30"
-ENV CMAKE_Z="6"
+ENV CMAKE_Z="8"
 ENV CMAKE_ROOT="/opt/cmake"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -37,15 +37,9 @@ EOT
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 
-RUN apt-get update -qq \
+RUN apt-get update -qq    \
   && apt-get install -qqy \
-    binutils-aarch64-linux-gnu   \
-    binutils-x86-64-linux-gnu    \
-    binutils-arm-linux-gnueabihf \
-  && apt-get clean all -qqy
-
-RUN apt-get update -qq \
-  && apt-get install -qqy \
-    file tree patchelf curl zip unzip xz-utils \
+    file tree patchelf curl \
+    zip unzip xz-utils \
     git nasm make python3 python3-venv \
   && apt-get clean all -qqy
