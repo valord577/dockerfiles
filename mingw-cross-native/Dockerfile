@@ -1,12 +1,12 @@
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="91c0455fb1f6035ff116deea896e8888c776b754"
+ARG TOOLCHAIN_IMAGE_VERSION="908b71b2c95c01591ed1093f98bad84cd0d531a0"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
 ARG CMAKE_URL="https://cmake.org/files"
 ENV CMAKE_X="3"
 ENV CMAKE_Y="30"
-ENV CMAKE_Z="6"
+ENV CMAKE_Z="8"
 ENV CMAKE_ROOT="/opt/cmake"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -35,13 +35,17 @@ EOT
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 
-RUN apt-get update -qq \
+RUN apt-get update -qq    \
   && apt-get install -qqy \
-    libc6-dev \
+    file tree patchelf curl \
+    zip unzip xz-utils \
+    git nasm make python3 python3-venv \
   && apt-get clean all -qqy
 
+# required for host tools
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    file tree patchelf curl zip unzip xz-utils \
-    git nasm make python3 python3-venv \
+    libc6-dev binutils \
+    libgcc-12-dev \
+    libstdc++-12-dev \
   && apt-get clean all -qqy
