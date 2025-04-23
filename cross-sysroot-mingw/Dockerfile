@@ -1,4 +1,4 @@
-FROM debian:12.9
+FROM debian:12
 SHELL ["/bin/bash", "-c"]
 ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
@@ -42,6 +42,15 @@ rm -rf -- ${MINGW_ROOT}/armv7-w64-mingw32
 rm -rf -- ${MINGW_ROOT}/share
 rm -rf -- ${MINGW_ROOT}/**/share
 
+rm -rf -- ${MINGW_ROOT}/generic-w64-mingw32/include/**/*.idl
+
+rm -rf -- ${MINGW_ROOT}/bin/i686-w64-mingw32*
+rm -rf -- ${MINGW_ROOT}/bin/i686-w64-windows-gnu.cfg
+rm -rf -- ${MINGW_ROOT}/bin/armv7-w64-mingw32*
+rm -rf -- ${MINGW_ROOT}/bin/armv7-w64-windows-gnu.cfg
+rm -rf -- ${MINGW_ROOT}/bin/x86_64-w64-mingw32uwp*
+rm -rf -- ${MINGW_ROOT}/bin/aarch64-w64-mingw32uwp*
+rm -rf -- ${MINGW_ROOT}/bin/analyze-build
 rm -rf -- ${MINGW_ROOT}/bin/analyze-build
 rm -rf -- ${MINGW_ROOT}/bin/clangd
 rm -rf -- ${MINGW_ROOT}/bin/clang-format
@@ -51,6 +60,10 @@ rm -rf -- ${MINGW_ROOT}/bin/intercept-build
 rm -rf -- ${MINGW_ROOT}/bin/lldb*
 rm -rf -- ${MINGW_ROOT}/bin/run-clang-tidy
 rm -rf -- ${MINGW_ROOT}/bin/scan-build-py
+rm -rf -- ${MINGW_ROOT}/bin/*-widl
+rm -rf -- ${MINGW_ROOT}/bin/*clang-scan-deps
+rm -rf -- ${MINGW_ROOT}/bin/clang-scan-deps-wrapper
+rm -rf -- ${MINGW_ROOT}/bin/clang-target-wrapper
 
 rm -rf -- ${MINGW_ROOT}/lib/libear
 rm -rf -- ${MINGW_ROOT}/lib/libscanbuild
@@ -124,7 +137,9 @@ TOOLCHAIN_FILE_CMAKE_X86_64=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s#__TARGE
 TOOLCHAIN_FILE_CMAKE_ARM_64=$(echo -e "${TOOLCHAIN_FILE_CMAKE}" | sed "s#__TARGET_ARCH__#aarch64#g")
 
 echo -e "${TOOLCHAIN_FILE_CMAKE_X86_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64)"  "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.amd64"
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64)" "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.arm64"
 EOT
 
 ENV CROSS_TOOLCHAIN_FILE_PREFIX_MESON="${CROSS_TOOLCHAIN_ROOT}/toolchain-meson-template"
@@ -167,5 +182,7 @@ TOOLCHAIN_FILE_MESON_X86_64=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s#__TARGE
 TOOLCHAIN_FILE_MESON_ARM_64=$(echo -e "${TOOLCHAIN_FILE_MESON}" | sed "s#__TARGET_ARCH__#aarch64#g")
 
 echo -e "${TOOLCHAIN_FILE_MESON_X86_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.x86_64"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.x86_64)"  "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.amd64"
 echo -e "${TOOLCHAIN_FILE_MESON_ARM_64}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64)" "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.arm64"
 EOT
