@@ -4,7 +4,7 @@ FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-  tree patchelf curl zip unzip xz-utils git file \
+    tree patchelf curl zip unzip xz-utils git file python3 \
   && apt-get clean all -qqy
 
 ARG TARGETOS
@@ -29,7 +29,7 @@ EOT
 ENV GOOS=windows
 
 
-ENV CROSS_TOOLCHAIN_CGOTOOL_PREFIX="${CROSS_TOOLCHAIN_ROOT}/bin/cgotool-wrapper"
+ENV CROSS_TOOLCHAIN_CGOTOOL_PREFIX="${CROSS_TOOLCHAIN_ROOT}/cgotool-wrapper"
 RUN <<EOT
 #!/usr/bin/env bash
 set -e

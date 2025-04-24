@@ -6,7 +6,7 @@ FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HE
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    tree patchelf curl zip unzip xz-utils git file \
+    tree patchelf curl zip unzip xz-utils git file python3 \
   && apt-get clean all -qqy
 
 ARG TARGETOS
