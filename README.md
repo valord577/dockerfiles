@@ -4,13 +4,6 @@
 
 #### Available Images
 
-<!--
-* [cgo-openwrt-mt7622](cgo-openwrt-mt7622)
-  - CGO Toolchain for OpenWRT MediaTek/MT7622
-
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/cgo-openwrt-mt7622/tags)
--->
-
 * [linux-cross-cgo](linux-cross-cgo)
   - Cross Toolchain for Linux - CGO
 
