@@ -4,10 +4,10 @@ ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
 ARG TOOLCHAIN_IMAGE_VERSION="20250423T082928Z-962b083"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
-RUN apt-get update -qq \
-  && apt-get install -qqy \
+RUN apt update -qq \
+  && apt install -qqy \
     tree patchelf curl zip unzip xz-utils git file python3 \
-  && apt-get clean all -qqy
+  && apt clean all -qqy
 
 ARG TARGETOS
 ARG TARGETARCH

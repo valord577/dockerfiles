@@ -8,9 +8,9 @@ RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
-RUN apt-get update -qq \
-  && apt-get install -qqy tzdata ca-certificates \
-  && apt-get clean all -qqy
+RUN apt update -qq \
+  && apt install -qqy tzdata ca-certificates \
+  && apt clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 
@@ -19,10 +19,10 @@ ENV LLVM_TOOL_DIR="/usr/lib/llvm-${LLVM_TOOL_VERSION}"
 ENV PATH="${PATH}:${LLVM_TOOL_DIR}/bin"
 ENV CC="clang" CXX="clang++"
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
-RUN apt-get update -qq \
-  && apt-get install -qqy curl ccache pkgconf-bin \
+RUN apt update -qq \
+  && apt install -qqy curl ccache pkgconf-bin \
     clang-${LLVM_TOOL_VERSION} llvm-${LLVM_TOOL_VERSION} lld-${LLVM_TOOL_VERSION} \
-  && apt-get clean all -qqy
+  && apt clean all -qqy
 
 
 ARG SYSROOT_LINUX_HEADER_UAPI="310"

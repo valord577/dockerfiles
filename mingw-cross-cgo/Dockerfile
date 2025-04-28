@@ -2,10 +2,10 @@ ARG CONTAINER_REGISTRY_PREFIX
 ARG TOOLCHAIN_IMAGE_VERSION="908b71b2c95c01591ed1093f98bad84cd0d531a0"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
-RUN apt-get update -qq \
-  && apt-get install -qqy \
+RUN apt update -qq \
+  && apt install -qqy \
     tree patchelf curl zip unzip xz-utils git file python3 \
-  && apt-get clean all -qqy
+  && apt clean all -qqy
 
 ARG TARGETOS
 ARG TARGETARCH

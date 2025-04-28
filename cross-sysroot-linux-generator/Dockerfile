@@ -8,9 +8,9 @@ RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
-RUN apt-get update -qq \
-  && apt-get install -qqy tzdata ca-certificates \
-  && apt-get clean all -qqy
+RUN apt update -qq \
+  && apt install -qqy tzdata ca-certificates \
+  && apt clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
@@ -19,12 +19,12 @@ ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
 
 FROM base AS crosstool-base
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
-RUN apt-get update -qq \
-  && apt-get install -qqy \
-  curl unzip xz-utils git pkgconf-bin autoconf automake \
-  gcc g++ flex texinfo bzip2 help2man file patch gawk \
-  make libtool-bin python3 bison libncurses-dev ccache \
-  && apt-get clean all -qqy
+RUN apt update -qq \
+  && apt install -qqy \
+    curl unzip xz-utils git pkgconf-bin autoconf automake \
+    gcc g++ flex texinfo bzip2 help2man file patch gawk \
+    make libtool-bin python3 bison libncurses-dev ccache \
+  && apt clean all -qqy
 
 ENV CT_TAG_NAME="crosstool-ng-1.27.0"
 ENV CT_LOCAL_TARBALLS_DIR="${CROSS_TOOLCHAIN_ROOT}/src"

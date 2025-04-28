@@ -37,9 +37,9 @@ EOT
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 
-RUN apt-get update -qq    \
-  && apt-get install -qqy \
+RUN apt update -qq    \
+  && apt install -qqy \
     file tree patchelf curl \
     zip unzip xz-utils \
     git nasm make python3 python3-venv \
-  && apt-get clean all -qqy
+  && apt clean all -qqy
