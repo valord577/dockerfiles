@@ -66,8 +66,9 @@ jobs:
       - name: cross sysroot catch
         run: |
           docker images
-          docker create --name sysroot-gen ${{ github.workflow }}:${{ github.sha }}
-          docker cp -a sysroot-gen:/crosstool .; docker rm sysroot-gen
+          docker create --name extractor \
+            ${{ github.workflow }}:${{ github.sha }}
+          docker cp -a extractor:/crosstool .; docker rm extractor
 
           # keep file permissions and case sensitivity
           tar -cvf ${{ env._archive_ }}.tar crosstool
