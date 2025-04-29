@@ -52,7 +52,7 @@ ENV SYSROOT_TARGET_ARCH="${SYSROOT_TARGET_ARCH}"
 ARG SYSROOT_TARGET_LIBC="gnu"
 ENV SYSROOT_TARGET_LIBC="${SYSROOT_TARGET_LIBC}"
 
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}.ini" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \

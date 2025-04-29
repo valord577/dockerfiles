@@ -8,7 +8,7 @@ on:
       - '.github/rclone.py'
       - '.github/workflows/_buildx_cross_sysroot_linux_generator.yml'
       - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
-      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*'
+      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
       - 'cross-sysroot-linux-generator/Dockerfile'
   pull_request:
     branches:
@@ -18,7 +18,7 @@ on:
       - '.github/rclone.py'
       - '.github/workflows/_buildx_cross_sysroot_linux_generator.yml'
       - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
-      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*'
+      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
       - 'cross-sysroot-linux-generator/Dockerfile'
 
 jobs:
