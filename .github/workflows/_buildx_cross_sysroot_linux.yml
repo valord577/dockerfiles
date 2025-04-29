@@ -70,11 +70,12 @@ jobs:
         run: |
           _archive_prefix_="crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}"
 
-          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-amd64-glibc.tar.gz" "."
-          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-arm64-glibc.tar.gz" "."
-          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-armhf-glibc.tar.gz" "."
-          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-amd64-musl.tar.gz"  "."
-          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-arm64-musl.tar.gz"  "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-amd64-gnu.tar.gz"  "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-arm64-gnu.tar.gz"  "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-armhf-gnu.tar.gz"  "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-amd64-musl.tar.gz" "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-arm64-musl.tar.gz" "."
+          ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-ct-armhf-musl.tar.gz" "."
       - name: build image and push[${{ env._PUSH }}]
         uses: docker/build-push-action@v6
         with:

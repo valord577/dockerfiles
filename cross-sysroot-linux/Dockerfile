@@ -20,7 +20,7 @@ ENV PATH="${PATH}:${LLVM_TOOL_DIR}/bin"
 ENV CC="clang" CXX="clang++"
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt update -qq \
-  && apt install -qqy curl ccache pkgconf-bin \
+  && apt install -qqy curl pkgconf-bin \
     clang-${LLVM_TOOL_VERSION} llvm-${LLVM_TOOL_VERSION} lld-${LLVM_TOOL_VERSION} \
   && apt clean all -qqy
 
@@ -29,11 +29,12 @@ ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-glibc.tar.gz /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-glibc.tar.gz /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-armhf-glibc.tar.gz /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-musl.tar.gz  /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-musl.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-gnu.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-gnu.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-armhf-gnu.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-musl.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-musl.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-armhf-musl.tar.gz /
 
 
 ENV CROSS_TOOLCHAIN_PKGCONF_PREFIX="${CROSS_TOOLCHAIN_ROOT}/pkgconf-wrapper"
@@ -66,6 +67,7 @@ ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCO
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.x86_64-pc-linux-gnu"
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.x86_64-pc-linux-musl"
 ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.arm-unknown-linux-gnueabihf"
+ln -sfn "$(basename ${CROSS_TOOLCHAIN_PKGCONF_PREFIX})" "${CROSS_TOOLCHAIN_PKGCONF_PREFIX}.arm-unknown-linux-musleabihf"
 EOT
 
 ENV CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE="${CROSS_TOOLCHAIN_ROOT}/toolchain-cmake-template"
@@ -121,12 +123,18 @@ TOOLCHAIN_FILE_CMAKE_ARMHF_GNU=$(
   sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g" | \
   sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4@g"
 )
+TOOLCHAIN_FILE_CMAKE_ARMHF_MUSL=$(
+  echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
+  sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-musleabihf@g" | \
+  sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4@g"
+)
 
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-musl"
 echo -e "${TOOLCHAIN_FILE_CMAKE_AMD64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64-pc-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_CMAKE_AMD64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.x86_64-pc-linux-musl"
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARMHF_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.arm-unknown-linux-gnueabihf"
+echo -e "${TOOLCHAIN_FILE_CMAKE_ARMHF_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.arm-unknown-linux-musleabihf"
 EOT
 
 ENV CROSS_TOOLCHAIN_FILE_PREFIX_MESON="${CROSS_TOOLCHAIN_ROOT}/toolchain-meson-template"
@@ -198,10 +206,16 @@ TOOLCHAIN_FILE_MESON_ARMHF_GNU=$(
   sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g" | \
   sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4'@g"
 )
+TOOLCHAIN_FILE_MESON_ARMHF_MUSL=$(
+  echo -e "${TOOLCHAIN_FILE_MESON}" | \
+  sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-musleabihf@g" | \
+  sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4'@g"
+)
 
 echo -e "${TOOLCHAIN_FILE_MESON_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64-unknown-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_MESON_ARM64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64-unknown-linux-musl"
 echo -e "${TOOLCHAIN_FILE_MESON_AMD64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.x86_64-pc-linux-gnu"
 echo -e "${TOOLCHAIN_FILE_MESON_AMD64_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.x86_64-pc-linux-musl"
 echo -e "${TOOLCHAIN_FILE_MESON_ARMHF_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.arm-unknown-linux-gnueabihf"
+echo -e "${TOOLCHAIN_FILE_MESON_ARMHF_MUSL}" > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.arm-unknown-linux-musleabihf"
 EOT
