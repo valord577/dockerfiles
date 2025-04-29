@@ -21,19 +21,20 @@ jobs:
   _buildx:
     strategy:
       matrix:
-        include:
-          - target: target-ct-amd64-glibc
-          - target: target-ct-arm64-glibc
-          - target: target-ct-armhf-glibc
-          - target: target-ct-amd64-musl
-          - target: target-ct-arm64-musl
+        arch:
+          - amd64
+          - arm64
+          - armhf
+        libc:
+          - musl
+          - gnu
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
         working-directory: ${{ github.workspace }}
     env:
-      _archive_: crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}-${{ matrix.target }}
+      _archive_: crosstool-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}-target-${{ matrix.arch }}-${{ matrix.libc }}
     steps:
       - name: clone source
         run: |
@@ -50,17 +51,18 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           version: latest
-      - name: cross sysroot build - ${{ matrix.target }}
+      - name: cross sysroot build - ${{ matrix.arch }}/${{ matrix.libc }}
         uses: docker/build-push-action@v6
         with:
           pull: true
           push: false
           load: true
           context: cross-sysroot-linux-generator
-          target: ${{ matrix.target }}
           build-args: |
             SYSROOT_LINUX_HEADER_UAPI=${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}
             SYSROOT_LIBSTDCXX_GCC_VER=${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
+            SYSROOT_TARGET_ARCH=${{ matrix.arch }}
+            SYSROOT_TARGET_LIBC=${{ matrix.libc }}
           tags: |
             ${{ github.workflow }}:${{ github.sha }}
       - name: cross sysroot catch
