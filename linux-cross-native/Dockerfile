@@ -1,7 +1,7 @@
 ARG CONTAINER_REGISTRY_PREFIX
 ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
-ARG TOOLCHAIN_IMAGE_VERSION="20250423T082928Z-962b083"
+ARG TOOLCHAIN_IMAGE_VERSION="20250429T054011Z-332045c"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
@@ -39,7 +39,7 @@ ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 RUN apt update -qq    \
   && apt install -qqy \
-    file tree patchelf curl \
-    zip unzip xz-utils \
+    file tree patchelf curl   \
+    zip unzip xz-utils ccache \
     git nasm make python3 python3-venv \
   && apt clean all -qqy
