@@ -17,7 +17,7 @@ RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt update -qq \
   && apt install -qqy \
-    curl ccache pkgconf-bin xz-utils \
+    curl pkgconf-bin xz-utils \
   && apt clean all -qqy
 
 
