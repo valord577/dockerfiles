@@ -12,6 +12,11 @@ mkdir -p ${CROSS_TRIPLE}/usr
 mv tmp/${CROSS_TRIPLE}/sysroot/lib ${SYSROOT}/
 mv tmp/${CROSS_TRIPLE}/sysroot/usr/{include,lib} ${SYSROOT}/usr/
 rm -f ${SYSROOT}/lib/libstdc++.so*gdb.py;
+if [[ "${CROSS_TRIPLE}" =~ ^x86_64.*$ ]] \
+  || [[ "${CROSS_TRIPLE}" =~ ^aarch64.*$ ]]; then
+  { pushd "${SYSROOT}/";     ln -sfn lib lib64; popd; }
+  { pushd "${SYSROOT}/usr/"; ln -sfn lib lib64; popd; }
+fi
 
 mv tmp/lib/gcc ${SYSROOT}/usr/lib/
 rm -rf ${SYSROOT}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}
