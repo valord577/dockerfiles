@@ -51,14 +51,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           version: latest
-      - name: cross sysroot build - ${{ matrix.target }}
+      - name: cross sysroot build - ${{ matrix.arch }}/${{ matrix.libc }}
         uses: docker/build-push-action@v6
         with:
           pull: true
           push: false
           load: true
           context: cross-sysroot-linux-generator
-          target: ${{ matrix.target }}
           build-args: |
             SYSROOT_LINUX_HEADER_UAPI=${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}
             SYSROOT_LIBSTDCXX_GCC_VER=${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
