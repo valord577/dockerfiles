@@ -10,6 +10,7 @@ on:
       - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
       - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
       - 'cross-sysroot-linux-generator/Dockerfile'
+      - 'cross-sysroot-linux-generator/organize_sysroot.sh'
   pull_request:
     branches:
       - main
@@ -20,6 +21,7 @@ on:
       - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
       - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
       - 'cross-sysroot-linux-generator/Dockerfile'
+      - 'cross-sysroot-linux-generator/organize_sysroot.sh'
 
 jobs:
   build:
