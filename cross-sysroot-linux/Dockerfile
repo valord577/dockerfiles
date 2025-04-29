@@ -29,12 +29,12 @@ ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-gnu.tar.gz  /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-gnu.tar.gz  /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-armhf-gnu.tar.gz  /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-amd64-musl.tar.gz /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-arm64-musl.tar.gz /
-ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-ct-armhf-musl.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-amd64-gnu.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-arm64-gnu.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-armhf-gnu.tar.gz  /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-amd64-musl.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-arm64-musl.tar.gz /
+ADD crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-armhf-musl.tar.gz /
 
 
 ENV CROSS_TOOLCHAIN_PKGCONF_PREFIX="${CROSS_TOOLCHAIN_ROOT}/pkgconf-wrapper"
