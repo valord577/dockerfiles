@@ -17,7 +17,7 @@ WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
 ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
 
 
-FROM base AS crosstool-base
+FROM base AS crosstool-ng
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt update -qq \
   && apt install -qqy \
@@ -44,122 +44,25 @@ make -j $(nproc)
 EOT
 
 
-
 ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="4"
+# ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
+ARG SYSROOT_TARGET_ARCH="amd64"
+ENV SYSROOT_TARGET_ARCH="${SYSROOT_TARGET_ARCH}"
+ARG SYSROOT_TARGET_LIBC="gnu"
+ENV SYSROOT_TARGET_LIBC="${SYSROOT_TARGET_LIBC}"
 
-
-FROM crosstool-base AS ct-amd64-glibc
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.glibc217.amd64" ".config"
+COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
-ENV CROSS_TRIPLE="x86_64-pc-linux-gnu"
-RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
-  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
-  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
-  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
-  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
-  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
-  cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
-FROM base AS target-ct-amd64-glibc
-COPY --from=ct-amd64-glibc ${CT_PREFIX} .
 
-FROM crosstool-base AS ct-arm64-glibc
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.glibc217.arm64" ".config"
-RUN ./ct-ng show-config; ./ct-ng source;
-# due to the limited usage of GH action, build step by step
-RUN ./ct-ng +kernel_headers; \
-  ./ct-ng cc_core; ./ct-ng libc_main; \
-  ./ct-ng cc_for_build; ./ct-ng cc_for_host;
-ENV CROSS_TRIPLE="aarch64-unknown-linux-gnu"
-RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
-  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
-  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
-  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
-  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
-  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
-  cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
-FROM base AS target-ct-arm64-glibc
-COPY --from=ct-arm64-glibc ${CT_PREFIX} .
+COPY "organize_sysroot.sh" "organize_sysroot.sh"
+RUN ./organize_sysroot.sh
 
-FROM crosstool-base AS ct-armhf-glibc
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.glibc217.armhf" ".config"
-RUN ./ct-ng show-config; ./ct-ng source;
-# due to the limited usage of GH action, build step by step
-RUN ./ct-ng +kernel_headers; \
-  ./ct-ng cc_core; ./ct-ng libc_main; \
-  ./ct-ng cc_for_build; ./ct-ng cc_for_host;
-ENV CROSS_TRIPLE="arm-unknown-linux-gnueabihf"
-RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
-  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,usr} ${CROSS_TRIPLE}/; \
-  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
-  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
-  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
-  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
-  cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
-FROM base AS target-ct-armhf-glibc
-COPY --from=ct-armhf-glibc ${CT_PREFIX} .
 
-FROM crosstool-base AS ct-amd64-musl
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.musl.amd64" ".config"
-RUN ./ct-ng show-config; ./ct-ng source;
-# due to the limited usage of GH action, build step by step
-RUN ./ct-ng +kernel_headers; \
-  ./ct-ng cc_core; ./ct-ng libc_main; \
-  ./ct-ng cc_for_build; ./ct-ng cc_for_host;
-ENV CROSS_TRIPLE="x86_64-pc-linux-musl"
-RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
-  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
-  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
-  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
-  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
-  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
-  cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
-FROM base AS target-ct-amd64-musl
-COPY --from=ct-amd64-musl ${CT_PREFIX} .
 
-FROM crosstool-base AS ct-arm64-musl
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.musl.arm64" ".config"
-RUN ./ct-ng show-config; ./ct-ng source;
-# due to the limited usage of GH action, build step by step
-RUN ./ct-ng +kernel_headers; \
-  ./ct-ng cc_core; ./ct-ng libc_main; \
-  ./ct-ng cc_for_build; ./ct-ng cc_for_host;
-ENV CROSS_TRIPLE="aarch64-unknown-linux-musl"
-RUN cd ${CT_PREFIX}; mv ${CROSS_TRIPLE} tmp; mkdir ${CROSS_TRIPLE}; \
-  mv tmp/${CROSS_TRIPLE}/sysroot/{lib,lib64,usr} ${CROSS_TRIPLE}/; \
-  rm -f  ${CROSS_TRIPLE}/lib/libstdc++.so*gdb.py; \
-  rm -rf ${CROSS_TRIPLE}/usr/{bin,libexec,sbin,share}; \
-  mv tmp/lib/gcc ${CROSS_TRIPLE}/usr/lib; \
-  rm -rf ${CROSS_TRIPLE}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}; \
-  mv tmp/${CROSS_TRIPLE}/include ${CROSS_TRIPLE}/; rm -rf tmp; \
-  cd ${CROSS_TRIPLE}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -; \
-  mkdir -p ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  mv ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}/** ${CROSS_TRIPLE}/usr/include/${CROSS_TRIPLE}/${CXXDIR}; \
-  rm -rf ${CROSS_TRIPLE}/include/${CXXDIR}/${CROSS_TRIPLE}; \
-  mv ${CROSS_TRIPLE}/include/** ${CROSS_TRIPLE}/usr/include/; rm -rf ${CROSS_TRIPLE}/include;
-FROM base AS target-ct-arm64-musl
-COPY --from=ct-arm64-musl ${CT_PREFIX} .
+FROM base
+COPY --from=crosstool-ng ${CT_PREFIX} .

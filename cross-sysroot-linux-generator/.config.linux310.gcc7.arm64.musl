@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# crosstool-NG 1.27.0_dirty Configuration
+# crosstool-NG 1.27.0.2_87c3101 Configuration
 #
 CT_CONFIGURE_has_static_link=y
 CT_CONFIGURE_has_cxx11=y
@@ -23,7 +23,7 @@ CT_CONFIGURE_has_sha1sum=y
 CT_CONFIGURE_has_sha256sum=y
 CT_CONFIGURE_has_sha512sum=y
 CT_CONFIGURE_has_install_with_strip_program=y
-CT_VERSION="1.27.0_dirty"
+CT_VERSION="1.27.0.2_87c3101"
 CT_VCHECK=""
 CT_CONFIG_VERSION_ENV="4"
 CT_CONFIG_VERSION_CURRENT="4"
@@ -218,8 +218,6 @@ CT_FORCE_SYSROOT=y
 CT_USE_SYSROOT=y
 CT_SYSROOT_NAME="sysroot"
 CT_SYSROOT_DIR_PREFIX=""
-CT_WANTS_STATIC_LINK=y
-CT_WANTS_STATIC_LINK_CXX=y
 # CT_STATIC_TOOLCHAIN is not set
 CT_SHOW_CT_VERSION=y
 CT_TOOLCHAIN_PKGVERSION=""
@@ -577,22 +575,22 @@ CT_CC_GCC_HAS_LIBMPX=y
 CT_CC_GCC_ENABLE_CXX_FLAGS=""
 CT_CC_GCC_CORE_EXTRA_CONFIG_ARRAY=""
 CT_CC_GCC_EXTRA_CONFIG_ARRAY=""
-CT_CC_GCC_STATIC_LIBSTDCXX=y
-CT_CC_GCC_SYSTEM_ZLIB=y
-CT_CC_GCC_CONFIG_TLS=m
+# CT_CC_GCC_STATIC_LIBSTDCXX is not set
+# CT_CC_GCC_SYSTEM_ZLIB is not set
+CT_CC_GCC_CONFIG_TLS=y
 
 #
 # Optimisation features
 #
-CT_CC_GCC_USE_GRAPHITE=y
-CT_CC_GCC_USE_LTO=y
+# CT_CC_GCC_USE_GRAPHITE is not set
+# CT_CC_GCC_USE_LTO is not set
 
 #
 # Settings for libraries running on target
 #
 # CT_CC_GCC_ENABLE_DEFAULT_PIE is not set
 # CT_CC_GCC_ENABLE_TARGET_OPTSPACE is not set
-CT_CC_GCC_LIBSTDCXX=m
+CT_CC_GCC_LIBSTDCXX=y
 # CT_CC_GCC_LIBSTDCXX_HOSTED_DISABLE is not set
 # CT_CC_GCC_LIBMUDFLAP is not set
 # CT_CC_GCC_LIBGOMP is not set
@@ -680,74 +678,18 @@ CT_GMP_PATCH_GLOBAL=y
 # CT_GMP_PATCH_LOCAL_BUNDLED is not set
 # CT_GMP_PATCH_NONE is not set
 CT_GMP_PATCH_ORDER="global"
-# CT_GMP_V_6_3 is not set
-CT_GMP_V_6_2=y
+CT_GMP_V_6_3=y
+# CT_GMP_V_6_2 is not set
 # CT_GMP_V_6_1 is not set
-CT_GMP_VERSION="6.2.1"
+CT_GMP_VERSION="6.3.0"
 CT_GMP_MIRRORS="https://mirrors.bfsu.edu.cn/gnu/gmp"
 CT_GMP_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_GMP_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
 CT_GMP_ARCHIVE_FORMATS=".tar.xz .tar.lz .tar.bz2"
 CT_GMP_SIGNATURE_FORMAT="packed/.sig"
-CT_COMP_LIBS_ISL=y
-CT_COMP_LIBS_ISL_PKG_KSYM="ISL"
-CT_ISL_DIR_NAME="isl"
-CT_ISL_PKG_NAME="isl"
-CT_ISL_SRC_RELEASE=y
-# CT_ISL_SRC_DEVEL is not set
-# CT_ISL_SRC_CUSTOM is not set
-CT_ISL_PATCH_GLOBAL=y
-# CT_ISL_PATCH_BUNDLED is not set
-# CT_ISL_PATCH_LOCAL is not set
-# CT_ISL_PATCH_BUNDLED_LOCAL is not set
-# CT_ISL_PATCH_LOCAL_BUNDLED is not set
-# CT_ISL_PATCH_NONE is not set
-CT_ISL_PATCH_ORDER="global"
-# CT_ISL_V_0_26 is not set
-# CT_ISL_V_0_25 is not set
-# CT_ISL_V_0_24 is not set
-# CT_ISL_V_0_23 is not set
-# CT_ISL_V_0_22 is not set
-# CT_ISL_V_0_21 is not set
-# CT_ISL_V_0_20 is not set
-# CT_ISL_V_0_19 is not set
-# CT_ISL_V_0_18 is not set
-# CT_ISL_V_0_17 is not set
-# CT_ISL_V_0_16 is not set
-CT_ISL_V_0_15=y
-CT_ISL_VERSION="0.15"
-CT_ISL_MIRRORS="https://libisl.sourceforge.io"
-CT_ISL_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
-CT_ISL_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_ISL_ARCHIVE_FORMATS=".tar.xz .tar.bz2 .tar.gz"
-CT_ISL_SIGNATURE_FORMAT=""
-CT_ISL_0_18_or_older=y
-CT_ISL_older_than_0_18=y
-CT_ISL_0_15_or_later=y
-CT_ISL_0_15_or_older=y
+# CT_COMP_LIBS_ISL is not set
 # CT_COMP_LIBS_LIBELF is not set
-CT_COMP_LIBS_LIBICONV=y
-CT_COMP_LIBS_LIBICONV_PKG_KSYM="LIBICONV"
-CT_LIBICONV_DIR_NAME="libiconv"
-CT_LIBICONV_PKG_NAME="libiconv"
-CT_LIBICONV_SRC_RELEASE=y
-# CT_LIBICONV_SRC_DEVEL is not set
-# CT_LIBICONV_SRC_CUSTOM is not set
-CT_LIBICONV_PATCH_GLOBAL=y
-# CT_LIBICONV_PATCH_BUNDLED is not set
-# CT_LIBICONV_PATCH_LOCAL is not set
-# CT_LIBICONV_PATCH_BUNDLED_LOCAL is not set
-# CT_LIBICONV_PATCH_LOCAL_BUNDLED is not set
-# CT_LIBICONV_PATCH_NONE is not set
-CT_LIBICONV_PATCH_ORDER="global"
-CT_LIBICONV_V_1_16=y
-# CT_LIBICONV_V_1_15 is not set
-CT_LIBICONV_VERSION="1.16"
-CT_LIBICONV_MIRRORS="https://mirrors.bfsu.edu.cn/gnu/libiconv"
-CT_LIBICONV_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
-CT_LIBICONV_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_LIBICONV_ARCHIVE_FORMATS=".tar.gz"
-CT_LIBICONV_SIGNATURE_FORMAT="packed/.sig"
+# CT_COMP_LIBS_LIBICONV is not set
 CT_COMP_LIBS_MPC=y
 CT_COMP_LIBS_MPC_PKG_KSYM="MPC"
 CT_MPC_DIR_NAME="mpc"
@@ -795,43 +737,19 @@ CT_MPFR_SIGNATURE_FORMAT="packed/.asc"
 CT_MPFR_later_than_4_0_0=y
 CT_MPFR_4_0_0_or_later=y
 # CT_COMP_LIBS_NCURSES is not set
-CT_COMP_LIBS_ZLIB=y
-CT_COMP_LIBS_ZLIB_PKG_KSYM="ZLIB"
-CT_ZLIB_DIR_NAME="zlib"
-CT_ZLIB_PKG_NAME="zlib"
-CT_ZLIB_SRC_RELEASE=y
-# CT_ZLIB_SRC_DEVEL is not set
-# CT_ZLIB_SRC_CUSTOM is not set
-CT_ZLIB_PATCH_GLOBAL=y
-# CT_ZLIB_PATCH_BUNDLED is not set
-# CT_ZLIB_PATCH_LOCAL is not set
-# CT_ZLIB_PATCH_BUNDLED_LOCAL is not set
-# CT_ZLIB_PATCH_LOCAL_BUNDLED is not set
-# CT_ZLIB_PATCH_NONE is not set
-CT_ZLIB_PATCH_ORDER="global"
-# CT_ZLIB_V_1_3_1 is not set
-CT_ZLIB_V_1_2_13=y
-CT_ZLIB_VERSION="1.2.13"
-CT_ZLIB_MIRRORS="https://github.com/madler/zlib/releases/download/v${CT_ZLIB_VERSION}"
-CT_ZLIB_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
-CT_ZLIB_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_ZLIB_ARCHIVE_FORMATS=".tar.xz .tar.gz"
-CT_ZLIB_SIGNATURE_FORMAT="packed/.asc"
+# CT_COMP_LIBS_ZLIB is not set
 # CT_COMP_LIBS_ZSTD is not set
 CT_ALL_COMP_LIBS_CHOICES="CLOOG EXPAT GETTEXT GMP GNUPRUMCU ISL LIBELF LIBICONV MPC MPFR NCURSES NEWLIB_NANO PICOLIBC ZLIB ZSTD"
 # CT_LIBICONV_NEEDED is not set
 # CT_GETTEXT_NEEDED is not set
 CT_GMP_NEEDED=y
 CT_MPFR_NEEDED=y
-CT_ISL_NEEDED=y
 CT_MPC_NEEDED=y
-CT_ZLIB_NEEDED=y
+# CT_ZLIB_NEEDED is not set
 # CT_ZSTD_NEEDED is not set
 CT_GMP=y
 CT_MPFR=y
-CT_ISL=y
 CT_MPC=y
-CT_ZLIB=y
 # end of Companion libraries
 
 #

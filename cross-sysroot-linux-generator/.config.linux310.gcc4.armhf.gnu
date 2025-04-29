@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# crosstool-NG 1.27.0_dirty Configuration
+# crosstool-NG 1.27.0.2_87c3101 Configuration
 #
 CT_CONFIGURE_has_static_link=y
 CT_CONFIGURE_has_cxx11=y
@@ -23,7 +23,7 @@ CT_CONFIGURE_has_sha1sum=y
 CT_CONFIGURE_has_sha256sum=y
 CT_CONFIGURE_has_sha512sum=y
 CT_CONFIGURE_has_install_with_strip_program=y
-CT_VERSION="1.27.0_dirty"
+CT_VERSION="1.27.0.2_87c3101"
 CT_VCHECK=""
 CT_CONFIG_VERSION_ENV="4"
 CT_CONFIG_VERSION_CURRENT="4"
@@ -169,6 +169,13 @@ CT_ARCH_ARM_SHOW=y
 # Options for arm
 #
 CT_ARCH_ARM_PKG_KSYM=""
+CT_ARCH_ARM_MODE="arm"
+CT_ARCH_ARM_MODE_ARM=y
+# CT_ARCH_ARM_MODE_THUMB is not set
+# CT_ARCH_ARM_INTERWORKING is not set
+CT_ARCH_ARM_EABI_FORCE=y
+CT_ARCH_ARM_EABI=y
+CT_ARCH_ARM_TUPLE_USE_EABIHF=y
 CT_ALL_ARCH_CHOICES="ALPHA ARC ARM AVR BPF C6X LM32 LOONGARCH M68K MICROBLAZE MIPS MOXIE MSP430 NIOS2 OPENRISC PARISC POWERPC PRU RISCV S390 SH SPARC TRICORE X86 XTENSA"
 CT_ARCH_SUFFIX=""
 # CT_OMIT_TARGET_VENDOR is not set
@@ -191,9 +198,9 @@ CT_ARCH_ENDIAN="little"
 CT_ARCH_SUPPORTS_32=y
 CT_ARCH_SUPPORTS_64=y
 CT_ARCH_DEFAULT_32=y
-CT_ARCH_BITNESS=64
-# CT_ARCH_32 is not set
-CT_ARCH_64=y
+CT_ARCH_BITNESS=32
+CT_ARCH_32=y
+# CT_ARCH_64 is not set
 
 #
 # Target optimisations
@@ -201,10 +208,19 @@ CT_ARCH_64=y
 CT_ARCH_SUPPORTS_WITH_ARCH=y
 CT_ARCH_SUPPORTS_WITH_CPU=y
 CT_ARCH_SUPPORTS_WITH_TUNE=y
+CT_ARCH_SUPPORTS_WITH_FLOAT=y
+CT_ARCH_SUPPORTS_WITH_FPU=y
+CT_ARCH_SUPPORTS_SOFTFP=y
 CT_ARCH_EXCLUSIVE_WITH_CPU=y
-CT_ARCH_ARCH=""
+CT_ARCH_ARCH="armv7-a"
+CT_ARCH_FPU="neon-vfpv4"
+# CT_ARCH_FLOAT_AUTO is not set
+CT_ARCH_FLOAT_HW=y
+# CT_ARCH_FLOAT_SOFTFP is not set
+# CT_ARCH_FLOAT_SW is not set
 CT_TARGET_CFLAGS=""
 CT_TARGET_LDFLAGS=""
+CT_ARCH_FLOAT="hard"
 # end of Target options
 
 #
@@ -218,8 +234,6 @@ CT_FORCE_SYSROOT=y
 CT_USE_SYSROOT=y
 CT_SYSROOT_NAME="sysroot"
 CT_SYSROOT_DIR_PREFIX=""
-CT_WANTS_STATIC_LINK=y
-CT_WANTS_STATIC_LINK_CXX=y
 # CT_STATIC_TOOLCHAIN is not set
 CT_SHOW_CT_VERSION=y
 CT_TOOLCHAIN_PKGVERSION=""
@@ -301,6 +315,9 @@ CT_LINUX_PATCH_ORDER="global"
 # CT_LINUX_V_3_13 is not set
 # CT_LINUX_V_3_12 is not set
 CT_LINUX_V_3_10=y
+# CT_LINUX_V_3_4 is not set
+# CT_LINUX_V_3_2 is not set
+# CT_LINUX_V_2_6_32 is not set
 CT_LINUX_VERSION="3.10.108"
 CT_LINUX_MIRRORS="https://mirrors.bfsu.edu.cn/kernel/v${CT_LINUX_VERSION%%.*}.x"
 CT_LINUX_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
@@ -320,7 +337,6 @@ CT_LINUX_4_8_or_older=y
 CT_LINUX_older_than_4_8=y
 CT_LINUX_later_than_3_7=y
 CT_LINUX_3_7_or_later=y
-CT_LINUX_REQUIRE_3_7_or_later=y
 CT_LINUX_later_than_3_2=y
 CT_LINUX_3_2_or_later=y
 CT_KERNEL_DEP_RSYNC=y
@@ -370,23 +386,36 @@ CT_BINUTILS_PATCH_GLOBAL=y
 # CT_BINUTILS_PATCH_LOCAL_BUNDLED is not set
 # CT_BINUTILS_PATCH_NONE is not set
 CT_BINUTILS_PATCH_ORDER="global"
-CT_BINUTILS_V_2_29=y
+CT_BINUTILS_V_2_43=y
+# CT_BINUTILS_V_2_42 is not set
+# CT_BINUTILS_V_2_41 is not set
+# CT_BINUTILS_V_2_40 is not set
+# CT_BINUTILS_V_2_39 is not set
+# CT_BINUTILS_V_2_38 is not set
+# CT_BINUTILS_V_2_37 is not set
+# CT_BINUTILS_V_2_36 is not set
+# CT_BINUTILS_V_2_35 is not set
+# CT_BINUTILS_V_2_34 is not set
+# CT_BINUTILS_V_2_33 is not set
+# CT_BINUTILS_V_2_32 is not set
+# CT_BINUTILS_V_2_31 is not set
+# CT_BINUTILS_V_2_30 is not set
+# CT_BINUTILS_V_2_29 is not set
 # CT_BINUTILS_V_2_28 is not set
 # CT_BINUTILS_V_2_27 is not set
 # CT_BINUTILS_V_2_26 is not set
-CT_BINUTILS_VERSION="2.29.1"
+CT_BINUTILS_VERSION="2.43.1"
 CT_BINUTILS_MIRRORS="https://mirrors.bfsu.edu.cn/gnu/binutils"
 CT_BINUTILS_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_BINUTILS_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
 CT_BINUTILS_ARCHIVE_FORMATS=".tar.xz .tar.bz2 .tar.gz"
 CT_BINUTILS_SIGNATURE_FORMAT="packed/.sig"
-CT_BINUTILS_2_41_or_older=y
-CT_BINUTILS_older_than_2_41=y
-CT_BINUTILS_2_39_or_older=y
-CT_BINUTILS_older_than_2_39=y
-CT_BINUTILS_2_30_or_older=y
-CT_BINUTILS_older_than_2_30=y
-CT_BINUTILS_REQUIRE_older_than_2_30=y
+CT_BINUTILS_later_than_2_41=y
+CT_BINUTILS_2_41_or_later=y
+CT_BINUTILS_later_than_2_39=y
+CT_BINUTILS_2_39_or_later=y
+CT_BINUTILS_later_than_2_30=y
+CT_BINUTILS_2_30_or_later=y
 CT_BINUTILS_later_than_2_27=y
 CT_BINUTILS_2_27_or_later=y
 CT_BINUTILS_later_than_2_26=y
@@ -590,15 +619,15 @@ CT_GCC_PATCH_ORDER="global"
 # CT_GCC_V_10 is not set
 # CT_GCC_V_9 is not set
 # CT_GCC_V_8 is not set
-CT_GCC_V_7=y
+# CT_GCC_V_7 is not set
 # CT_GCC_V_6 is not set
 # CT_GCC_V_5 is not set
-# CT_GCC_V_4_9 is not set
-CT_GCC_VERSION="7.5.0"
+CT_GCC_V_4_9=y
+CT_GCC_VERSION="4.9.4"
 CT_GCC_MIRRORS="https://mirrors.bfsu.edu.cn/gnu/gcc/gcc-${CT_GCC_VERSION}"
 CT_GCC_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_GCC_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_GCC_ARCHIVE_FORMATS=".tar.xz .tar.gz"
+CT_GCC_ARCHIVE_FORMATS=".tar.bz2 .tar.gz"
 CT_GCC_SIGNATURE_FORMAT=""
 CT_GCC_14_or_older=y
 CT_GCC_older_than_14=y
@@ -614,36 +643,34 @@ CT_GCC_9_or_older=y
 CT_GCC_older_than_9=y
 CT_GCC_8_or_older=y
 CT_GCC_older_than_8=y
-CT_GCC_later_than_7=y
-CT_GCC_7_or_later=y
-CT_GCC_later_than_6=y
-CT_GCC_6_or_later=y
-CT_GCC_later_than_5=y
-CT_GCC_5_or_later=y
+CT_GCC_7_or_older=y
+CT_GCC_older_than_7=y
+CT_GCC_6_or_older=y
+CT_GCC_older_than_6=y
+CT_GCC_5_or_older=y
+CT_GCC_older_than_5=y
 CT_GCC_later_than_4_9=y
 CT_GCC_4_9_or_later=y
 CT_CC_GCC_ENABLE_PLUGINS=y
 CT_CC_GCC_GOLD=y
-CT_CC_GCC_HAS_LIBMPX=y
 CT_CC_GCC_ENABLE_CXX_FLAGS=""
 CT_CC_GCC_CORE_EXTRA_CONFIG_ARRAY=""
 CT_CC_GCC_EXTRA_CONFIG_ARRAY=""
-CT_CC_GCC_STATIC_LIBSTDCXX=y
-CT_CC_GCC_SYSTEM_ZLIB=y
-CT_CC_GCC_CONFIG_TLS=m
+# CT_CC_GCC_STATIC_LIBSTDCXX is not set
+# CT_CC_GCC_SYSTEM_ZLIB is not set
+CT_CC_GCC_CONFIG_TLS=y
 
 #
 # Optimisation features
 #
-CT_CC_GCC_USE_GRAPHITE=y
-CT_CC_GCC_USE_LTO=y
+# CT_CC_GCC_USE_GRAPHITE is not set
+# CT_CC_GCC_USE_LTO is not set
 
 #
 # Settings for libraries running on target
 #
-# CT_CC_GCC_ENABLE_DEFAULT_PIE is not set
 # CT_CC_GCC_ENABLE_TARGET_OPTSPACE is not set
-CT_CC_GCC_LIBSTDCXX=m
+CT_CC_GCC_LIBSTDCXX=y
 # CT_CC_GCC_LIBSTDCXX_HOSTED_DISABLE is not set
 # CT_CC_GCC_LIBMUDFLAP is not set
 # CT_CC_GCC_LIBGOMP is not set
@@ -731,21 +758,21 @@ CT_GETTEXT_PATCH_GLOBAL=y
 # CT_GETTEXT_PATCH_LOCAL_BUNDLED is not set
 # CT_GETTEXT_PATCH_NONE is not set
 CT_GETTEXT_PATCH_ORDER="global"
-# CT_GETTEXT_V_0_23_1 is not set
+CT_GETTEXT_V_0_23_1=y
 # CT_GETTEXT_V_0_22_5 is not set
-CT_GETTEXT_V_0_21=y
+# CT_GETTEXT_V_0_21 is not set
 # CT_GETTEXT_V_0_20_1 is not set
 # CT_GETTEXT_V_0_19_8_1 is not set
-CT_GETTEXT_VERSION="0.21"
+CT_GETTEXT_VERSION="0.23.1"
 CT_GETTEXT_MIRRORS="https://mirrors.bfsu.edu.cn/gnu/gettext"
 CT_GETTEXT_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_GETTEXT_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
 CT_GETTEXT_ARCHIVE_FORMATS=".tar.xz .tar.gz"
 CT_GETTEXT_SIGNATURE_FORMAT="packed/.sig"
-CT_GETTEXT_0_23_or_older=y
-CT_GETTEXT_older_than_0_23=y
+CT_GETTEXT_later_than_0_23=y
+CT_GETTEXT_0_23_or_later=y
+CT_GETTEXT_later_than_0_21=y
 CT_GETTEXT_0_21_or_later=y
-CT_GETTEXT_0_21_or_older=y
 CT_GETTEXT_INCOMPATIBLE_WITH_UCLIBC_NG=y
 
 #
@@ -773,51 +800,16 @@ CT_GMP_PATCH_GLOBAL=y
 # CT_GMP_PATCH_LOCAL_BUNDLED is not set
 # CT_GMP_PATCH_NONE is not set
 CT_GMP_PATCH_ORDER="global"
-# CT_GMP_V_6_3 is not set
-CT_GMP_V_6_2=y
+CT_GMP_V_6_3=y
+# CT_GMP_V_6_2 is not set
 # CT_GMP_V_6_1 is not set
-CT_GMP_VERSION="6.2.1"
+CT_GMP_VERSION="6.3.0"
 CT_GMP_MIRRORS="https://mirrors.bfsu.edu.cn/gnu/gmp"
 CT_GMP_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
 CT_GMP_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
 CT_GMP_ARCHIVE_FORMATS=".tar.xz .tar.lz .tar.bz2"
 CT_GMP_SIGNATURE_FORMAT="packed/.sig"
-CT_COMP_LIBS_ISL=y
-CT_COMP_LIBS_ISL_PKG_KSYM="ISL"
-CT_ISL_DIR_NAME="isl"
-CT_ISL_PKG_NAME="isl"
-CT_ISL_SRC_RELEASE=y
-# CT_ISL_SRC_DEVEL is not set
-# CT_ISL_SRC_CUSTOM is not set
-CT_ISL_PATCH_GLOBAL=y
-# CT_ISL_PATCH_BUNDLED is not set
-# CT_ISL_PATCH_LOCAL is not set
-# CT_ISL_PATCH_BUNDLED_LOCAL is not set
-# CT_ISL_PATCH_LOCAL_BUNDLED is not set
-# CT_ISL_PATCH_NONE is not set
-CT_ISL_PATCH_ORDER="global"
-# CT_ISL_V_0_26 is not set
-# CT_ISL_V_0_25 is not set
-# CT_ISL_V_0_24 is not set
-# CT_ISL_V_0_23 is not set
-# CT_ISL_V_0_22 is not set
-# CT_ISL_V_0_21 is not set
-# CT_ISL_V_0_20 is not set
-# CT_ISL_V_0_19 is not set
-# CT_ISL_V_0_18 is not set
-# CT_ISL_V_0_17 is not set
-# CT_ISL_V_0_16 is not set
-CT_ISL_V_0_15=y
-CT_ISL_VERSION="0.15"
-CT_ISL_MIRRORS="https://libisl.sourceforge.io"
-CT_ISL_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
-CT_ISL_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_ISL_ARCHIVE_FORMATS=".tar.xz .tar.bz2 .tar.gz"
-CT_ISL_SIGNATURE_FORMAT=""
-CT_ISL_0_18_or_older=y
-CT_ISL_older_than_0_18=y
-CT_ISL_0_15_or_later=y
-CT_ISL_0_15_or_older=y
+# CT_COMP_LIBS_ISL is not set
 # CT_COMP_LIBS_LIBELF is not set
 CT_COMP_LIBS_LIBICONV=y
 CT_COMP_LIBS_LIBICONV_PKG_KSYM="LIBICONV"
@@ -916,49 +908,25 @@ CT_NCURSES_HOST_CONFIG_ARGS=""
 CT_NCURSES_HOST_DISABLE_DB=y
 CT_NCURSES_HOST_FALLBACKS="linux,xterm,xterm-color,xterm-256color,vt100"
 CT_NCURSES_TARGET_CONFIG_ARGS=""
-# CT_NCURSES_TARGET_DISABLE_DB is not set
+CT_NCURSES_TARGET_DISABLE_DB=y
 CT_NCURSES_TARGET_FALLBACKS=""
-CT_COMP_LIBS_ZLIB=y
-CT_COMP_LIBS_ZLIB_PKG_KSYM="ZLIB"
-CT_ZLIB_DIR_NAME="zlib"
-CT_ZLIB_PKG_NAME="zlib"
-CT_ZLIB_SRC_RELEASE=y
-# CT_ZLIB_SRC_DEVEL is not set
-# CT_ZLIB_SRC_CUSTOM is not set
-CT_ZLIB_PATCH_GLOBAL=y
-# CT_ZLIB_PATCH_BUNDLED is not set
-# CT_ZLIB_PATCH_LOCAL is not set
-# CT_ZLIB_PATCH_BUNDLED_LOCAL is not set
-# CT_ZLIB_PATCH_LOCAL_BUNDLED is not set
-# CT_ZLIB_PATCH_NONE is not set
-CT_ZLIB_PATCH_ORDER="global"
-# CT_ZLIB_V_1_3_1 is not set
-CT_ZLIB_V_1_2_13=y
-CT_ZLIB_VERSION="1.2.13"
-CT_ZLIB_MIRRORS="https://github.com/madler/zlib/releases/download/v${CT_ZLIB_VERSION}"
-CT_ZLIB_ARCHIVE_FILENAME="@{pkg_name}-@{version}"
-CT_ZLIB_ARCHIVE_DIRNAME="@{pkg_name}-@{version}"
-CT_ZLIB_ARCHIVE_FORMATS=".tar.xz .tar.gz"
-CT_ZLIB_SIGNATURE_FORMAT="packed/.asc"
+# CT_COMP_LIBS_ZLIB is not set
 # CT_COMP_LIBS_ZSTD is not set
 CT_ALL_COMP_LIBS_CHOICES="CLOOG EXPAT GETTEXT GMP GNUPRUMCU ISL LIBELF LIBICONV MPC MPFR NCURSES NEWLIB_NANO PICOLIBC ZLIB ZSTD"
 CT_LIBICONV_NEEDED=y
 CT_GETTEXT_NEEDED=y
 CT_GMP_NEEDED=y
 CT_MPFR_NEEDED=y
-CT_ISL_NEEDED=y
 CT_MPC_NEEDED=y
 CT_NCURSES_NEEDED=y
-CT_ZLIB_NEEDED=y
+# CT_ZLIB_NEEDED is not set
 # CT_ZSTD_NEEDED is not set
 CT_LIBICONV=y
 CT_GETTEXT=y
 CT_GMP=y
 CT_MPFR=y
-CT_ISL=y
 CT_MPC=y
 CT_NCURSES=y
-CT_ZLIB=y
 # end of Companion libraries
 
 #
