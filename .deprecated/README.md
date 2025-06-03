@@ -15,6 +15,10 @@
 
   ![s][Deprecated] [![image][GoToDocker]](cgo-openwrt-mt7622/Dockerfile)
 
+* [netatalk](serv-netatalk)
+  - Portable Netatalk (Replaced by SMB with time machine support)
+
+  ![s][Deprecated] [![image][GoToDocker]](serv-netatalk/Dockerfile)
 
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
-[GoToDocker]: https://img.shields.io/badge/Image%20Version-Go%20to%20Docker%20Hub-blue
+[GoToDocker]: https://img.shields.io/badge/Image-View%20Dockerfile-blue
