@@ -1,13 +1,6 @@
 name: cross-sysroot-linux
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/_buildx_cross_sysroot_linux.yml'
-      - '.github/workflows/cross-sysroot-linux.yml'
-      - 'cross-sysroot-linux/Dockerfile'
   pull_request:
     branches:
       - main

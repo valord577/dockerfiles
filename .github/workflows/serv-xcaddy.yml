@@ -6,14 +6,14 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-xcaddy.yml'
-      - 'serv-xcaddy/Dockerfile'
+      - 'serv-xcaddy/*'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-xcaddy.yml'
-      - 'serv-xcaddy/Dockerfile'
+      - 'serv-xcaddy/*'
 
 jobs:
   build:

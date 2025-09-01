@@ -42,10 +42,10 @@ jobs:
       _PUSH: false
     steps:
       - name: Set ENV `_PUSH=true`
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "_PUSH=true" >> "$GITHUB_ENV"
       - name: Git Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Docker QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx

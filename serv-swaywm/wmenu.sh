@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-LIBNAME='sway'
-VERSION='1.11'
+LIBNAME='wmenu'
+VERSION='0.2.0'
 LIBTEAM='swaywm-team'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
@@ -11,13 +11,8 @@ mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --s
 
 
 meson_args=$(cat <<- EOF
-                            \
-  -Dwerror=false            \
-  -Dbash-completions=false  \
-  -Ddefault-wallpaper=false \
-  -Dfish-completions=false  \
-  -Dman-pages=disabled      \
-  -Dzsh-completions=false   \
+                           \
+  -Derrorlogs=false        \
 
 EOF
 )
