@@ -1,12 +1,6 @@
 name: cross-sysroot-mingw
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/_buildx.yml'
-      - '.github/workflows/cross-sysroot-mingw.yml'
-      - 'cross-sysroot-mingw/Dockerfile'
+  workflow_dispatch:
   pull_request:
     branches:
       - main

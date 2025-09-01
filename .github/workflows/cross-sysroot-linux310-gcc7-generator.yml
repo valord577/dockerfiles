@@ -1,16 +1,6 @@
 name: cross-sysroot-linux310-gcc7
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/rclone.conf.tmpl'
-      - '.github/rclone.py'
-      - '.github/workflows/_buildx_cross_sysroot_linux_generator.yml'
-      - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
-      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
-      - 'cross-sysroot-linux-generator/Dockerfile'
-      - 'cross-sysroot-linux-generator/organize_sysroot.sh'
+  workflow_dispatch:
   pull_request:
     branches:
       - main

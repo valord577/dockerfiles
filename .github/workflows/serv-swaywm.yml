@@ -1,12 +1,6 @@
 name: serv-swaywm
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/_buildx.yml'
-      - '.github/workflows/serv-swaywm.yml'
-      - 'serv-swaywm/*'
+  workflow_dispatch:
   pull_request:
     branches:
       - main

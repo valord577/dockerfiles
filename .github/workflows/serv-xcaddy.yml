@@ -1,12 +1,6 @@
 name: serv-xcaddy
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/_buildx.yml'
-      - '.github/workflows/serv-xcaddy.yml'
-      - 'serv-xcaddy/*'
+  workflow_dispatch:
   pull_request:
     branches:
       - main
