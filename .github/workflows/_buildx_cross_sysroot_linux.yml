@@ -32,7 +32,7 @@ jobs:
       _image_name_: cross-sysroot-linux${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}-gcc${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
     steps:
       - name: set env `_PUSH=true`
-        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "_PUSH=true" >> "$GITHUB_ENV"
       - name: clone source
         run: |

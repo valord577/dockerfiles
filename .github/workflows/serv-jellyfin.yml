@@ -6,14 +6,14 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-jellyfin.yml'
-      - 'serv-jellyfin/Dockerfile'
+      - 'serv-jellyfin/*'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-jellyfin.yml'
-      - 'serv-jellyfin/Dockerfile'
+      - 'serv-jellyfin/*'
 
 jobs:
   build:

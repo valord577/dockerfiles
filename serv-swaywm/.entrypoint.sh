@@ -25,6 +25,6 @@ fi
 
 swaymsg -t get_outputs
 WAYLAND_DISPLAY='wayland-1' wayvnc -L info 0.0.0.0 &
-websockify -D --web=/usr/share/novnc/ 0.0.0.0:55900 127.0.0.1:5900
+websockify -D --web=/opt/novnc/ 0.0.0.0:55900 127.0.0.1:5900
 
 sleep inf

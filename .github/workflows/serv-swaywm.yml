@@ -6,14 +6,14 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-swaywm.yml'
-      - 'serv-swaywm/Dockerfile'
+      - 'serv-swaywm/*'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-swaywm.yml'
-      - 'serv-swaywm/Dockerfile'
+      - 'serv-swaywm/*'
 
 jobs:
   build:
