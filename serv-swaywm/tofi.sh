@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-LIBNAME='wmenu'
-VERSION='0.2.0'
+LIBNAME='tofi'
+VERSION='0.9.1'
 LIBTEAM='swaywm-team'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
@@ -12,7 +12,7 @@ mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --s
 
 meson_args=$(cat <<- EOF
                            \
-  -Derrorlogs=false        \
+  -Dman-pages=disabled     \
 
 EOF
 )

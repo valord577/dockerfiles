@@ -77,15 +77,14 @@ RUN apt update -qq \
 COPY "sway.sh" "sway.sh"
 RUN ./sway.sh
 
-COPY "wmenu.sh" "wmenu.sh"
-RUN ./wmenu.sh
+COPY "tofi.sh" "tofi.sh"
+RUN ./tofi.sh
 
 
 
 FROM base
 COPY --from=builder ${STAGING}/bin   /usr/local/bin
 COPY --from=builder ${STAGING}/etc   /etc
-COPY --from=builder ${STAGING}/share /share
 RUN apt update -qq \
   && apt install -qqy \
     libglib2.0-0t64 libdrm2 libpixman-1-0 libevdev2  \
