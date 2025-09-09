@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
+if [ $# -gt 0 ]; then
+  apt-get update -qq && apt-get install -qqy $@ && apt-get clean all -qqy
+fi
+
+
+
+
 mkdir -p ${XDG_RUNTIME_DIR}
 
 
