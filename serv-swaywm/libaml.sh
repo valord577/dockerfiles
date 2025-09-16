@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-LIBNAME='pango'
-VERSION='1.54.0+ds'
-LIBTEAM='gnome-team'
+LIBNAME='aml'
+VERSION='0.3.0'
+LIBTEAM='debian'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://salsa.debian.org/${LIBTEAM}/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
@@ -11,17 +11,8 @@ mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --s
 
 
 meson_args=$(cat <<- EOF
-                           \
-  -Dbuild-examples=false   \
-  -Dbuild-testsuite=false  \
-  -Dcairo=enabled          \
-  -Ddocumentation=false    \
-  -Dfreetype=disabled      \
-  -Dgtk_doc=false          \
-  -Dintrospection=disabled \
-  -Dlibthai=disabled       \
-  -Dsysprof=disabled       \
-  -Dxft=disabled           \
+                   \
+  -Dexamples=false \
 
 EOF
 )

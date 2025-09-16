@@ -1,27 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-LIBNAME='pango'
-VERSION='1.54.0+ds'
-LIBTEAM='gnome-team'
+LIBNAME='fribidi'
+VERSION='1.0.16'
+LIBTEAM='debian'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://salsa.debian.org/${LIBTEAM}/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
-
 meson_args=$(cat <<- EOF
-                           \
-  -Dbuild-examples=false   \
-  -Dbuild-testsuite=false  \
-  -Dcairo=enabled          \
-  -Ddocumentation=false    \
-  -Dfreetype=disabled      \
-  -Dgtk_doc=false          \
-  -Dintrospection=disabled \
-  -Dlibthai=disabled       \
-  -Dsysprof=disabled       \
-  -Dxft=disabled           \
+                     \
+  -Dbin=false        \
+  -Ddeprecated=false \
+  -Ddocs=false       \
+  -Dtests=false      \
 
 EOF
 )
