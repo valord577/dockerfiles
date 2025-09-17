@@ -106,11 +106,16 @@ RUN ./sway.sh
 COPY "tofi.sh" "tofi.sh"
 RUN ./tofi.sh
 
+COPY "novnc.sh" "novnc.sh"
+RUN ./novnc.sh
+COPY assets/. ${STAGING}/
+
 
 
 FROM base
 COPY --from=builder ${STAGING}/bin   /usr/local/bin
 COPY --from=builder ${STAGING}/etc   /etc
+COPY --from=builder ${STAGING}/opt   /opt
 RUN apt-get update -qq \
   && apt-get install -qqy \
     libxkbcommon0 libfontconfig1 \
@@ -118,30 +123,15 @@ RUN apt-get update -qq \
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    curl tree bc locales \
+    curl tree bc locales python3-pip \
   && apt-get clean all -qqy
 ENV TZ='Asia/Shanghai'
 RUN ln -sfn /usr/share/zoneinfo/${TZ} /etc/localtime
 RUN echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen && locale-gen
 ENV LC_ALL='en_US.UTF-8' LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-
-RUN <<EOT
-#!/usr/bin/env bash
-set -e
-
-VER_NOVNC='v1.6.0'
-curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://salsa.debian.org/openstack-team/third-party/novnc/-/archive/${VER_NOVNC}/novnc-${VER_NOVNC}.tar.gz"
-mkdir -p '/opt/novnc'; tar -xvf '1.tar.gz' -C '/opt/novnc' --strip-components=1 --no-same-owner
-
-rm -f '1.tar.gz'
-EOT
-COPY assets/. /
-RUN apt-get update -qq \
-  && apt-get install -qqy \
-    python3-websockify \
-  && apt-get clean all -qqy
-
+RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simple"
+RUN pip3 config set global.break-system-packages true
+RUN pip3 install --no-cache-dir -U --upgrade-strategy only-if-needed websockify==0.13.0 && pip3 cache purge
 
 ENV WLR_BACKENDS='headless'
 ENV WLR_RENDERER='pixman'
