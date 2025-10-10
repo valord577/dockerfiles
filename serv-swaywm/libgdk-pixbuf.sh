@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='gdk-pixbuf'
-VERSION='2.44.1'
+VERSION='2.44.3'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://gitlab.gnome.org/GNOME/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"

@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='harfbuzz'
-VERSION='10.2.0'
+VERSION='12.1.0'
 LIBTEAM='freedesktop-team'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
@@ -18,10 +18,7 @@ meson_args=$(cat <<- EOF
   -Ddoc_tests=false         \
   -Ddocs=disabled           \
   -Dexperimental_api=false  \
-  -Dfreetype=disabled       \
-  -Dglib=disabled           \
   -Dgobject=disabled        \
-  -Dgraphite2=disabled      \
   -Dicu=disabled            \
   -Dicu_builtin=true        \
   -Dintrospection=disabled  \

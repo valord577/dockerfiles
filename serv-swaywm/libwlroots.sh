@@ -2,11 +2,10 @@
 set -e
 
 LIBNAME='wlroots'
-VERSION='0.19.0'
-LIBTEAM='swaywm-team'
+VERSION='0.19.1'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://salsa.debian.org/${LIBTEAM}/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
+  --url "https://gitlab.freedesktop.org/wlroots/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
 

@@ -2,11 +2,10 @@
 set -e
 
 LIBNAME='libevdev'
-VERSION='1.13.4+dfsg'
-LIBTEAM='debian'
+VERSION='libevdev-1.13.4'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://salsa.debian.org/${LIBTEAM}/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
+  --url "https://gitlab.freedesktop.org/libevdev/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
 

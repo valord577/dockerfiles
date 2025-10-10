@@ -3,10 +3,9 @@ set -e
 
 LIBNAME='wayland-protocols'
 VERSION='1.45'
-LIBTEAM='xorg-team'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://salsa.debian.org/${LIBTEAM}/wayland/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
+  --url "https://gitlab.freedesktop.org/wayland/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
 

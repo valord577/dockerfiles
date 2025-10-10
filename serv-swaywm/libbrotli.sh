@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-LIBNAME='jansson'
-VERSION='v2.14.1'
+LIBNAME='brotli'
+VERSION='1.1.0'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://github.com/akheron/${LIBNAME}/archive/refs/tags/${VERSION}.tar.gz"
+  --url "https://salsa.debian.org/debian/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
-
 cmake_args=$(cat <<- EOF
-                                  \
-  -D JANSSON_WITHOUT_TESTS:BOOL=1 \
-  -D JANSSON_BUILD_DOCS:BOOL=0    \
-  -D JANSSON_EXAMPLES:BOOL=0      \
-  -D JANSSON_STATIC_CRT:BOOL=1    \
+  \
 
 EOF
 )

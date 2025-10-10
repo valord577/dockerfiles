@@ -2,11 +2,10 @@
 set -e
 
 LIBNAME='pango'
-VERSION='1.54.0+ds'
-LIBTEAM='gnome-team'
+VERSION='1.57.0'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://salsa.debian.org/${LIBTEAM}/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
+  --url "https://gitlab.gnome.org/GNOME/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
 

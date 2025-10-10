@@ -20,17 +20,35 @@ FROM base AS builder
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    curl gcc g++ pkgconf-bin python3-pip \
+    curl gcc g++ pkgconf-bin python3-pip cmake \
   && apt-get clean all -qqy
 RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 RUN pip3 config set global.break-system-packages true
 RUN pip3 install --no-cache-dir --upgrade ninja meson && pip3 cache purge
 WORKDIR '/opt'
+ENV LD_LIBRARY_PATH="${STAGING}/lib"
+ENV PKG_CONFIG_PATH="${STAGING}/lib/pkgconfig"
+
+COPY "libbrotli.sh" "libbrotli.sh"
+RUN ./libbrotli.sh
+COPY "libzlib-ng.sh" "libzlib-ng.sh"
+RUN ./libzlib-ng.sh
+COPY "libpng16.sh" "libpng16.sh"
+RUN ./libpng16.sh
+COPY "libfreetype6.sh" "libfreetype6.sh"
+RUN ./libfreetype6.sh
 
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    libfontconfig1-dev \
+    gperf \
   && apt-get clean all -qqy
+COPY "libexpat.sh" "libexpat.sh"
+RUN ./libexpat.sh
+COPY "libjson-c.sh" "libjson-c.sh"
+RUN ./libjson-c.sh
+COPY "libfontconfig.sh" "libfontconfig.sh"
+RUN ./libfontconfig.sh
+
 COPY "libpixman.sh" "libpixman.sh"
 RUN ./libpixman.sh
 COPY "libcairo.sh" "libcairo.sh"
@@ -43,12 +61,6 @@ RUN apt-get update -qq \
 COPY "libffi8.sh" "libffi8.sh"
 RUN ./libffi8.sh
 
-RUN apt-get update -qq \
-  && apt-get install -qqy \
-    cmake \
-  && apt-get clean all -qqy
-COPY "libzlib-ng.sh" "libzlib-ng.sh"
-RUN ./libzlib-ng.sh
 COPY "libpcre8.sh" "libpcre8.sh"
 RUN ./libpcre8.sh
 COPY "libglib2.sh" "libglib2.sh"
@@ -90,8 +102,6 @@ RUN apt-get update -qq \
   && apt-get install -qqy \
     libudev-dev shared-mime-info gettext \
   && apt-get clean all -qqy
-COPY "libjson-c.sh" "libjson-c.sh"
-RUN ./libjson-c.sh
 COPY "libevdev.sh" "libevdev.sh"
 RUN ./libevdev.sh
 COPY "libinput.sh" "libinput.sh"
@@ -109,16 +119,21 @@ RUN ./tofi.sh
 COPY "novnc.sh" "novnc.sh"
 RUN ./novnc.sh
 COPY assets/. ${STAGING}/
-
-
+COPY ".staging.sh" ".staging.sh"
+RUN ./.staging.sh
 
 FROM base
-COPY --from=builder ${STAGING}/bin   /usr/local/bin
-COPY --from=builder ${STAGING}/etc   /etc
-COPY --from=builder ${STAGING}/opt   /opt
+COPY --from=builder /opt/staging.tar.gz /opt
+RUN tar -xvf /opt/staging.tar.gz -C / --no-same-owner \
+  --transform 's@^staging/bin@usr/local/bin@' \
+  --transform 's@^staging/lib@usr/local/lib@' \
+  --transform 's@^staging/etc@etc@' \
+  --transform 's@^staging/opt@opt@' \
+  --transform 's@^staging/var@var@' \
+  --transform 's@^staging/share@usr/share@'
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    libxkbcommon0 libfontconfig1 \
+    libxkbcommon0 fonts-noto-cjk \
   && apt-get clean all -qqy
 
 RUN apt-get update -qq \

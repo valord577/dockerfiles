@@ -2,7 +2,10 @@
 set -e
 
 if [ $# -gt 0 ]; then
-  apt-get update -qq && apt-get install -qqy $@ && apt-get clean all -qqy
+  apt-get update -qq
+  apt-get upgrade -qq
+  apt-get install -qqy $@
+  apt-get clean all -qqy
 fi
 
 
@@ -20,7 +23,7 @@ while true; do
   # https://man.archlinux.org/man/sway-output.5.en
   set +e
     {
-      swaymsg output HEADLESS-1 mode ${DISPLAY_SIZE:-'1920x1080'}@60Hz; swaymsg_ret=${?}
+      swaymsg output HEADLESS-1 mode ${DISPLAY_SIZE:-'1920x1080@60Hz'}; swaymsg_ret=${?}
     }
   set -e
   if [ ${swaymsg_ret} -eq 0 ];  then { break; } else { try=$(echo "$try + 1" | bc); } fi
