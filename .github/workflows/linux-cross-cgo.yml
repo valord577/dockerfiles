@@ -23,4 +23,4 @@ jobs:
       platforms: 'linux/amd64,linux/arm64'
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=310
-        SYSROOT_LIBSTDCXX_GCC_VER=4
+        SYSROOT_LIBSTDCXX_GCC_VER=7

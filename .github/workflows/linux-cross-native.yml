@@ -16,15 +16,6 @@ on:
       - 'linux-cross-native/Dockerfile'
 
 jobs:
-  linux310-gcc4:
-    secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
-    with:
-      platforms: 'linux/amd64,linux/arm64'
-      tagname: 'linux310-gcc4-cross'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=310
-        SYSROOT_LIBSTDCXX_GCC_VER=4
   linux310-gcc7:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
@@ -34,12 +25,3 @@ jobs:
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=310
         SYSROOT_LIBSTDCXX_GCC_VER=7
-  linux419-gcc4:
-    secrets: inherit
-    uses: ./.github/workflows/_buildx.yml
-    with:
-      platforms: 'linux/amd64,linux/arm64'
-      tagname: 'linux419-gcc4-cross'
-      build-args: |
-        SYSROOT_LINUX_HEADER_UAPI=419
-        SYSROOT_LIBSTDCXX_GCC_VER=4
