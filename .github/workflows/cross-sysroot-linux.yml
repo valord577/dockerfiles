@@ -25,14 +25,6 @@ jobs:
           DOCKER_BUILD_VERSION="$(date -u '+%Y%m%dT%H%M%SZ' )-${GITHUB_SHA:0:7}"
           printf "\e[1m\e[33m%s\e[0m\n" "DOCKER_BUILD_VERSION: $DOCKER_BUILD_VERSION"
           echo "pkgver=$DOCKER_BUILD_VERSION" >> "$GITHUB_OUTPUT"
-  linux310-gcc4:
-    needs: _preset
-    secrets: inherit
-    uses: ./.github/workflows/_buildx_cross_sysroot_linux.yml
-    with:
-      DOCKER_BUILD_VERSION: ${{ needs._preset.outputs.pkgver }}
-      SYSROOT_LINUX_HEADER_UAPI: "310"
-      SYSROOT_LIBSTDCXX_GCC_VER: "4"
   linux310-gcc7:
     needs: _preset
     secrets: inherit
@@ -41,11 +33,3 @@ jobs:
       DOCKER_BUILD_VERSION: ${{ needs._preset.outputs.pkgver }}
       SYSROOT_LINUX_HEADER_UAPI: "310"
       SYSROOT_LIBSTDCXX_GCC_VER: "7"
-  linux419-gcc4:
-    needs: _preset
-    secrets: inherit
-    uses: ./.github/workflows/_buildx_cross_sysroot_linux.yml
-    with:
-      DOCKER_BUILD_VERSION: ${{ needs._preset.outputs.pkgver }}
-      SYSROOT_LINUX_HEADER_UAPI: "419"
-      SYSROOT_LIBSTDCXX_GCC_VER: "4"
