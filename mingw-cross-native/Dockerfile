@@ -42,7 +42,6 @@ RUN apt update -qq    \
     git nasm make python3 python3-venv    \
     autoconf automake libtool libltdl-dev \
   && apt clean all -qqy
-RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 
 # required for host tools
 RUN apt update -qq \
