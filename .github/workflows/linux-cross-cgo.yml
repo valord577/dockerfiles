@@ -16,7 +16,7 @@ on:
       - 'linux-cross-cgo/Dockerfile'
 
 jobs:
-  linux310-gcc4:
+  linux310-gcc7:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
