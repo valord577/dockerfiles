@@ -1,5 +1,6 @@
 name: linux-cross-cgo
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

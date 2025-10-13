@@ -1,5 +1,6 @@
 name: mingw-cross-native
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
