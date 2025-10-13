@@ -87,8 +87,6 @@ jobs:
             SYSROOT_LINUX_HEADER_UAPI=${{ inputs.SYSROOT_LINUX_HEADER_UAPI }}
             SYSROOT_LIBSTDCXX_GCC_VER=${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
           tags: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._image_name_ }}:latest
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._image_name_ }}:${{ inputs.DOCKER_BUILD_VERSION }}
-            ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ env._image_name_ }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max

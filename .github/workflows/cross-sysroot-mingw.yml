@@ -15,3 +15,4 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: 'linux/amd64,linux/arm64'
+      latest: false
