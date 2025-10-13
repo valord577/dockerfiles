@@ -1,12 +1,12 @@
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="25a283c19cc5bfc1f33d92a9ae056411f14b94d9"
+ARG TOOLCHAIN_IMAGE_VERSION="8eb6b9007778dbf3cf244b08b0a8814f0b281314"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
 ARG CMAKE_URL="https://cmake.org/files"
 ENV CMAKE_X="3"
 ENV CMAKE_Y="30"
-ENV CMAKE_Z="8"
+ENV CMAKE_Z="9"
 ENV CMAKE_ROOT="/opt/cmake"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -39,8 +39,10 @@ RUN apt update -qq    \
   && apt install -qqy \
     file tree patchelf curl   \
     zip unzip xz-utils ccache \
-    git nasm make python3 python3-venv \
+    git nasm make python3 python3-venv    \
+    autoconf automake libtool libltdl-dev \
   && apt clean all -qqy
+RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 
 # required for host tools
 RUN apt update -qq \

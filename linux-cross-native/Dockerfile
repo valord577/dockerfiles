@@ -1,14 +1,14 @@
 ARG CONTAINER_REGISTRY_PREFIX
 ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="7"
-ARG TOOLCHAIN_IMAGE_VERSION="20250429T074928Z-9c0fde5"
+ARG TOOLCHAIN_IMAGE_VERSION="20251013T124553Z-8eb6b90"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
 # Install Cmake
 ARG CMAKE_URL="https://cmake.org/files"
 ENV CMAKE_X="3"
 ENV CMAKE_Y="30"
-ENV CMAKE_Z="8"
+ENV CMAKE_Z="9"
 ENV CMAKE_ROOT="/opt/cmake"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -41,5 +41,7 @@ RUN apt update -qq    \
   && apt install -qqy \
     file tree patchelf curl   \
     zip unzip xz-utils ccache \
-    git nasm make python3 python3-venv \
+    git nasm make python3 python3-venv    \
+    autoconf automake libtool libltdl-dev \
   && apt clean all -qqy
+RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simple"
