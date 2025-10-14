@@ -88,5 +88,3 @@ jobs:
             SYSROOT_LIBSTDCXX_GCC_VER=${{ inputs.SYSROOT_LIBSTDCXX_GCC_VER }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ env._image_name_ }}:${{ inputs.DOCKER_BUILD_VERSION }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

@@ -91,5 +91,3 @@ jobs:
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:latest
             ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
