@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -e
+
+basename="${0##*/}"
+triplet="${basename##pkgconf-wrapper\.}"
+
+if [[ "${triplet}" =~ ^x86_64.*$ ]]; then
+  TRIPLE="x86_64-linux-android"
+elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
+  TRIPLE="aarch64-linux-android"
+elif [[ "${triplet}" =~ ^i686.*$ ]]; then
+  TRIPLE="i686-linux-android"
+elif [[ "${triplet}" =~ ^arm.*$ ]]; then
+  TRIPLE="arm-linux-androideabi"
+elif [[ "${triplet}" =~ ^riscv64.*$ ]]; then
+  TRIPLE="riscv64-linux-android"
+fi
+
+LIBDIR_PREFIX="${CROSS_TOOLCHAIN_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib"
+
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${LIBDIR_PREFIX}/${TRIPLE}/${ANDROID_API_LEVEL:-"21"}"
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${LIBDIR_PREFIX}/${TRIPLE}"
+export PKG_CONFIG_LIBDIR
+
+if command -v pkgconf >/dev/null 2>&1 ; then
+  exec pkgconf "$@"
+else
+  exec pkg-config "$@"
+fi
