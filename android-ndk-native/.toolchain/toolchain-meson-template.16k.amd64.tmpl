@@ -1,0 +1,32 @@
+[constants]
+prefix = '__CROSS_TOOLCHAIN_ROOT__' / 'toolchains/llvm/prebuilt/linux-x86_64'
+triple = 'x86_64-linux-android'
+android_api_level = '__ANDROID_API_LEVEL__'
+exec_prefix = prefix / 'bin'
+exec_prefix_compiler = exec_prefix / triple + android_api_level + '-'
+
+[host_machine]
+system = 'android'
+kernel = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
+[properties]
+needs_exe_wrapper = false
+
+[binaries]
+c = ['ccache', exec_prefix_compiler + 'clang']
+cpp = ['ccache', exec_prefix_compiler + 'clang++']
+ar = exec_prefix / 'llvm-ar'
+as = exec_prefix / 'llvm-as'
+nm = exec_prefix / 'llvm-nm'
+ld = exec_prefix / 'ld.lld'
+objcopy = exec_prefix / 'llvm-objcopy'
+strip = exec_prefix / 'llvm-strip'
+ranlib = exec_prefix / 'llvm-ranlib'
+pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
+
+[built-in options]
+c_link_args = ['-Wl,-z,max-page-size=16384', '']
+cpp_link_args = c_link_args + []
