@@ -25,4 +25,4 @@ ld = exec_prefix / 'ld.lld'
 objcopy = exec_prefix / 'llvm-objcopy'
 strip = exec_prefix / 'llvm-strip'
 ranlib = exec_prefix / 'llvm-ranlib'
-pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
+pkg-config = '__CROSS_TOOLCHAIN_ROOT__' / 'pkgconf-wrapper.' + triple
