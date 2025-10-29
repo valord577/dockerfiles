@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='glib'
-VERSION='2.86.0'
+VERSION='2.86.1'
 LIBTEAM='gnome-team'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \

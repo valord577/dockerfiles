@@ -1,4 +1,4 @@
-FROM debian:12 AS base
+FROM debian:sid-20251020 AS base
 SHELL ["/bin/bash", "-c"]
 ENV TZ='UTC' \
     DEBIAN_FRONTEND=noninteractive
@@ -20,7 +20,7 @@ FROM base AS builder
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    curl gcc g++ pkgconf-bin python3-pip cmake \
+    curl gcc g++ cpp pkgconf python3-pip cmake \
   && apt-get clean all -qqy
 RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 RUN pip3 config set global.break-system-packages true
@@ -29,19 +29,19 @@ WORKDIR '/opt'
 ENV LD_LIBRARY_PATH="${STAGING}/lib"
 ENV PKG_CONFIG_PATH="${STAGING}/lib/pkgconfig"
 
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    gperf zlib1g-dev \
+  && apt-get clean all -qqy
+RUN rm -f /usr/lib/x86_64-linux-gnu/libz.a
+
 COPY "libbrotli.sh" "libbrotli.sh"
 RUN ./libbrotli.sh
-COPY "libzlib-ng.sh" "libzlib-ng.sh"
-RUN ./libzlib-ng.sh
 COPY "libpng16.sh" "libpng16.sh"
 RUN ./libpng16.sh
 COPY "libfreetype6.sh" "libfreetype6.sh"
 RUN ./libfreetype6.sh
 
-RUN apt-get update -qq \
-  && apt-get install -qqy \
-    gperf \
-  && apt-get clean all -qqy
 COPY "libexpat.sh" "libexpat.sh"
 RUN ./libexpat.sh
 COPY "libjson-c.sh" "libjson-c.sh"
@@ -58,6 +58,7 @@ RUN apt-get update -qq \
   && apt-get install -qqy \
     autoconf automake libtool libltdl-dev make \
   && apt-get clean all -qqy
+RUN rm -f /usr/lib/x86_64-linux-gnu/libltdl.a
 COPY "libffi8.sh" "libffi8.sh"
 RUN ./libffi8.sh
 
@@ -93,6 +94,34 @@ RUN ./wayvnc.sh
 
 COPY "libwayland-protocols.sh" "libwayland-protocols.sh"
 RUN ./libwayland-protocols.sh
+
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    xutils-dev xfonts-utils \
+    libx11-dev libxkbfile-dev libxcvt-dev libmd-dev libxshmfence-dev \
+    libxcb-composite0-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-res0-dev \
+  && apt-get clean all -qqy
+RUN rm -f /usr/lib/x86_64-linux-gnu/libX11.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libXau.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libXdmcp.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libmd.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-composite.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-ewmh.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-icccm.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-render.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-res.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-shape.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxcb-xfixes.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxkbfile.a
+RUN rm -f /usr/lib/x86_64-linux-gnu/libxshmfence.a
+
+COPY "libfontenc1.sh" "libfontenc1.sh"
+RUN ./libfontenc1.sh
+COPY "libxfont2.sh" "libxfont2.sh"
+RUN ./libxfont2.sh
+COPY "xwayland.sh" "xwayland.sh"
+RUN ./xwayland.sh
 COPY "libliftoff.sh" "libliftoff.sh"
 RUN ./libliftoff.sh
 COPY "libwlroots.sh" "libwlroots.sh"
@@ -102,6 +131,7 @@ RUN apt-get update -qq \
   && apt-get install -qqy \
     libudev-dev shared-mime-info gettext \
   && apt-get clean all -qqy
+RUN rm -f /usr/lib/x86_64-linux-gnu/libcap.a
 COPY "libevdev.sh" "libevdev.sh"
 RUN ./libevdev.sh
 COPY "libinput.sh" "libinput.sh"
@@ -122,23 +152,13 @@ COPY assets/. ${STAGING}/
 COPY ".staging.sh" ".staging.sh"
 RUN ./.staging.sh
 
-FROM base
-COPY --from=builder /opt/staging.tar.gz /opt
-RUN tar -xvf /opt/staging.tar.gz -C / --no-same-owner \
-  --transform 's@^staging/bin@usr/local/bin@' \
-  --transform 's@^staging/lib@usr/local/lib@' \
-  --transform 's@^staging/etc@etc@' \
-  --transform 's@^staging/opt@opt@' \
-  --transform 's@^staging/var@var@' \
-  --transform 's@^staging/share@usr/share@'
-RUN apt-get update -qq \
-  && apt-get install -qqy \
-    libxkbcommon0 fonts-noto-cjk \
-  && apt-get clean all -qqy
 
+
+
+FROM base
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    curl tree bc locales python3-pip \
+    locales python3-pip \
   && apt-get clean all -qqy
 ENV TZ='Asia/Shanghai'
 RUN ln -sfn /usr/share/zoneinfo/${TZ} /etc/localtime
@@ -148,9 +168,28 @@ RUN pip3 config set global.index-url "https://mirrors.bfsu.edu.cn/pypi/web/simpl
 RUN pip3 config set global.break-system-packages true
 RUN pip3 install --no-cache-dir -U --upgrade-strategy only-if-needed websockify==0.13.0 && pip3 cache purge
 
+
+COPY --from=builder /opt/staging.tar.gz /opt
+RUN tar -xvf /opt/staging.tar.gz -C / --no-same-owner \
+  --transform 's@^staging/bin@usr/local/bin@' \
+  --transform 's@^staging/lib@usr/local/lib@' \
+  --transform 's@^staging/etc@etc@' \
+  --transform 's@^staging/opt@opt@' \
+  --transform 's@^staging/var@var@' \
+  --transform 's@^staging/share@usr/share@'
+RUN ln -sfn /usr/share /
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    zlib1g libxkbcommon-x11-0 fonts-noto-cjk libxcvt0 libxshmfence1 \
+    libxcb-composite0 libxcb-ewmh2 libxcb-icccm4 libxcb-res0 libxcb-xfixes0 libxcb-render0 \
+    libx11-6 libxext6 libxi6 libxrender1 libxtst6 x11-xkb-utils \
+  && apt-get clean all -qqy
+
+
 ENV WLR_BACKENDS='headless'
 ENV WLR_RENDERER='pixman'
 ENV WLR_LIBINPUT_NO_DEVICES='1'
+ENV WLR_XWAYLAND='/usr/local/bin/Xwayland'
 ENV XDG_RUNTIME_DIR='/opt/xdg'
 ENV SWAYSOCK="${XDG_RUNTIME_DIR}/sway-ipc.sock"
 

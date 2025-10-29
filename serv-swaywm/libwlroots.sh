@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='wlroots'
-VERSION='0.19.1'
+VERSION='0.19.2'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://gitlab.freedesktop.org/wlroots/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
@@ -17,7 +17,7 @@ meson_args=$(cat <<- EOF
   -Dexamples=false     \
   -Drenderers=         \
   -Dsession=disabled   \
-  -Dxwayland=disabled  \
+  -Dxwayland=enabled   \
 
 EOF
 )

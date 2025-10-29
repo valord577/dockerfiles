@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='libdrm'
-VERSION='libdrm-2.4.126'
+VERSION='libdrm-2.4.127'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://gitlab.freedesktop.org/mesa/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
