@@ -11,7 +11,6 @@ mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --s
 
 meson_args=$(cat <<- EOF
                           \
-  -Dglib=disabled         \
   -Dgtk2-utils=disabled   \
   -Dgtk_doc=false         \
   -Dtee=disabled          \

@@ -2,10 +2,7 @@
 set -e
 
 if [ $# -gt 0 ]; then
-  apt-get update -qq
-  apt-get upgrade -qq
-  apt-get install -qqy $@
-  apt-get clean all -qqy
+  pacman -Syy --noconfirm $@
 fi
 
 
@@ -34,7 +31,9 @@ if [ ${try} -ge ${try_max} ]; then
 fi
 
 swaymsg -t get_outputs
+
 WAYLAND_DISPLAY='wayland-1' wayvnc -L info 0.0.0.0 &
-websockify -D --web=/opt/novnc/ 0.0.0.0:55900 127.0.0.1:5900
+/opt/websockify/run \
+  -D --web=/opt/novnc/ 0.0.0.0:55900 127.0.0.1:5900
 
 sleep inf

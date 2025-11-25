@@ -3,10 +3,9 @@ set -e
 
 LIBNAME='sway'
 VERSION='1.11'
-LIBTEAM='swaywm-team'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
-  --url "https://salsa.debian.org/${LIBTEAM}/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"
+  --url "https://github.com/swaywm/${LIBNAME}/archive/refs/tags/${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 
 

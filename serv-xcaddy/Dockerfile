@@ -33,17 +33,15 @@ PKG_LIBC="musl" PKG_ARCH="${TARGETARCH}" go build -v -o caddy_${TARGETARCH}
 EOT
 
 
-FROM alpine:3.20.3
-ENV TZ=UTC
-ENV XZ_OPT='--threads=0'
-ENV CCACHE_DIR="/ccache"
+FROM alpine:edge
+ENV TZ='UTC' XZ_OPT='--threads=0'
 RUN sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apk/repositories
 RUN apk update \
   && apk add --no-cache --no-check-certificate --no-interactive \
     tzdata ca-certificates \
   && apk cache -f --no-interactive purge \
   && apk cache -f --no-interactive clean
-RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 
 ARG TARGETOS
 ARG TARGETARCH

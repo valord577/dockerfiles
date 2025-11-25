@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='libdrm'
-VERSION='libdrm-2.4.127'
+VERSION='libdrm-2.4.129'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://gitlab.freedesktop.org/mesa/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
@@ -31,13 +31,14 @@ meson_args=$(cat <<- EOF
 EOF
 )
 meson setup \
-  --prefix '/usr/local'         \
-  --pkgconfig.relocatable       \
-  --libdir lib                  \
-  --wrap-mode nofallback        \
-  -Db_pie=true -Db_ndebug=true  \
-  --default-library static      \
-  --buildtype release           \
+  --prefix '/usr/local'            \
+  --pkgconfig.relocatable          \
+  --libdir lib                     \
+  --wrap-mode nofallback           \
+  -Db_pie=true -Db_ndebug=true     \
+  --default-library static         \
+  --default-both-libraries static  \
+  --buildtype release              \
   ${meson_args} "/opt/tmp/${LIBNAME}" "/opt/src/${LIBNAME}"
 meson compile -C "/opt/tmp/${LIBNAME}" -j 0
 meson install -C "/opt/tmp/${LIBNAME}" --no-rebuild --strip

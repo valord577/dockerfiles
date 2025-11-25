@@ -17,7 +17,7 @@ RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ENV LLVM_TOOL_VERSION="16"
 ENV LLVM_TOOL_DIR="/usr/lib/llvm-${LLVM_TOOL_VERSION}"
 ENV PATH="${PATH}:${LLVM_TOOL_DIR}/bin"
-ENV CC="clang" CXX="clang++"
+ENV CC="clang" CXX="clang++" CPP="clang-cpp"
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt update -qq \
   && apt install -qqy curl pkgconf-bin \
