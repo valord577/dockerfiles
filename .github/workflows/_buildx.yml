@@ -45,7 +45,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "_PUSH=true" >> "$GITHUB_ENV"
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Set up Docker QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
