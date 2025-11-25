@@ -75,7 +75,7 @@ jobs:
           # keep file permissions and case sensitivity
           tar -cvf ${{ env._archive_ }}.tar crosstool
       - name: cross sysroot upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ env._archive_ }}
           path: ${{ env._archive_ }}.tar
