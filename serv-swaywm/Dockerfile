@@ -5,7 +5,8 @@ RUN echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen && locale-gen
 ENV LC_ALL='en_US.UTF-8' LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 COPY .pacman.conf /etc/pacman.conf
 RUN pacman-key --init \
-  && pacman -Syy --noconfirm tzdata ca-certificates
+  && pacman -Syy --noconfirm tzdata ca-certificates \
+  && yes | pacman -Scc
 RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 ENV STAGING='/opt/staging'
 
@@ -19,7 +20,8 @@ ENV LD_LIBRARY_PATH="${STAGING}/lib:/usr/local/lib" \
     PKG_CONFIG_PATH="${STAGING}/lib/pkgconfig:/usr/local/lib/pkgconfig"
 
 RUN pacman -Syy --noconfirm \
-  fontconfig pixman pcre2 libffi fribidi shared-mime-info jansson libxkbcommon-x11
+    fontconfig pixman pcre2 libffi fribidi shared-mime-info jansson libxkbcommon-x11 \
+  && yes | pacman -Scc
 
 COPY "libglib2.sh" "libglib2.sh"
 RUN ./libglib2.sh
@@ -50,7 +52,8 @@ COPY "wayvnc.patch" "wayvnc.patch"
 RUN ./wayvnc.sh
 
 RUN pacman -Syy --noconfirm \
-  libx11 libxkbfile libxfont2 libxcvt libxshmfence xtrans xcb-util-wm libinput libevdev json-c
+    libx11 libxkbfile libxfont2 libxcvt libxshmfence xtrans xcb-util-wm libinput libevdev json-c \
+  && yes | pacman -Scc
 ENV PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/local/share/pkgconfig"
 COPY "xwayland.sh" "xwayland.sh"
 RUN ./xwayland.sh
@@ -83,10 +86,11 @@ RUN tar -xvf /opt/staging.tar.gz -C / --no-same-owner \
   --transform 's@^staging/share@usr/share@'
 RUN ln -sfn /usr/share /
 RUN pacman -Syy --noconfirm \
-  xcb-util-wm fontconfig pixman libffi fribidi jansson json-c \
-  libevdev pcre2 libxkbcommon-x11 noto-fonts-cjk python-numpy \
-  libx11 libxshmfence libxkbfile libxfont2 libxcvt libxrender \
-  xkeyboard-config xorg-xkbcomp libxi libevdev libxtst
+    xcb-util-wm fontconfig pixman libffi fribidi jansson json-c \
+    libevdev pcre2 libxkbcommon-x11 noto-fonts-cjk python-numpy \
+    libx11 libxshmfence libxkbfile libxfont2 libxcvt libxrender \
+    xkeyboard-config xorg-xkbcomp libxi libevdev libxtst \
+  && yes | pacman -Scc
 
 
 ENV LD_LIBRARY_PATH="/usr/local/lib"
