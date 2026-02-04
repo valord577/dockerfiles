@@ -1,13 +1,13 @@
 ARG CONTAINER_REGISTRY_PREFIX
 ARG SYSROOT_LINUX_HEADER_UAPI="310"
 ARG SYSROOT_LIBSTDCXX_GCC_VER="7"
-ARG TOOLCHAIN_IMAGE_VERSION="20251013T124553Z-8eb6b90"
+ARG TOOLCHAIN_IMAGE_VERSION="20260204T141025Z-3b84781"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}:${TOOLCHAIN_IMAGE_VERSION}
 
-RUN apt update -qq \
-  && apt install -qqy \
+RUN apt-get update -qq \
+  && apt-get install -qqy \
     tree patchelf curl zip unzip xz-utils git file python3 \
-  && apt clean all -qqy
+  && apt-get clean all -qqy
 
 ARG TARGETOS
 ARG TARGETARCH
