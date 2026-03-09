@@ -77,7 +77,7 @@ jobs:
           ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-arm64-musl.tar.gz" "."
           ${{ github.workspace }}/.github/rclone copy "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/${_archive_prefix_}-target-armhf-musl.tar.gz" "."
       - name: build image and push[${{ env._PUSH }}]
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           pull: true
           push: ${{ env._PUSH }}
