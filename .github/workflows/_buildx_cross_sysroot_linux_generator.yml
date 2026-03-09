@@ -52,7 +52,7 @@ jobs:
         with:
           version: latest
       - name: cross sysroot build - ${{ matrix.arch }}/${{ matrix.libc }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           pull: true
           push: false
