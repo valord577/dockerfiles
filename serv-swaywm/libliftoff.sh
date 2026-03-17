@@ -4,7 +4,7 @@ set -e
 LIBNAME='libliftoff'
 VERSION='v0.5.0'
 
-curl --fail-with-body -sSL -o '1.tar.gz' \
+curl --fail-with-body --insecure -sSL -o '1.tar.gz' \
   --url "https://gitlab.freedesktop.org/emersion/${LIBNAME}/-/archive/${VERSION}/${LIBNAME}-${VERSION}.tar.gz"
 mkdir -p "/opt/src/${LIBNAME}"; tar -xvf "1.tar.gz" -C "/opt/src/${LIBNAME}" --strip-components=1 --no-same-owner
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-if [ $# -gt 0 ]; then
-  pacman -Syy --noconfirm $@
-fi
+#if [ $# -gt 0 ]; then
+#  pacman -Syy --noconfirm $@
+#fi
 
 
 

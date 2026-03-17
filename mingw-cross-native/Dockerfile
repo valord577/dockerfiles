@@ -35,18 +35,18 @@ EOT
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 
 
-RUN apt update -qq    \
-  && apt install -qqy \
+RUN apt-get update -qq    \
+  && apt-get install -qqy \
     file tree patchelf curl   \
     zip unzip xz-utils ccache \
     git nasm make python3 python3-venv    \
     autoconf automake libtool libltdl-dev \
-  && apt clean all -qqy
+  && apt-get clean all -qqy
 
 # required for host tools
-RUN apt update -qq \
-  && apt install -qqy \
+RUN apt-get update -qq \
+  && apt-get install -qqy \
     libc6-dev binutils \
     libgcc-12-dev \
     libstdc++-12-dev \
-  && apt clean all -qqy
+  && apt-get clean all -qqy

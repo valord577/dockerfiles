@@ -7,18 +7,18 @@ ENV CCACHE_DIR="/ccache"
 RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
-RUN sed -i s@/deb.debian.org/@/mirrors.bfsu.edu.cn/@g /etc/apt/sources.list.d/**
-RUN apt update -qq \
-  && apt install -qqy tzdata ca-certificates \
-  && apt clean all -qqy
+RUN sed -i s@/deb.debian.org/@/repo.huaweicloud.com/@g /etc/apt/sources.list.d/**
+RUN apt-get update -qq \
+  && apt-get install -qqy tzdata ca-certificates \
+  && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
-RUN apt update -qq \
-  && apt install -qqy \
+RUN apt-get update -qq \
+  && apt-get install -qqy \
     curl pkgconf-bin xz-utils \
-  && apt clean all -qqy
+  && apt-get clean all -qqy
 
 
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"

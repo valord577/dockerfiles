@@ -2,15 +2,15 @@ ARG CONTAINER_REGISTRY_PREFIX
 ARG TOOLCHAIN_IMAGE_VERSION="abcaba83a8c6c72edf213d2143adbd2a8f324ba8"
 FROM ${CONTAINER_REGISTRY_PREFIX}valord577/cross-sysroot-mingw:${TOOLCHAIN_IMAGE_VERSION}
 
-RUN apt update -qq \
-  && apt install -qqy \
+RUN apt-get update -qq \
+  && apt-get install -qqy \
     tree patchelf curl zip unzip xz-utils git file python3 \
-  && apt clean all -qqy
+  && apt-get clean all -qqy
 
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.25.2"
+ENV GOLANG_SDK="1.25.8"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash

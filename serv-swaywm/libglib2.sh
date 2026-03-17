@@ -2,7 +2,7 @@
 set -e
 
 LIBNAME='glib'
-VERSION='2.86.2'
+VERSION='2.87.2'
 
 curl --fail-with-body -sSL -o '1.tar.gz' \
   --url "https://salsa.debian.org/gnome-team/${LIBNAME}/-/archive/upstream/${VERSION}/${LIBNAME}-upstream-${VERSION}.tar.gz"

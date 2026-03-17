@@ -89,7 +89,8 @@ RUN pacman -Syy --noconfirm \
     xcb-util-wm fontconfig pixman libffi fribidi jansson json-c \
     libevdev pcre2 libxkbcommon-x11 noto-fonts-cjk python-numpy \
     libx11 libxshmfence libxkbfile libxfont2 libxcvt libxrender \
-    xkeyboard-config xorg-xkbcomp libxi libevdev libxtst \
+    xkeyboard-config xorg-xkbcomp libxi libevdev libxtst unzip \
+    git e2fsprogs patch file \
   && yes | pacman -Scc
 
 
