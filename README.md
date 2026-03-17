@@ -29,13 +29,6 @@
 
   ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-native/tags)
 
-<!--
-* [jellyfin](serv-jellyfin)
-  - Portable Jellyfin
-
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/jellyfin/tags)
--->
-
 * [xcaddy](serv-xcaddy)
   - Portable Caddy Server with(out) Plugin(s)
 

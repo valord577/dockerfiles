@@ -15,6 +15,11 @@
 
   ![s][Deprecated] [![image][GoToDocker]](cgo-openwrt-mt7622/Dockerfile)
 
+* [jellyfin](serv-jellyfin)
+  - Portable Jellyfin
+
+  ![s][Deprecated] [![image][GoToDocker]](serv-jellyfin/Dockerfile)
+
 * [netatalk](serv-netatalk)
   - Portable Netatalk (Replaced by SMB with time machine support)
 
