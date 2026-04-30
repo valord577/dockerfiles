@@ -25,5 +25,10 @@
 
   ![s][Deprecated] [![image][GoToDocker]](serv-netatalk/Dockerfile)
 
+* [swaywm](serv-swaywm)
+  - Portable Sway WM
+
+  ![s][Deprecated] [![image][GoToDocker]](serv-swaywm/Dockerfile)
+
 [Deprecated]: https://img.shields.io/badge/Deprecated-red
 [GoToDocker]: https://img.shields.io/badge/Image-View%20Dockerfile-blue
