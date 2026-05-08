@@ -3,7 +3,7 @@ SHELL ["/bin/bash", "-c"]
 ENV TZ='Asia/Shanghai' XZ_OPT='--threads=0' CCACHE_DIR="/ccache"
 RUN echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen && locale-gen
 ENV LC_ALL='en_US.UTF-8' LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-COPY .pacman.conf /etc/pacman.conf
+RUN echo 'Server = http://repo.huaweicloud.com/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist
 RUN pacman-key --init \
   && pacman -Syy --noconfirm tzdata ca-certificates \
   && yes | pacman -Scc
