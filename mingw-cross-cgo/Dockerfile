@@ -10,7 +10,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.25.8"
+ENV GOLANG_SDK="1.26.3"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -48,7 +48,7 @@ triplet_arch="${basename##cgotool-wrapper\.}"
 triplet="${triplet_arch}-w64-mingw32"
 
 if [[ "${triplet}" =~ ^x86_64.*$ ]]; then
-  export GOARCH=amd64; export GOAMD64=v3
+  export GOARCH=amd64; export GOAMD64=v2
 elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
   export GOARCH=arm64
 fi
