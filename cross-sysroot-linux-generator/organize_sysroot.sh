@@ -19,7 +19,26 @@ if [[ "${CROSS_TRIPLE}" =~ ^x86_64.*$ ]] \
 fi
 
 mv tmp/lib/gcc ${SYSROOT}/usr/lib/
+rm -rf ${SYSROOT}/usr/lib/{audit,gconv}
 rm -rf ${SYSROOT}/usr/lib/gcc/*/*/{include,include-fixed,install-tools,plugin}
+
+rm -f ${SYSROOT}/lib/libatomic.a
+rm -f ${SYSROOT}/lib/libcilkrts.so*
+rm -f ${SYSROOT}/lib/libcilkrts.spec
+rm -f ${SYSROOT}/lib/libitm.so*
+rm -f ${SYSROOT}/lib/libitm.spec
+
+rm -f ${SYSROOT}/usr/lib/libBrokenLocale.a
+rm -f ${SYSROOT}/usr/lib/libanl.a
+rm -f ${SYSROOT}/usr/lib/libc.a
+rm -f ${SYSROOT}/usr/lib/libcrypt.a
+rm -f ${SYSROOT}/usr/lib/libdl.a
+rm -f ${SYSROOT}/usr/lib/libm.a
+rm -f ${SYSROOT}/usr/lib/libnsl.a
+rm -f ${SYSROOT}/usr/lib/libpthread.a
+rm -f ${SYSROOT}/usr/lib/libresolv.a
+rm -f ${SYSROOT}/usr/lib/librt.a
+rm -f ${SYSROOT}/usr/lib/libutil.a
 
 mv tmp/${CROSS_TRIPLE}/include ${SYSROOT}/
 cd ${SYSROOT}/include; CXXDIR="$(dirname c++/*/${CROSS_TRIPLE})"; cd -;
