@@ -122,12 +122,12 @@ TOOLCHAIN_FILE_CMAKE_AMD64_MUSL=$(
 TOOLCHAIN_FILE_CMAKE_ARMHF_GNU=$(
   echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
   sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g" | \
-  sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4@g"
+  sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4;-mfloat-abi=hard@g"
 )
 TOOLCHAIN_FILE_CMAKE_ARMHF_MUSL=$(
   echo -e "${TOOLCHAIN_FILE_CMAKE}" | \
   sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-musleabihf@g" | \
-  sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4@g"
+  sed "s@__EXTRA_FLAGS__@-march=armv7-a;-mfpu=neon-vfpv4;-mfloat-abi=hard@g"
 )
 
 echo -e "${TOOLCHAIN_FILE_CMAKE_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_CMAKE}.aarch64-unknown-linux-gnu"
@@ -205,12 +205,12 @@ TOOLCHAIN_FILE_MESON_AMD64_MUSL=$(
 TOOLCHAIN_FILE_MESON_ARMHF_GNU=$(
   echo -e "${TOOLCHAIN_FILE_MESON}" | \
   sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-gnueabihf@g" | \
-  sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4'@g"
+  sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4', '-mfloat-abi=hard'@g"
 )
 TOOLCHAIN_FILE_MESON_ARMHF_MUSL=$(
   echo -e "${TOOLCHAIN_FILE_MESON}" | \
   sed "s@__TARGET_ARCH__@arm@g"     | sed "s@__TARGET_TRIPLE__@arm-unknown-linux-musleabihf@g" | \
-  sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4'@g"
+  sed "s@__EXTRA_FLAGS__@'-march=armv7-a', '-mfpu=neon-vfpv4', '-mfloat-abi=hard'@g"
 )
 
 echo -e "${TOOLCHAIN_FILE_MESON_ARM64_GNU}"  > "${CROSS_TOOLCHAIN_FILE_PREFIX_MESON}.aarch64-unknown-linux-gnu"
