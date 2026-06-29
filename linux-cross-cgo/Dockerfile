@@ -53,7 +53,7 @@ elif [[ "${triplet}" =~ ^aarch64.*$ ]]; then
   export GOARCH=arm64
 elif [[ "${triplet}" =~ ^arm.*$ ]]; then
   export GOARCH=arm; export GOARM='7,hardfloat'
-  __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4'
+  __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard'
 fi
 
 export CGO_ENABLED=1
