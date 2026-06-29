@@ -83,5 +83,5 @@ jobs:
       - name: commit to pre-compiled storage
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          tar -zcvf ${{ env._archive_ }}.tar.gz crosstool
-          ./.github/rclone copy "${{ env._archive_ }}.tar.gz" "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/"
+          cd crosstool; zip -ry ../${{ env._archive_ }}.zip .
+          ./.github/rclone copy "${{ env._archive_ }}.zip" "r2:${{ env.S3_R2_STORAGE_BUCKET }}/crosstool-ng/"
