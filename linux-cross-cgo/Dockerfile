@@ -12,7 +12,7 @@ RUN apt-get update -qq \
 ARG TARGETOS
 ARG TARGETARCH
 
-ENV GOLANG_SDK="1.26.3"
+ENV GOLANG_SDK="1.26.4"
 ENV GOLANG_SDK_ROOT="/opt/go"
 RUN <<EOT
 #!/usr/bin/env bash
