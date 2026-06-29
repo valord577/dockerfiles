@@ -1,4 +1,4 @@
-name: cross-sysroot-linux
+name: cross-sysroot-linux-merge
 on:
   workflow_dispatch:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/_buildx_cross_sysroot_linux.yml'
-      - '.github/workflows/cross-sysroot-linux.yml'
+      - '.github/workflows/cross-sysroot-linux-merge.yml'
       - 'cross-sysroot-linux/Dockerfile'
 
 jobs:
