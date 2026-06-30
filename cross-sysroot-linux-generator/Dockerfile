@@ -66,6 +66,9 @@ RUN ./organize_sysroot.sh
 FROM base
 COPY --from=crosstool-ng ${CT_PREFIX} .
 # ----------------------------
+ARG TARGETOS
+ARG TARGETARCH
+# ----------------------------
 ARG RCLONE_URL="https://downloads.rclone.org"
 ARG COMMIT_LINUX_SYSROOT
 COPY "commit_linux_sysroot.sh" "commit_linux_sysroot.sh"
