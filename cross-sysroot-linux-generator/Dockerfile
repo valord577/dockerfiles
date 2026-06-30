@@ -66,6 +66,7 @@ FROM base
 COPY --from=crosstool-ng ${CT_PREFIX} .
 # ----------------------------
 ARG RCLONE_URL="https://downloads.rclone.org"
+ARG COMMIT_LINUX_SYSROOT
 COPY "commit_linux_sysroot.sh" "commit_linux_sysroot.sh"
 RUN --mount=type=secret,id=S3_R2_ACCOUNT_ID,env=S3_R2_ACCOUNT_ID \
     --mount=type=secret,id=S3_R2_ACCESS_KEY,env=S3_R2_ACCESS_KEY \

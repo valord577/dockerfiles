@@ -41,3 +41,4 @@ jobs:
         SYSROOT_LIBSTDCXX_GCC_VER=7
         SYSROOT_TARGET_ARCH=${{ matrix.arch }}
         SYSROOT_TARGET_LIBC=${{ matrix.libc }}
+        COMMIT_LINUX_SYSROOT=${{ github.event_name == 'workflow_dispatch' }}

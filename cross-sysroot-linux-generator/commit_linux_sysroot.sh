@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 _DOWNLOAD_URL_="${RCLONE_URL}/rclone-current-linux-${TARGETARCH}.zip"
@@ -19,7 +19,9 @@ EOF
 
 archived="crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-${SYSROOT_TARGET_ARCH}-${SYSROOT_TARGET_LIBC}.tar.gz"
 tar -zcvf /${archived} .
-/rclone copy "/${archived}" "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/"
+if [ "${COMMIT_LINUX_SYSROOT}" == "true" ]; then
+  /rclone copy "/${archived}" "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/"
+fi
 
 
 # ----------------------------
