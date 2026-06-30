@@ -32,7 +32,7 @@ jobs:
           - musl
           - gnu
     secrets: inherit
-    uses: .github/workflows/_buildx.yml
+    uses: ./.github/workflows/_buildx.yml
     with:
       latest: false
       build-args: |
