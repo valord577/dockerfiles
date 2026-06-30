@@ -5,7 +5,7 @@ _DOWNLOAD_URL_="${RCLONE_URL}/rclone-current-linux-${TARGETARCH}.zip"
 curl --fail-with-body -sSL -o "/rclone.zip" --url "${_DOWNLOAD_URL_}"
 unzip -j /rclone.zip '*/rclone' -d /
 
-cat > "rclone.conf" <<- EOF
+cat > "/rclone.conf" <<- EOF
 [r2]
 type = s3
 provider = Cloudflare
