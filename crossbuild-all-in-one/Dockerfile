@@ -29,13 +29,13 @@ ARG TARGETARCH
 WORKDIR "/opt/toolchain"
 # ----------------------------
 ARG RCLONE_URL="https://downloads.rclone.org"
-ARG S3_R2_ACCOUNT_ID="mask"
-ARG S3_R2_ACCESS_KEY="mask"
-ARG S3_R2_SECRET_KEY="mask"
-ARG S3_R2_STORAGE_REGION="auto"
-ARG S3_R2_STORAGE_BUCKET="mask"
 COPY "extract_linux_sysroot.sh" "extract_linux_sysroot.sh"
-RUN ./extract_linux_sysroot.sh
+RUN --mount=type=secret,id=S3_R2_ACCOUNT_ID,env=S3_R2_ACCOUNT_ID \
+    --mount=type=secret,id=S3_R2_ACCESS_KEY,env=S3_R2_ACCESS_KEY \
+    --mount=type=secret,id=S3_R2_SECRET_KEY,env=S3_R2_SECRET_KEY \
+    --mount=type=secret,id=S3_R2_STORAGE_REGION,env=S3_R2_STORAGE_REGION \
+    --mount=type=secret,id=S3_R2_STORAGE_BUCKET,env=S3_R2_STORAGE_BUCKET \
+    ./extract_linux_sysroot.sh
 # ----------------------------
 COPY "extract_golang.sh" "extract_golang.sh"
 RUN ./extract_golang.sh

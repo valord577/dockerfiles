@@ -1,6 +1,13 @@
 name: crossbuild-all-in-one
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/crossbuild-all-in-one.yml'
+      - 'crossbuild-all-in-one/*'
   pull_request:
     branches:
       - main
@@ -32,9 +39,3 @@ jobs:
     with:
       platforms: 'linux/amd64,linux/arm64'
       tagvers: ${{ needs._preset.outputs.pkgver }}
-      build-args: |
-        S3_R2_ACCOUNT_ID
-        S3_R2_ACCESS_KEY
-        S3_R2_SECRET_KEY
-        S3_R2_STORAGE_BUCKET
-        S3_R2_STORAGE_REGION

@@ -93,6 +93,12 @@ jobs:
           target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}
           build-args: ${{ inputs.build-args }}
+          secrets: |
+            S3_R2_ACCOUNT_ID=${{ secrets.S3_R2_ACCOUNT_ID }}
+            S3_R2_ACCESS_KEY=${{ secrets.S3_R2_ACCESS_KEY }}
+            S3_R2_SECRET_KEY=${{ secrets.S3_R2_SECRET_KEY }}
+            S3_R2_STORAGE_BUCKET=${{ secrets.S3_R2_STORAGE_BUCKET }}
+            S3_R2_STORAGE_REGION=${{ secrets.S3_R2_STORAGE_REGION }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:${{ inputs.tagvers }}
       - name: Build Image and Push (latest)
@@ -105,6 +111,12 @@ jobs:
           target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}
           build-args: ${{ inputs.build-args }}
+          secrets: |
+            S3_R2_ACCOUNT_ID=${{ secrets.S3_R2_ACCOUNT_ID }}
+            S3_R2_ACCESS_KEY=${{ secrets.S3_R2_ACCESS_KEY }}
+            S3_R2_SECRET_KEY=${{ secrets.S3_R2_SECRET_KEY }}
+            S3_R2_STORAGE_BUCKET=${{ secrets.S3_R2_STORAGE_BUCKET }}
+            S3_R2_STORAGE_REGION=${{ secrets.S3_R2_STORAGE_REGION }}
           tags: |
             ${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:latest
             ${{ vars.REGISTRY_ALIYUN_ACR }}/${{ vars.DOCKER_HUB_USERNAME }}/${{ inputs.tagname }}:latest
