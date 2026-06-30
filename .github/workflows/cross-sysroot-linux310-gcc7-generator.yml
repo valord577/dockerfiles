@@ -35,6 +35,7 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       latest: false
+      context: cross-sysroot-linux-generator
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=310
         SYSROOT_LIBSTDCXX_GCC_VER=7
