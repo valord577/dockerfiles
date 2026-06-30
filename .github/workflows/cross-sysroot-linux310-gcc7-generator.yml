@@ -34,7 +34,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
-      latest: false
+      is_push: false
       context: cross-sysroot-linux-generator
       build-args: |
         SYSROOT_LINUX_HEADER_UAPI=310
