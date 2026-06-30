@@ -12,22 +12,22 @@ ENV STAGING='/opt/staging'
 ARG GITHUB_PROXY=""
 
 
-FROM base AS builder
-RUN pacman -Syy --noconfirm \
-  curl tree
-COPY "novnc.sh" "novnc.sh"
-RUN ./novnc.sh
-COPY assets/. ${STAGING}/
-COPY ".staging.sh" ".staging.sh"
-RUN ./.staging.sh
+#FROM base AS builder
+#RUN pacman -Syy --noconfirm \
+#  curl tree
+#COPY "novnc.sh" "novnc.sh"
+#RUN ./novnc.sh
+#COPY assets/. ${STAGING}/
+#COPY ".staging.sh" ".staging.sh"
+#RUN ./.staging.sh
 
 
 
 
 FROM base
-COPY --from=builder /opt/staging.tar.gz /opt
-RUN tar -xvf /opt/staging.tar.gz -C / --no-same-owner \
-  --transform 's@^staging/opt@opt@'
+#COPY --from=builder /opt/staging.tar.gz /opt
+#RUN tar -xvf /opt/staging.tar.gz -C / --no-same-owner \
+#  --transform 's@^staging/opt@opt@'
 RUN pacman -Syy --noconfirm \
     weston python-numpy libdisplay-info neatvnc \
     git e2fsprogs patch file unzip noto-fonts-cjk \
