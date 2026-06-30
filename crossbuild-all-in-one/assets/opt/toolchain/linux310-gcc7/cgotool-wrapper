@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+set -e
+
+DIR=$(cd "$(dirname "${0}")"; pwd)
+
+_go_exec_="${GOLANG_SDK_ROOT:-'/opt/golang'}/bin/go"
+# { command -v go >/dev/null 2>&1; } && \
+#   { _go_exec_="$(command -v go)"; }
+
+
+basename="${0##*/}"
+triplet="${basename##cgotool-wrapper\.}"
+
+case "${triplet}" in
+  x86_64*)
+    export GOARCH=amd64; export GOAMD64=v2
+    ;;
+  aarch64*)
+    export GOARCH=arm64
+    ;;
+  arm*)
+    export GOARCH=arm; export GOARM='7,hardfloat'
+    __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard'
+    ;;
+esac
+
+_cflags="--target=${triplet} --gcc-toolchain=${DIR}/${triplet}/usr --sysroot=${DIR}/${triplet} ${__EXTRA_FLAGS__}"
+_ldflags="-fuse-ld=lld --sysroot=${DIR}/${triplet}"
+
+export CGO_ENABLED=1
+export GOTOOLCHAIN=local
+export AR="llvm-ar"
+export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) ${_ldflags}"
+export CC="clang ${_cflags}"
+export CXX="clang++ ${_cflags}"
+export PKG_CONFIG="${DIR}/pkgconf-wrapper.${triplet}"
+
+exec "${_go_exec_}" "$@"

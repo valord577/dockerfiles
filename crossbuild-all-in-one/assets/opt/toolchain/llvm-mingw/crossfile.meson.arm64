@@ -1,0 +1,30 @@
+[constants]
+prefix = '@DIRNAME@' / 'bin'
+ccache = []
+triple = 'aarch64-w64-mingw32'
+
+[host_machine]
+system = 'windows'
+kernel = 'nt'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+
+[properties]
+needs_exe_wrapper = false
+cmake_defaults    = false
+cmake_toolchain_file = '@DIRNAME@/crossfile.cmake.' + triple
+
+[binaries]
+c   = ccache + [prefix / (triple + '-clang')]
+cpp = ccache + [prefix / (triple + '-clang++')]
+ar = prefix / (triple + '-ar')
+as = prefix / (triple + '-as')
+nm = prefix / (triple + '-nm')
+ld = prefix / (triple + '-ld')
+windres = prefix / (triple + '-windres')
+objcopy = prefix / (triple + '-objcopy')
+strip   = prefix / (triple + '-strip')
+ranlib  = prefix / (triple + '-ranlib')
+pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
+cmake = 'cmake'

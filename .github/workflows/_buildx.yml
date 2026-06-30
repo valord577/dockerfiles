@@ -31,6 +31,14 @@ on:
         required: false
         type: string
 
+env:
+  GH_TOKEN: ${{ github.token }}
+  S3_R2_ACCOUNT_ID: ${{ secrets.S3_R2_ACCOUNT_ID }}
+  S3_R2_ACCESS_KEY: ${{ secrets.S3_R2_ACCESS_KEY }}
+  S3_R2_SECRET_KEY: ${{ secrets.S3_R2_SECRET_KEY }}
+  S3_R2_STORAGE_BUCKET: ${{ secrets.S3_R2_STORAGE_BUCKET }}
+  S3_R2_STORAGE_REGION: ${{ secrets.S3_R2_STORAGE_REGION }}
+
 jobs:
   _buildx:
     runs-on: ubuntu-latest
@@ -45,14 +53,23 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo "_PUSH=true" >> "$GITHUB_ENV"
       - name: Git Checkout
-        uses: actions/checkout@v6
+        run: |
+          git config --global --add safe.directory "*"
+
+          git init
+          git remote add x ${{github.server_url}}/${{ github.repository }}.git
+          git fetch --no-tags --prune --no-recurse-submodules --depth=1 x +${{ github.sha }}
+          git checkout FETCH_HEAD
       - name: Set up Docker QEMU
         uses: docker/setup-qemu-action@v4
+        with:
+          cache-image: false
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
         with:
           version: latest
           platforms: ${{ inputs.platforms }}
+          cache-binary: false
       - name: Login to Docker Hub
         if: ${{ env._PUSH == 'true' }}
         uses: docker/login-action@v4
