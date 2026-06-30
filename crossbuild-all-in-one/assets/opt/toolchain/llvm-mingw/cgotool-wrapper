@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+set -e
+
+DIR=$(cd "$(dirname "${0}")"; pwd)
+
+_go_exec_="${GOLANG_SDK_ROOT:-'/opt/golang'}/bin/go"
+# { command -v go >/dev/null 2>&1; } && \
+#   { _go_exec_="$(command -v go)"; }
+
+
+basename="${0##*/}"
+triplet="${basename##cgotool-wrapper\.}"
+
+case "${triplet}" in
+  amd64|x86_64*)
+    triplet='x86_64-w64-mingw32'
+    export GOARCH=amd64; export GOAMD64=v3
+    ;;
+  arm64|aarch64*)
+    triplet='aarch64-w64-mingw32'
+    export GOARCH=arm64
+    ;;
+esac
+
+export GOOS=windows
+export CGO_ENABLED=1
+export GOTOOLCHAIN=local
+export AR="${DIR}/bin/${triplet}-ar"
+export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=${DIR}/bin/${triplet}-ld"
+export CC="${DIR}/bin/${triplet}-clang"
+export CXX="${DIR}/bin/${triplet}-clang++"
+export PKG_CONFIG="${DIR}/pkgconf-wrapper.${triplet}"
+
+exec "${_go_exec_}" "$@"

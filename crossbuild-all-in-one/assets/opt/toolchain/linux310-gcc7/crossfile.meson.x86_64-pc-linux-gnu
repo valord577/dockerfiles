@@ -1,0 +1,41 @@
+[constants]
+prefix = ''
+ccache = []
+triple = 'x86_64-pc-linux-gnu'
+sys_root = '@DIRNAME@' / triple
+gcc_root = '@DIRNAME@' / triple / 'usr'
+ccflags = ['--target='+triple, '--gcc-toolchain='+gcc_root, '--sysroot='+sys_root]
+ldflags = ['-fuse-ld=lld', '--sysroot='+sys_root]
+
+[host_machine]
+system = 'linux'
+kernel = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
+[properties]
+needs_exe_wrapper = false
+cmake_defaults    = false
+cmake_toolchain_file = '@DIRNAME@/toolchain-cmake-template.' + triple
+
+[properties]
+needs_exe_wrapper = false
+cmake_defaults    = false
+cmake_toolchain_file = '@DIRNAME@/crossfile.cmake.' + triple
+
+[binaries]
+c   = ccache + [prefix / 'clang']   + ccflags
+cpp = ccache + [prefix / 'clang++'] + ccflags
+ar = prefix / 'llvm-ar'
+as = prefix / 'llvm-as'
+nm = prefix / 'llvm-nm'
+objcopy = prefix / 'llvm-objcopy'
+strip   = prefix / 'llvm-strip'
+ranlib  = prefix / 'llvm-ranlib'
+pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
+cmake = 'cmake'
+
+[built-in options]
+c_link_args   = ldflags
+cpp_link_args = ldflags
