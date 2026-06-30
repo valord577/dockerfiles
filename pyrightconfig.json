@@ -1,7 +1,0 @@
-{
-  "exclude": [],
-  "include": [],
-  //"venvPath": ".",
-  //"venv": ".env",
-  "typeCheckingMode": "off",
-}

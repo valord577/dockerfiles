@@ -16,6 +16,13 @@ ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
 ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
 
+ARG SYSROOT_LINUX_HEADER_UAPI="310"
+ARG SYSROOT_LIBSTDCXX_GCC_VER="7"
+# ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
+ARG SYSROOT_TARGET_ARCH="amd64"
+ARG SYSROOT_TARGET_LIBC="gnu"
+
+
 
 FROM base AS crosstool-ng
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
@@ -43,15 +50,6 @@ git checkout FETCH_HEAD
 make -j $(nproc)
 EOT
 
-
-ARG SYSROOT_LINUX_HEADER_UAPI="310"
-ARG SYSROOT_LIBSTDCXX_GCC_VER="7"
-# ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
-ARG SYSROOT_TARGET_ARCH="amd64"
-ENV SYSROOT_TARGET_ARCH="${SYSROOT_TARGET_ARCH}"
-ARG SYSROOT_TARGET_LIBC="gnu"
-ENV SYSROOT_TARGET_LIBC="${SYSROOT_TARGET_LIBC}"
-
 COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}.ini" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
@@ -66,3 +64,12 @@ RUN ./organize_sysroot.sh
 
 FROM base
 COPY --from=crosstool-ng ${CT_PREFIX} .
+# ----------------------------
+ARG RCLONE_URL="https://downloads.rclone.org"
+COPY "commit_linux_sysroot.sh" "commit_linux_sysroot.sh"
+RUN --mount=type=secret,id=S3_R2_ACCOUNT_ID,env=S3_R2_ACCOUNT_ID \
+    --mount=type=secret,id=S3_R2_ACCESS_KEY,env=S3_R2_ACCESS_KEY \
+    --mount=type=secret,id=S3_R2_SECRET_KEY,env=S3_R2_SECRET_KEY \
+    --mount=type=secret,id=S3_R2_STORAGE_REGION,env=S3_R2_STORAGE_REGION \
+    --mount=type=secret,id=S3_R2_STORAGE_BUCKET,env=S3_R2_STORAGE_BUCKET \
+    ./commit_linux_sysroot.sh

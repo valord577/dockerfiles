@@ -9,25 +9,10 @@
 
   ![s][Maintained] [![image][ANDROID_NDK_R27D]](https://hub.docker.com/r/valord577/android-ndk-r27d/tags)  
 
-* [linux-cross-cgo](linux-cross-cgo)
-  - Cross Toolchain for Linux - CGO
+* [crossbuild-all-in-one](crossbuild-all-in-one)
+  - Cross Build Toolchain on Linux All in One
 
-  ![s][Maintained] [![image][Linux310_GCC7_CGO]](https://hub.docker.com/r/valord577/linux-cross-cgo/tags)  
-
-* [linux-cross-native](linux-cross-native)
-  - Cross Toolchain for Linux - Native
-
-  ![s][Maintained] [![image][Linux310_GCC7]](https://hub.docker.com/r/valord577/linux310-gcc7-cross/tags)  
-
-* [mingw-cross-cgo](mingw-cross-cgo)
-  - Cross Toolchain for LLVM MinGW - CGO
-
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-cgo/tags)
-
-* [mingw-cross-native](mingw-cross-native)
-  - Cross Toolchain for LLVM MinGW - Native
-
-  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/mingw-cross-native/tags)
+  ![s][Maintained] [![image][GoToDocker]](https://hub.docker.com/r/valord577/crossbuild-all-in-one/tags)  
 
 * [xcaddy](serv-xcaddy)
   - Portable Caddy Server with(out) Plugin(s)
@@ -40,5 +25,7 @@
 
 [ANDROID_NDK_R27D]: https://img.shields.io/badge/Image-Android%20NDK%20R27D-blue
 
+<!-- 
 [Linux310_GCC7]: https://img.shields.io/badge/Image-Linux310%20%26%20GCC7%20%28GLIBCXX_3.4.24%29-blue
 [Linux310_GCC7_CGO]: https://img.shields.io/badge/Image-Linux310%20%26%20GCC7%20%26%20CGO-blue
+-->
