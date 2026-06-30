@@ -8,8 +8,9 @@ RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/repo.huaweicloud.com/@g /etc/apt/sources.list.d/**
-RUN apt-get update -qq \
-  && apt-get install -qqy tzdata ca-certificates \
+RUN apt-get update -qq    \
+  && apt-get install -qqy \
+    tzdata ca-certificates curl zip unzip \
   && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
@@ -28,9 +29,9 @@ FROM base AS crosstool-ng
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    curl unzip xz-utils git pkgconf-bin autoconf automake \
-    gcc g++ flex texinfo bzip2 help2man file patch gawk \
-    make libtool-bin python3 bison libncurses-dev ccache \
+    xz-utils git pkgconf-bin autoconf automake gawk \
+    gcc g++ flex texinfo bzip2 help2man file patch  \
+    make libtool-bin python3 bison libncurses-dev   \
   && apt-get clean all -qqy
 
 ENV CT_TAG_NAME="crosstool-ng-1.27.0"
