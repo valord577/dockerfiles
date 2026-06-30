@@ -23,9 +23,9 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       platforms: 'linux/amd64,linux/arm64'
-    build-args: |
-      S3_R2_ACCOUNT_ID
-      S3_R2_ACCESS_KEY
-      S3_R2_SECRET_KEY
-      S3_R2_STORAGE_BUCKET
-      S3_R2_STORAGE_REGION
+      build-args: |
+        S3_R2_ACCOUNT_ID
+        S3_R2_ACCESS_KEY
+        S3_R2_SECRET_KEY
+        S3_R2_STORAGE_BUCKET
+        S3_R2_STORAGE_REGION
