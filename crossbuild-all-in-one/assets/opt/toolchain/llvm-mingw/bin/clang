@@ -3,17 +3,32 @@ set -e
 
 DIR=$(cd "$(dirname "${0}")"; pwd)
 
-TARGET="x86_64-w64-mingw32"; _prev_arg=""
+TARGET=""; _prev_arg=""
 for arg in "$@"; do
   if [ "$prev_arg" = "-target" ]; then
     TARGET="$arg"; break
   fi
   prev_arg="$arg"
 done
+case "${TARGET}" in
+  x86_64-w64-mingw32)
+    ;;
+  aarch64-w64-mingw32)
+    ;;
+  *)
+    printf "\e[1m\e[31m%s\e[0m\n" \
+      "unknown triplet: '${TARGET}'"
+    exit 1
+    ;;
+esac
 
+
+clang_extra_args=""
+clang_extra_args="${clang_extra_args} -isystem $(clang -print-resource-dir)/include"
 
 clang \
   --start-no-unused-arguments \
+  ${clang_extra_args} \
   -resource-dir=$(realpath $DIR/../lib/clang/*) \
   -rtlib=compiler-rt -unwindlib=libunwind -stdlib=libc++ -fuse-ld=lld \
   --sysroot=$(realpath $DIR/../$TARGET) \

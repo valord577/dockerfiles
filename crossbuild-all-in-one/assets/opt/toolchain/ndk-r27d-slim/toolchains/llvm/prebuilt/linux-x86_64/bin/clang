@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+set -e
+
+DIR=$(cd "$(dirname "${0}")"; pwd)
+
+TARGET=""; _prev_arg=""
+for arg in "$@"; do
+    case "$arg" in
+        --target=*)
+            TARGET="${arg#--target=}"
+            break
+            ;;
+    esac
+  prev_arg="$arg"
+done
+case "${TARGET}" in
+  aarch64-linux-android*)
+    ;;
+  armv7a-linux-androideabi*)
+    ;;
+  i686-linux-android*)
+    ;;
+  riscv64-linux-android*)
+    ;;
+  x86_64-linux-android*)
+    ;;
+  *)
+    printf "\e[1m\e[31m%s\e[0m\n" \
+      "unknown triplet: '${TARGET}'"
+    exit 1
+    ;;
+esac
+
+
+clang_extra_args=""
+clang_extra_args="${clang_extra_args} -isystem $(clang -print-resource-dir)/include"
+
+basename="${0##*/}"
+case "${basename}" in
+  clang++)
+    clang_extra_args="${clang_extra_args} --driver-mode=g++"
+    ;;
+esac
+
+clang \
+  --start-no-unused-arguments \
+  ${clang_extra_args} -femulated-tls \
+  -resource-dir=$(realpath $DIR/../lib/clang/*) \
+  -rtlib=compiler-rt -unwindlib=libunwind -stdlib=libc++ -fuse-ld=lld \
+  --sysroot=$(realpath $DIR/../sysroot) \
+  --end-no-unused-arguments \
+  $@

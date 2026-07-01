@@ -46,4 +46,7 @@ ARG MINGW_DEFAULT="ucrt-ubuntu-20.04"
 COPY "extract_llvm-mingw.sh" "extract_llvm-mingw.sh"
 RUN ./extract_llvm-mingw.sh
 # ----------------------------
+COPY "extract_ndk_r27d.sh" "extract_ndk_r27d.sh"
+RUN ./extract_ndk_r27d.sh
+# ----------------------------
 COPY assets/. /
