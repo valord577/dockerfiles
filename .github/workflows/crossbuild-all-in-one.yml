@@ -39,3 +39,5 @@ jobs:
     with:
       platforms: 'linux/amd64,linux/arm64'
       tagvers: ${{ needs._preset.outputs.pkgver }}
+      build-args: |
+        OS_PACKAGE_MIRROR=

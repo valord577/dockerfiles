@@ -1,6 +1,8 @@
 FROM alpine:edge
-ENV TZ='UTC' XZ_OPT='--threads=0'
-RUN sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apk/repositories
+ENV TZ="UTC" XZ_OPT="--threads=0"
+ARG OS_PACKAGE_MIRROR="mirrors.tuna.tsinghua.edu.cn"
+RUN [ -z "${OS_PACKAGE_MIRROR}" ] || \
+  sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apk/repositories
 RUN apk update \
   && apk add --no-cache --no-check-certificate --no-interactive \
     tzdata ca-certificates \
