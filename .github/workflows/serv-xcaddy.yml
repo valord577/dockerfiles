@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/_buildx.yml'
       - '.github/workflows/serv-xcaddy.yml'
-      - 'serv-xcaddy/*'
+      - 'serv-xcaddy/**'
 
 jobs:
   build:
