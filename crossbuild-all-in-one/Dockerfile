@@ -1,30 +1,36 @@
-FROM alpine:edge
-ENV TZ="UTC" XZ_OPT="--threads=0"
-ARG OS_PACKAGE_MIRROR="mirrors.tuna.tsinghua.edu.cn"
+FROM debian:12
+SHELL ["/bin/bash", "-c"]
+ENV TZ=UTC \
+    DEBIAN_FRONTEND=noninteractive
+ENV XZ_OPT='--threads=0'
+ENV CCACHE_DIR="/ccache"
+RUN rm -f -- /etc/apt/apt.conf.d/70debconf
+RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
+RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
+RUN sed -i s@/deb.debian.org/@/repo.huaweicloud.com/@g /etc/apt/sources.list.d/**
+ARG OS_PACKAGE_MIRROR="repo.huaweicloud.com"
 RUN [ -z "${OS_PACKAGE_MIRROR}" ] || \
-  sed -i s@/dl-cdn.alpinelinux.org/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apk/repositories
-RUN apk update \
-  && apk add --no-cache --no-check-certificate --no-interactive \
-    tzdata ca-certificates \
-  && apk cache -f --no-interactive purge \
-  && apk cache -f --no-interactive clean
+  sed -i s@/deb.debian.org/@/${OS_PACKAGE_MIRROR}/@g /etc/apt/sources.list.d/**
+RUN apt-get update -qq \
+  && apt-get install -qqy tzdata ca-certificates \
+  && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 # ----------------------------
-ENV LLVM_TOOL_VERSION="18"
-ENV LLVM_TOOL_DIR="/usr/lib/llvm${LLVM_TOOL_VERSION}"
-ENV PATH="${LLVM_TOOL_DIR}/bin:${PATH}"
+ENV LLVM_TOOL_VERSION="16"
+ENV LLVM_TOOL_DIR="/usr/lib/llvm-${LLVM_TOOL_VERSION}"
+ENV PATH="${PATH}:${LLVM_TOOL_DIR}/bin"
 ENV CC="clang" CXX="clang++" CPP="clang-cpp"
-RUN apk update \
-  && apk add --no-cache --no-check-certificate --no-interactive \
-    clang${LLVM_TOOL_VERSION} llvm${LLVM_TOOL_VERSION} lld${LLVM_TOOL_VERSION} \
-  && apk cache -f --no-interactive purge \
-  && apk cache -f --no-interactive clean
+RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
+RUN apt-get update -qq \
+  && apt-get install -qqy pkgconf-bin \
+    clang-${LLVM_TOOL_VERSION} llvm-${LLVM_TOOL_VERSION} lld-${LLVM_TOOL_VERSION} \
+  && apt-get clean all -qqy
 # ----------------------------
-RUN apk update \
-  && apk add --no-cache --no-check-certificate --no-interactive \
-    gcompat zip xz git curl tree file pkgconf ccache nasm cmake python3 make \
-  && apk cache -f --no-interactive purge \
-  && apk cache -f --no-interactive clean
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    git curl zip unzip xz-utils tree file nasm make \
+    python3 python3-venv patchelf \
+  && apt-get clean all -qqy
 # ----------------------------
 ARG TARGETOS
 ARG TARGETARCH
@@ -50,5 +56,14 @@ RUN ./extract_llvm-mingw.sh
 # ----------------------------
 COPY "extract_ndk_r27d.sh" "extract_ndk_r27d.sh"
 RUN ./extract_ndk_r27d.sh
+# ----------------------------
+ARG CMAKE_URL="https://cmake.org/files"
+ENV CMAKE_X="3"
+ENV CMAKE_Y="30"
+ENV CMAKE_Z="9"
+ENV CMAKE_ROOT="/opt/cmake"
+COPY "extract_cmake.sh" "extract_cmake.sh"
+RUN ./extract_cmake.sh
+ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 # ----------------------------
 COPY assets/. /

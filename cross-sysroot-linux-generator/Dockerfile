@@ -8,11 +8,18 @@ RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
 RUN sed -i s@/deb.debian.org/@/repo.huaweicloud.com/@g /etc/apt/sources.list.d/**
-RUN apt-get update -qq    \
-  && apt-get install -qqy \
-    tzdata ca-certificates curl zip unzip \
+ARG OS_PACKAGE_MIRROR="repo.huaweicloud.com"
+RUN [ -z "${OS_PACKAGE_MIRROR}" ] || \
+  sed -i s@/deb.debian.org/@/${OS_PACKAGE_MIRROR}/@g /etc/apt/sources.list.d/**
+RUN apt-get update -qq \
+  && apt-get install -qqy tzdata ca-certificates \
   && apt-get clean all -qqy
-RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
+# ----------------------------
+RUN apt-get update -qq \
+  && apt-get install -qqy \
+    curl zip unzip \
+  && apt-get clean all -qqy
 ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
 ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
@@ -22,8 +29,7 @@ ARG SYSROOT_LIBSTDCXX_GCC_VER="7"
 # ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
 ARG SYSROOT_TARGET_ARCH="amd64"
 ARG SYSROOT_TARGET_LIBC="gnu"
-
-
+# ----------------------------
 
 FROM base AS crosstool-ng
 RUN ln -sf /usr/bin/pkgconf /usr/local/bin/pkg-config
@@ -60,7 +66,7 @@ RUN ./ct-ng +kernel_headers; \
 
 COPY "organize_sysroot.sh" "organize_sysroot.sh"
 RUN ./organize_sysroot.sh
-
+# ----------------------------
 
 
 FROM base

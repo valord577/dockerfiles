@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
 set -e
 
-llvm-windres $@
+DIR=$(cd "$(dirname "${0}")"; pwd)
+
+
+basename="${0##*/}"
+triplet="${basename%%-windres}"
+
+llvm-windres \
+  --target=${triplet} \
+  --preprocessor-arg="--sysroot=$(realpath $DIR/../$triplet)" \
+  $@
