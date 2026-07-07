@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+set -e
+
+DIR=$(cd "$(dirname "${0}")"; pwd)
+
+
+basename="${0##*/}"
+triplet="${basename##pkgconf-wrapper\.}"
+
+case "${triplet}" in
+  amd64|x86_64*)
+    triplet='x86_64-linux-android'
+    ;;
+  arm64|aarch64*)
+    triplet='aarch64-linux-android'
+    ;;
+  armv7|armv7a*)
+    triplet='armv7a-linux-androideabi'
+    ;;
+esac
+
+prefix="${CROSS_TOOLCHAIN_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/${triplet}"
+
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${prefix}/${ANDROID_API_LEVEL:-"21"}"
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${prefix}"
+export PKG_CONFIG_LIBDIR
+
+if command -v pkgconf >/dev/null 2>&1 ; then
+  exec pkgconf "$@"
+else
+  exec pkg-config "$@"
+fi
