@@ -3,7 +3,6 @@ set -e
 
 NDK_VERSION="r27d"
 NDK_EXTRACT_SUFFIX=""
-NDK_URL="https://dl.google.com/android/repository"
 
 NDK_ROOT="/opt/toolchain/ndk-${NDK_VERSION}-slim"
 

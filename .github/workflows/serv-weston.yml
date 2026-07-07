@@ -1,6 +1,13 @@
 name: serv-weston
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/serv-weston.yml'
+      - 'serv-weston/**'
   pull_request:
     branches:
       - main
@@ -16,3 +23,5 @@ jobs:
     uses: ./.github/workflows/_buildx.yml
     with:
       tagname: 'weston'
+      build-args: |
+        PACKAGE_MANAGER_USE_MIRROR=0

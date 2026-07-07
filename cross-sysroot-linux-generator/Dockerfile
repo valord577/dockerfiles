@@ -7,10 +7,9 @@ ENV CCACHE_DIR="/ccache"
 RUN rm -f -- /etc/apt/apt.conf.d/70debconf
 RUN echo 'Acquire::http::Pipeline-Depth "0";' > /etc/apt/apt.conf.d/99nopipelining
 RUN echo 'APT::Install-Recommends 0;\nAPT::Install-Suggests 0;' > /etc/apt/apt.conf.d/99norecommends
-RUN sed -i s@/deb.debian.org/@/repo.huaweicloud.com/@g /etc/apt/sources.list.d/**
-ARG OS_PACKAGE_MIRROR="repo.huaweicloud.com"
-RUN [ -z "${OS_PACKAGE_MIRROR}" ] || \
-  sed -i s@/deb.debian.org/@/${OS_PACKAGE_MIRROR}/@g /etc/apt/sources.list.d/**
+ARG PACKAGE_MANAGER_USE_MIRROR='1'
+RUN [ "${PACKAGE_MANAGER_USE_MIRROR}" == "0" ] || \
+  sed -i s@/deb.debian.org/@/repo.huaweicloud.com/@g /etc/apt/sources.list.d/**
 RUN apt-get update -qq \
   && apt-get install -qqy tzdata ca-certificates \
   && apt-get clean all -qqy

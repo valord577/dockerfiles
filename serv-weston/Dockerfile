@@ -3,11 +3,14 @@ SHELL ["/bin/bash", "-c"]
 ENV TZ='Asia/Shanghai' XZ_OPT='--threads=0' CCACHE_DIR="/ccache"
 RUN echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen && locale-gen
 ENV LC_ALL='en_US.UTF-8' LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-RUN echo 'Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist
+ARG PACKAGE_MANAGER_USE_MIRROR='1'
+RUN [ "${PACKAGE_MANAGER_USE_MIRROR}" == "0" ] || \
+  echo 'Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch' >/etc/pacman.d/mirrorlist
 RUN pacman-key --init \
   && pacman -Syy --noconfirm tzdata ca-certificates \
   && yes | pacman -Scc
 RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
+# ----------------------------
 ENV STAGING='/opt/staging'
 ARG GITHUB_PROXY=""
 

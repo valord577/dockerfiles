@@ -1,5 +1,8 @@
 .DS_Store
+.devtools
 .secrets
 
 AGENTS.md
 CLAUDE.md
+
+/*/build.sh

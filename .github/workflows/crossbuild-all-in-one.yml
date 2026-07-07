@@ -40,4 +40,4 @@ jobs:
       platforms: 'linux/amd64,linux/arm64'
       tagvers: ${{ needs._preset.outputs.pkgver }}
       build-args: |
-        OS_PACKAGE_MIRROR=
+        PACKAGE_MANAGER_USE_MIRROR=0
