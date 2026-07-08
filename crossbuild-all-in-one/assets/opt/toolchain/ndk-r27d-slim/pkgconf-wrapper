@@ -15,7 +15,7 @@ case "${triplet}" in
     triplet='aarch64-linux-android'
     ;;
   armv7|armv7a*)
-    triplet='armv7a-linux-androideabi'
+    triplet='arm-linux-androideabi'
     ;;
 esac
 

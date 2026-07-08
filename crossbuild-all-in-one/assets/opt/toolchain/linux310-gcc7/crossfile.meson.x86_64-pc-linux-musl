@@ -17,11 +17,6 @@ endian = 'little'
 [properties]
 needs_exe_wrapper = false
 cmake_defaults    = false
-cmake_toolchain_file = '@DIRNAME@/toolchain-cmake-template.' + triple
-
-[properties]
-needs_exe_wrapper = false
-cmake_defaults    = false
 cmake_toolchain_file = '@DIRNAME@/crossfile.cmake.' + triple
 
 [binaries]

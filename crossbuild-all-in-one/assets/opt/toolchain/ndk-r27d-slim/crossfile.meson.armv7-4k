@@ -1,10 +1,11 @@
 [constants]
 prefix = '@DIRNAME@/toolchains/llvm/prebuilt/linux-x86_64'
 ccache = []
-triple = 'armv7a-linux-android'
+triple = 'armv7a-linux-androideabi'
 android_api_level = '21'
 exec_prefix = prefix / 'bin'
 exec_prefix_compiler = exec_prefix / (triple + android_api_level + '-')
+ccflags = ['-march=armv7-a', '-mfpu=neon', '-mfloat-abi=softfp']
 ldflags = ['-Wl,-z,max-page-size=4096', '-Wl,-z,common-page-size=4096']
 
 [host_machine]
@@ -19,8 +20,8 @@ needs_exe_wrapper = false
 cmake_defaults    = false
 
 [binaries]
-c   = ccache + [exec_prefix_compiler + 'clang']
-cpp = ccache + [exec_prefix_compiler + 'clang++']
+c   = ccache + [exec_prefix_compiler + 'clang']   + ccflags
+cpp = ccache + [exec_prefix_compiler + 'clang++'] + ccflags
 ar = exec_prefix / 'llvm-ar'
 as = exec_prefix / 'llvm-as'
 nm = exec_prefix / 'llvm-nm'
