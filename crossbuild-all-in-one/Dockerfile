@@ -15,7 +15,7 @@ RUN apt-get update -qq \
   && apt-get clean all -qqy
 RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 # ----------------------------
-ENV LLVM_TOOL_VERSION="16"
+ENV LLVM_TOOL_VERSION="19"
 ENV LLVM_TOOL_DIR="/usr/lib/llvm-${LLVM_TOOL_VERSION}"
 ENV PATH="${PATH}:${LLVM_TOOL_DIR}/bin"
 ENV CC="clang" CXX="clang++" CPP="clang-cpp"

@@ -33,7 +33,7 @@ esac
 
 
 clang_extra_args=""
-clang_extra_args="${clang_extra_args} -isystem $(clang -print-resource-dir)/include"
+clang_extra_args="${clang_extra_args} -idirafter $(clang -print-resource-dir)/include"
 
 basename="${0##*/}"
 case "${basename}" in
