@@ -44,9 +44,6 @@ RUN --mount=type=secret,id=S3_R2_ACCOUNT_ID,env=S3_R2_ACCOUNT_ID \
     --mount=type=secret,id=S3_R2_STORAGE_BUCKET,env=S3_R2_STORAGE_BUCKET \
     ./extract_linux_sysroot.sh
 # ----------------------------
-COPY "extract_golang.sh" "extract_golang.sh"
-RUN ./extract_golang.sh
-# ----------------------------
 ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
 ARG MINGW_VERSION="20250114"
 ARG MINGW_DEFAULT="ucrt-ubuntu-20.04"
@@ -65,5 +62,8 @@ ENV CMAKE_ROOT="/opt/cmake"
 COPY "extract_cmake.sh" "extract_cmake.sh"
 RUN ./extract_cmake.sh
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
+# ----------------------------
+COPY "extract_golang.sh" "extract_golang.sh"
+RUN ./extract_golang.sh
 # ----------------------------
 COPY assets/. /
