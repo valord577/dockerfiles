@@ -1,6 +1,13 @@
 name: serv-xcaddy
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/serv-xcaddy.yml'
+      - 'serv-xcaddy/**'
   pull_request:
     branches:
       - main
@@ -17,3 +24,5 @@ jobs:
     with:
       platforms: 'linux/amd64,linux/arm64'
       tagname: 'xcaddy'
+      build-args: |
+        PACKAGE_MANAGER_USE_MIRROR=0
