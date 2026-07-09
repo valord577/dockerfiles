@@ -27,7 +27,7 @@ RUN apt-get update -qq \
 # ----------------------------
 RUN apt-get update -qq \
   && apt-get install -qqy \
-    git curl zip unzip xz-utils tree file nasm make \
+    git curl zip unzip xz-utils tree file nasm make ccache \
     python3 python3-venv patchelf \
   && apt-get clean all -qqy
 # ----------------------------
