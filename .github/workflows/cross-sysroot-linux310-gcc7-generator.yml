@@ -26,13 +26,21 @@ jobs:
   build:
     strategy:
       matrix:
-        arch:
-          - amd64
-          - arm64
-          - armhf
-        libc:
-          - musl
-          - gnu
+        include:
+          - arch: amd64
+            libc: gnu
+          - arch: arm64
+            libc: gnu
+          - arch: armhf
+            libc: gnu
+          - arch: amd64
+            libc: musl
+          - arch: arm64
+            libc: musl
+          - arch: armhf
+            libc: musl
+          - arch: armhf
+            libc: uclibc
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:

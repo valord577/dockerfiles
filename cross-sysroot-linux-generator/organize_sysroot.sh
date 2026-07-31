@@ -33,7 +33,7 @@ rm -f ${SYSROOT}/usr/lib/libanl.a
 rm -f ${SYSROOT}/usr/lib/libc.a
 rm -f ${SYSROOT}/usr/lib/libnsl.a
 
-if [[ "${SYSROOT}" =~ ^.*gnu.*$ ]]; then
+if [[ "${SYSROOT}" =~ ^.*-gnu.*$ ]]; then
   rm -f ${SYSROOT}/usr/lib/libcrypt.a
   rm -f ${SYSROOT}/usr/lib/libdl.a
   rm -f ${SYSROOT}/usr/lib/libm.a
@@ -41,6 +41,8 @@ if [[ "${SYSROOT}" =~ ^.*gnu.*$ ]]; then
   rm -f ${SYSROOT}/usr/lib/libresolv.a
   rm -f ${SYSROOT}/usr/lib/librt.a
   rm -f ${SYSROOT}/usr/lib/libutil.a
+elif [[ "${SYSROOT}" =~ ^.*-uclibc.*$ ]]; then
+  rm -f ${SYSROOT}/usr/lib/lib*_pic.a
 fi
 
 
