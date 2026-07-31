@@ -20,12 +20,12 @@ no_check_bucket = true
 no_head = true
 EOF
 
-props='amd64-gnu arm64-gnu armhf-gnu amd64-musl arm64-musl armhf-musl'
+props='amd64-gnu arm64-gnu armhf-gnu amd64-musl arm64-musl armhf-musl armhf-uclibc'
 for prop in ${props}; do
   ./rclone copy "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/crosstool-linux310-gcc7-target-${prop}.tar.gz" "."
 done
 for prop in ${props}; do
-  tar -xvf "crosstool-linux310-gcc7-target-${prop}.tar.gz" -C "${LINUX_SYSROOT}" --no-same-owner
+  tar -xf "crosstool-linux310-gcc7-target-${prop}.tar.gz" -C "${LINUX_SYSROOT}" --no-same-owner
 done
 
 

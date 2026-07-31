@@ -1,7 +1,9 @@
 [constants]
 prefix = '@DIRNAME@' / 'bin'
 ccache = []
+arch   = 'amd64'
 triple = 'x86_64-w64-mingw32'
+ccflags_extras = ['-march=x86-64-v2']
 
 [host_machine]
 system = 'windows'
@@ -13,11 +15,11 @@ endian = 'little'
 [properties]
 needs_exe_wrapper = false
 cmake_defaults    = false
-cmake_toolchain_file = '@DIRNAME@/crossfile.cmake.' + triple
+cmake_toolchain_file = '@DIRNAME@/crossfile.cmake.'+arch
 
 [binaries]
-c   = ccache + [prefix / (triple + '-clang')]
-cpp = ccache + [prefix / (triple + '-clang++')]
+c   = ccache + [prefix / (triple + '-clang')]   + ccflags_extras
+cpp = ccache + [prefix / (triple + '-clang++')] + ccflags_extras
 ar = prefix / (triple + '-ar')
 as = prefix / (triple + '-as')
 nm = prefix / (triple + '-nm')
@@ -26,5 +28,5 @@ windres = prefix / (triple + '-windres')
 objcopy = prefix / (triple + '-objcopy')
 strip   = prefix / (triple + '-strip')
 ranlib  = prefix / (triple + '-ranlib')
-pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
+pkg-config = '@DIRNAME@/pkgconf-wrapper.'+arch
 cmake = 'cmake'

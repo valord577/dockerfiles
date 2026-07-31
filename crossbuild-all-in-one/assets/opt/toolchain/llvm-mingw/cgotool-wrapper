@@ -9,26 +9,46 @@ _go_exec_="${GOLANG_SDK_ROOT:-/opt/golang}/bin/go"
 
 
 basename="${0##*/}"
-triplet="${basename##cgotool-wrapper\.}"
+archinfo="${basename##cgotool-wrapper\.}"
 
-case "${triplet}" in
-  amd64|x86_64*)
+archinfo_length='?'
+if [ "${basename}" != "${archinfo}" ]; then
+  archinfo_length="$(echo "$archinfo" | grep -o '-' | wc -l)"
+fi
+if [ "${archinfo_length}" != "0" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Please use the symbolic link for this wrapper file, such as 'cgotool-wrapper.\${arch}-\${info}'."
+  exit 1
+fi
+arch=$(echo "$archinfo" | cut -d'-' -f1)
+
+
+triplet=''
+case "${arch}" in
+  amd64)
     triplet='x86_64-w64-mingw32'
-    export GOARCH=amd64; export GOAMD64=v3
+    export GOARCH=amd64; export GOAMD64=v2
+    __EXTRA_FLAGS__='-march=x86-64-v2'
     ;;
-  arm64|aarch64*)
+  arm64)
     triplet='aarch64-w64-mingw32'
     export GOARCH=arm64
+    __EXTRA_FLAGS__='-march=armv8-a'
     ;;
 esac
+if [ -z "${triplet}" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Unsupported ARCH: ${arch}."
+  exit 1
+fi
 
 export GOOS=windows
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="${DIR}/bin/${triplet}-ar"
 export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) -fuse-ld=${DIR}/bin/${triplet}-ld"
-export CC="${DIR}/bin/${triplet}-clang"
-export CXX="${DIR}/bin/${triplet}-clang++"
-export PKG_CONFIG="${DIR}/pkgconf-wrapper.${triplet}"
+export CC="${DIR}/bin/${triplet}-clang ${__EXTRA_FLAGS__}"
+export CXX="${DIR}/bin/${triplet}-clang++ ${__EXTRA_FLAGS__}"
+export PKG_CONFIG="${DIR}/pkgconf-wrapper.${arch}"
 
 exec "${_go_exec_}" "$@"

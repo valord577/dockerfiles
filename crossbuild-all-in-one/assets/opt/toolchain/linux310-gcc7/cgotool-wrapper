@@ -9,30 +9,88 @@ _go_exec_="${GOLANG_SDK_ROOT:-/opt/golang}/bin/go"
 
 
 basename="${0##*/}"
-triplet="${basename##cgotool-wrapper\.}"
+archinfo="${basename##cgotool-wrapper\.}"
 
-case "${triplet}" in
-  x86_64*)
+archinfo_length='?'
+if [ "${basename}" != "${archinfo}" ]; then
+  archinfo_length="$(echo "$archinfo" | grep -o '-' | wc -l)"
+fi
+if [ "${archinfo_length}" != "1" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Please use the symbolic link for this wrapper file, such as 'cgotool-wrapper.\${arch}-\${info}'."
+  exit 1
+fi
+arch=$(echo "$archinfo" | cut -d'-' -f1)
+info=$(echo "$archinfo" | cut -d'-' -f2)
+
+
+triplet=''
+case "${arch}" in
+  amd64)
+    triplet='x86_64-pc-linux'
     export GOARCH=amd64; export GOAMD64=v2
+    __EXTRA_FLAGS__='-march=x86-64-v2'
     ;;
-  aarch64*)
+  arm64)
+    triplet='aarch64-unknown-linux'
     export GOARCH=arm64
+    __EXTRA_FLAGS__='-march=armv8-a'
     ;;
-  arm*)
+  armv7)
+    triplet='arm-unknown-linux'
     export GOARCH=arm; export GOARM='7,hardfloat'
     __EXTRA_FLAGS__='-march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard'
     ;;
 esac
+if [ -z "${triplet}" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Unsupported ARCH: ${arch}."
+  exit 1
+fi
 
-_cflags="--target=${triplet} --gcc-toolchain=${DIR}/${triplet}/usr --sysroot=${DIR}/${triplet} ${__EXTRA_FLAGS__}"
-_ldflags="-fuse-ld=lld --sysroot=${DIR}/${triplet}"
+sysroot_triplet="${triplet}-${info}"
+sysroot="${DIR}/${sysroot_triplet}"
+
+
+dynamic_linker=''
+case "${arch}-${info}" in
+  arm64-gnu)
+    dynamic_linker='/lib/ld-linux-aarch64.so.1'
+    ;;
+  amd64-gnu)
+    dynamic_linker='/lib64/ld-linux-x86-64.so.2'
+    ;;
+  armv7-gnueabihf)
+    dynamic_linker='/lib/ld-linux-armhf.so.3'
+    ;;
+  arm64-musl)
+    dynamic_linker='/lib/ld-musl-aarch64.so.1'
+    ;;
+  amd64-musl)
+    dynamic_linker='/lib/ld-musl-x86_64.so.1'
+    ;;
+  armv7-musleabihf)
+    dynamic_linker='/lib/ld-musl-armhf.so.1'
+    ;;
+  armv7-uclibceabihf)
+    dynamic_linker='/lib/ld-uClibc.so.1'
+esac
+if [ -z "${dynamic_linker}" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Unsupported INFO: ${info}."
+  exit 1
+fi
+
+
+_cflags="--target=${triplet} --gcc-toolchain=${sysroot}/usr --gcc-triple=${sysroot_triplet} --sysroot=${sysroot} ${__EXTRA_FLAGS__}"
+_ldflags="-fuse-ld=lld --sysroot=${sysroot} -Wl,--dynamic-linker=${dynamic_linker}"
 
 export CGO_ENABLED=1
 export GOTOOLCHAIN=local
 export AR="llvm-ar"
 export CGO_LDFLAGS="$(${_go_exec_} env CGO_LDFLAGS) ${_ldflags}"
 export CC="clang ${_cflags}"
-export CXX="clang++ ${_cflags}"
-export PKG_CONFIG="${DIR}/pkgconf-wrapper.${triplet}"
+export CXX="clang ${_cflags} --driver-mode=g++"
+export PKG_CONFIG="${DIR}/pkgconf-wrapper.${arch}-${info}"
 
 exec "${_go_exec_}" "$@"

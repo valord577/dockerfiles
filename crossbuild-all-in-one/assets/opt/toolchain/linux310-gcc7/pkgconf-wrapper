@@ -5,10 +5,44 @@ DIR=$(cd "$(dirname "${0}")"; pwd)
 
 
 basename="${0##*/}"
-triplet="${basename##pkgconf-wrapper\.}"
+archinfo="${basename##pkgconf-wrapper\.}"
 
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${DIR}/${triplet}/usr/lib"
-PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${DIR}/${triplet}/lib"
+archinfo_length='?'
+if [ "${basename}" != "${archinfo}" ]; then
+  archinfo_length="$(echo "$archinfo" | grep -o '-' | wc -l)"
+fi
+if [ "${archinfo_length}" != "1" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Please use the symbolic link for this wrapper file, such as 'pkgconf-wrapper.\${arch}-\${info}'."
+  exit 1
+fi
+arch=$(echo "$archinfo" | cut -d'-' -f1)
+info=$(echo "$archinfo" | cut -d'-' -f2)
+
+
+triplet=''
+case "${arch}" in
+  amd64)
+    triplet='x86_64-pc-linux'
+    ;;
+  arm64)
+    triplet='aarch64-unknown-linux'
+    ;;
+  armv7)
+    triplet='arm-unknown-linux'
+    ;;
+esac
+if [ -z "${triplet}" ]; then
+  printf "\e[1m\e[31m%s\e[0m\n" \
+    "Unsupported ARCH: ${arch}."
+  exit 1
+fi
+
+sysroot_triplet="${triplet}-${info}"
+sysroot="${DIR}/${sysroot_triplet}"
+
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${sysroot}/usr/lib"
+PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${sysroot}/lib"
 export PKG_CONFIG_LIBDIR
 
 if command -v pkgconf >/dev/null 2>&1 ; then

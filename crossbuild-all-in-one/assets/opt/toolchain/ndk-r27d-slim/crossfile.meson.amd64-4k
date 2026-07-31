@@ -1,6 +1,7 @@
 [constants]
 prefix = '@DIRNAME@/toolchains/llvm/prebuilt/linux-x86_64'
 ccache = []
+arch   = 'amd64'
 triple = 'x86_64-linux-android'
 android_api_level = '21'
 exec_prefix = prefix / 'bin'
@@ -28,7 +29,7 @@ nm = exec_prefix / 'llvm-nm'
 objcopy = exec_prefix / 'llvm-objcopy'
 strip   = exec_prefix / 'llvm-strip'
 ranlib  = exec_prefix / 'llvm-ranlib'
-pkg-config = '@DIRNAME@/pkgconf-wrapper.' + triple
+pkg-config = '@DIRNAME@/pkgconf-wrapper.'+arch
 cmake = 'cmake'
 
 [built-in options]
