@@ -1,5 +1,5 @@
 ARG CONTAINER_REGISTRY_PREFIX
-ARG TOOLCHAIN_IMAGE_VERSION="20260709T161253Z-f8d59b5"
+ARG TOOLCHAIN_IMAGE_VERSION="20260803T132306Z-555080a"
 FROM --platform=${BUILDPLATFORM} ${CONTAINER_REGISTRY_PREFIX}valord577/crossbuild-all-in-one:${TOOLCHAIN_IMAGE_VERSION} AS builder
 ARG TARGETOS
 ARG TARGETARCH
@@ -28,7 +28,7 @@ set -x
 set +x
 
 #export GOPROXY=https://goproxy.cn,direct; export GOSUMDB=sum.golang.google.cn
-go="/opt/toolchain/linux310-gcc7/cgotool-wrapper.${TARGETARCH}-musl"
+go="/opt/toolchain/linux-libstdcxx/cgotool-wrapper.${TARGETARCH}-musl"
 ${go} mod init caddy; ${go} mod tidy; ${go} build -v -o caddy_${TARGETARCH}
 EOT
 
