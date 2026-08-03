@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -e
+set -ex
+
+if [ "${COMMIT_LINUX_SYSROOT}" != "true" ]; then
+  exit 0
+fi
 
 _DOWNLOAD_URL_="${RCLONE_URL}/rclone-current-linux-${TARGETARCH}.zip"
 curl --fail-with-body -sSL -o "/rclone.zip" --url "${_DOWNLOAD_URL_}"
@@ -19,10 +23,9 @@ EOF
 
 archived="crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-${SYSROOT_TARGET_ARCH}-${SYSROOT_TARGET_LIBC}.tar.gz"
 tar -zcvf /${archived} .
-if [ "${COMMIT_LINUX_SYSROOT}" == "true" ]; then
-  echo -e 'commit to pre-compiled storage...'
-  /rclone copy "/${archived}" "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/"
-fi
+
+echo -e 'commit to pre-compiled storage...'
+/rclone copy "/${archived}" "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/"
 
 
 # ----------------------------
