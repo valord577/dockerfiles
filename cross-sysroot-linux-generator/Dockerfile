@@ -23,8 +23,6 @@ ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
 ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
 
-ARG SYSROOT_LINUX_HEADER_UAPI="310"
-ARG SYSROOT_LIBSTDCXX_GCC_VER="7"
 # ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
 ARG SYSROOT_TARGET_ARCH="amd64"
 ARG SYSROOT_TARGET_LIBC="gnu"
@@ -56,7 +54,7 @@ git checkout FETCH_HEAD
 make -j $(nproc)
 EOT
 
-COPY ".config.linux${SYSROOT_LINUX_HEADER_UAPI}.gcc${SYSROOT_LIBSTDCXX_GCC_VER}.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}.ini" ".config"
+COPY ".config.linux.libstdcxx.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}.ini" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \

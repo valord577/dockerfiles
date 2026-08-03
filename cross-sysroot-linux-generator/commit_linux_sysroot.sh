@@ -21,7 +21,7 @@ no_check_bucket = true
 no_head = true
 EOF
 
-archived="crosstool-linux${SYSROOT_LINUX_HEADER_UAPI}-gcc${SYSROOT_LIBSTDCXX_GCC_VER}-target-${SYSROOT_TARGET_ARCH}-${SYSROOT_TARGET_LIBC}.tar.gz"
+archived="crosstool-linux-libstdcxx-target-${SYSROOT_TARGET_ARCH}-${SYSROOT_TARGET_LIBC}.tar.gz"
 tar -zcvf /${archived} .
 
 echo -e 'commit to pre-compiled storage...'
