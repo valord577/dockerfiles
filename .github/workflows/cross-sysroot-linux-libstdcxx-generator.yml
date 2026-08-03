@@ -1,4 +1,4 @@
-name: cross-sysroot-linux310-gcc7-generator
+name: cross-sysroot-linux-libstdcxx-generator
 on:
   workflow_dispatch:
   push:
@@ -6,8 +6,8 @@ on:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
-      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
+      - '.github/workflows/cross-sysroot-linux-libstdcxx-generator.yml'
+      - 'cross-sysroot-linux-generator/.config.linux.libstdcxx*.ini'
       - 'cross-sysroot-linux-generator/Dockerfile'
       - 'cross-sysroot-linux-generator/commit_linux_sysroot.sh'
       - 'cross-sysroot-linux-generator/organize_sysroot.sh'
@@ -16,8 +16,8 @@ on:
       - main
     paths:
       - '.github/workflows/_buildx.yml'
-      - '.github/workflows/cross-sysroot-linux310-gcc7-generator.yml'
-      - 'cross-sysroot-linux-generator/.config.linux310.gcc7*.ini'
+      - '.github/workflows/cross-sysroot-linux-libstdcxx-generator.yml'
+      - 'cross-sysroot-linux-generator/.config.linux.libstdcxx*.ini'
       - 'cross-sysroot-linux-generator/Dockerfile'
       - 'cross-sysroot-linux-generator/commit_linux_sysroot.sh'
       - 'cross-sysroot-linux-generator/organize_sysroot.sh'
@@ -48,8 +48,6 @@ jobs:
       context: cross-sysroot-linux-generator
       build-args: |
         PACKAGE_MANAGER_USE_MIRROR=0
-        SYSROOT_LINUX_HEADER_UAPI=310
-        SYSROOT_LIBSTDCXX_GCC_VER=7
         SYSROOT_TARGET_ARCH=${{ matrix.arch }}
         SYSROOT_TARGET_LIBC=${{ matrix.libc }}
         COMMIT_LINUX_SYSROOT=${{ github.event_name == 'workflow_dispatch' }}

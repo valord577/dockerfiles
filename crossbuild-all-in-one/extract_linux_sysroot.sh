@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
-LINUX_SYSROOT="/opt/toolchain/linux310-gcc7"
+LINUX_SYSROOT="/opt/toolchain/linux-libstdcxx"
 mkdir -p ${LINUX_SYSROOT}; cd $(dirname ${LINUX_SYSROOT})
 
 _DOWNLOAD_URL_="${RCLONE_URL}/rclone-current-linux-${TARGETARCH}.zip"
@@ -22,13 +22,18 @@ EOF
 
 props='amd64-gnu arm64-gnu armhf-gnu amd64-musl arm64-musl armhf-musl armhf-uclibc'
 for prop in ${props}; do
-  ./rclone copy "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/crosstool-linux310-gcc7-target-${prop}.tar.gz" "."
+  ./rclone copy "r2:${S3_R2_STORAGE_BUCKET}/crosstool-ng/crosstool-linux-libstdcxx-target-${prop}.tar.gz" "."
 done
 for prop in ${props}; do
-  tar -xf "crosstool-linux310-gcc7-target-${prop}.tar.gz" -C "${LINUX_SYSROOT}" --no-same-owner
+  tar -xf "crosstool-linux-libstdcxx-target-${prop}.tar.gz" -C "${LINUX_SYSROOT}" --no-same-owner
 done
 
 
 # ----------------------------
 rm -rf rclone*
-rm -rf crosstool-linux310-gcc7-target-*.tar.gz
+rm -rf crosstool-linux-libstdcxx-target-*.tar.gz
+
+# ----------------------------
+cd /opt/toolchain;
+ln -sfn linux-libstdcxx linux310-gcc7;
+ln -sfn linux-libstdcxx linux419-gcc4;
