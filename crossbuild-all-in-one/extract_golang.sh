@@ -12,7 +12,6 @@ curl --fail-with-body -sSL -o "gosdk.tar.gz" --url "${_DOWNLOAD_URL_}"
 tar -xf "gosdk.tar.gz" -C "${GOLANG_SDK_ROOT}" --strip-components=1 --no-same-owner \
   --wildcards \
     "go"      \
-  --exclude="go/doc"  \
   --exclude="go/test" \
 
 
