@@ -1,0 +1,67 @@
+name: crossbuild-sysroot-generator
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/crossbuild-sysroot-generator.yml'
+      - 'crossbuild-sysroot-generator/.config.*.libstdcxx*.ini'
+      - 'crossbuild-sysroot-generator/Dockerfile'
+      - 'crossbuild-sysroot-generator/sysroot_organize.sh'
+      - 'crossbuild-sysroot-generator/sysroot_push__s3.sh'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_buildx.yml'
+      - '.github/workflows/crossbuild-sysroot-generator.yml'
+      - 'crossbuild-sysroot-generator/.config.*.libstdcxx*.ini'
+      - 'crossbuild-sysroot-generator/Dockerfile'
+      - 'crossbuild-sysroot-generator/sysroot_organize.sh'
+      - 'crossbuild-sysroot-generator/sysroot_push__s3.sh'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - host: linux
+            arch: amd64
+            libc: gnu
+          - host: linux
+            arch: arm64
+            libc: gnu
+          - host: linux
+            arch: armhf
+            libc: gnu
+          - host: linux
+            arch: amd64
+            libc: musl
+          - host: linux
+            arch: arm64
+            libc: musl
+          - host: linux
+            arch: armhf
+            libc: musl
+          - host: linux
+            arch: armhf
+            libc: uclibc
+          - host: mingw
+            arch: amd64
+            libc: ucrt
+          - host: mingw
+            arch: arm64
+            libc: ucrt
+    secrets: inherit
+    uses: ./.github/workflows/_buildx.yml
+    with:
+      is_push: false
+      context: crossbuild-sysroot-generator
+      build-args: |
+        PACKAGE_MANAGER_USE_MIRROR=0
+        SYSROOT_TARGET_HOST=${{ matrix.host }}
+        SYSROOT_TARGET_ARCH=${{ matrix.arch }}
+        SYSROOT_TARGET_LIBC=${{ matrix.libc }}
+        SYSROOT_COMMIT=${{ github.event_name == 'workflow_dispatch' }}
