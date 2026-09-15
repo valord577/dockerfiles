@@ -13,7 +13,6 @@ tar -xf "${filename}.tar.xz" -C "${MINGW_ROOT}" --strip-components=1 --no-same-o
     "${filename}/bin/aarch64-w64-mingw32-*"     \
     "${filename}/bin/x86_64-w64-mingw32-*"      \
     "${filename}/bin/clang-target-wrapper.sh"   \
-    "${filename}/bin/gendef"                    \
     "${filename}/bin/ld-wrapper.sh"             \
     "${filename}/bin/objdump-wrapper.sh"        \
   --exclude="${filename}/bin/*-widl"            \

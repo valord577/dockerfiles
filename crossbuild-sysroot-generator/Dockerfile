@@ -23,7 +23,9 @@ ENV CROSS_TOOLCHAIN_ROOT="/crosstool"
 WORKDIR "${CROSS_TOOLCHAIN_ROOT}"
 ENV CT_PREFIX="${CROSS_TOOLCHAIN_ROOT}/release"
 
-# ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
+# ["linux"] x ["amd64", "arm64", "armhf"] x ["musl", "gnu"]
+# ["mingw"] x ["amd64", "arm64"]          x ["ucrt"]
+ARG SYSROOT_TARGET_HOST="linux"
 ARG SYSROOT_TARGET_ARCH="amd64"
 ARG SYSROOT_TARGET_LIBC="gnu"
 # ----------------------------
@@ -37,7 +39,7 @@ RUN apt-get update -qq \
     make libtool-bin python3 bison libncurses-dev rsync \
   && apt-get clean all -qqy
 
-ENV CT_TAG_NAME="crosstool-ng-1.28.0"
+ENV CT_TAG_NAME="crosstool-ng-1.29.0"
 ENV CT_LOCAL_TARBALLS_DIR="${CROSS_TOOLCHAIN_ROOT}/src"
 RUN <<EOT
 #!/usr/bin/env bash
@@ -54,15 +56,15 @@ git checkout FETCH_HEAD
 make -j $(nproc)
 EOT
 
-COPY ".config.linux.libstdcxx.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}.ini" ".config"
+COPY ".config.${SYSROOT_TARGET_HOST}.libstdcxx.${SYSROOT_TARGET_ARCH}.${SYSROOT_TARGET_LIBC}.ini" ".config"
 RUN ./ct-ng show-config; ./ct-ng source;
 # due to the limited usage of GH action, build step by step
 RUN ./ct-ng +kernel_headers; \
   ./ct-ng cc_core; ./ct-ng libc_main; \
   ./ct-ng cc_for_build; ./ct-ng cc_for_host;
 
-COPY "organize_sysroot.sh" "organize_sysroot.sh"
-RUN ./organize_sysroot.sh
+COPY "sysroot_organize.sh" "sysroot_organize.sh"
+RUN ./sysroot_organize.sh
 # ----------------------------
 
 
@@ -73,11 +75,11 @@ ARG TARGETOS
 ARG TARGETARCH
 # ----------------------------
 ARG RCLONE_URL="https://downloads.rclone.org"
-ARG COMMIT_LINUX_SYSROOT
-COPY "commit_linux_sysroot.sh" "commit_linux_sysroot.sh"
+ARG SYSROOT_COMMIT
+COPY "sysroot_push__s3.sh" "sysroot_push__s3.sh"
 RUN --mount=type=secret,id=S3_R2_ACCOUNT_ID,env=S3_R2_ACCOUNT_ID \
     --mount=type=secret,id=S3_R2_ACCESS_KEY,env=S3_R2_ACCESS_KEY \
     --mount=type=secret,id=S3_R2_SECRET_KEY,env=S3_R2_SECRET_KEY \
     --mount=type=secret,id=S3_R2_STORAGE_REGION,env=S3_R2_STORAGE_REGION \
     --mount=type=secret,id=S3_R2_STORAGE_BUCKET,env=S3_R2_STORAGE_BUCKET \
-    ./commit_linux_sysroot.sh
+    ./sysroot_push__s3.sh

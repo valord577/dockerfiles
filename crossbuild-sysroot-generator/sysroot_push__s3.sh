@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-if [ "${COMMIT_LINUX_SYSROOT}" != "true" ]; then
+if [ "${SYSROOT_COMMIT}" != "true" ]; then
   exit 0
 fi
 
@@ -21,7 +21,7 @@ no_check_bucket = true
 no_head = true
 EOF
 
-archived="crosstool-linux-libstdcxx-target-${SYSROOT_TARGET_ARCH}-${SYSROOT_TARGET_LIBC}.tar.gz"
+archived="crosstool-${SYSROOT_TARGET_HOST}-libstdcxx-target-${SYSROOT_TARGET_ARCH}-${SYSROOT_TARGET_LIBC}.tar.gz"
 tar -zcvf /${archived} .
 
 echo -e 'commit to pre-compiled storage...'
