@@ -48,12 +48,12 @@ jobs:
           - host: linux
             arch: armhf
             libc: uclibc
-          - host: mingw
-            arch: amd64
-            libc: ucrt
-          - host: mingw
-            arch: arm64
-            libc: ucrt
+          #- host: mingw
+          #  arch: amd64
+          #  libc: ucrt
+          #- host: mingw
+          #  arch: arm64
+          #  libc: ucrt
     secrets: inherit
     uses: ./.github/workflows/_buildx.yml
     with:
