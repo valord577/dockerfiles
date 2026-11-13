@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 set -e
 
-GOLANG_SDK="1.26.5"
-GOLANG_SDK_ROOT="/opt/golang"
 mkdir -p "${GOLANG_SDK_ROOT}"
 
 _DOWNLOAD_URL_="https://dl.google.com/go/go${GOLANG_SDK}.linux-${TARGETARCH}.tar.gz"
