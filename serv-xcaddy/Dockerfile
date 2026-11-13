@@ -29,7 +29,7 @@ set +x
 
 #export GOPROXY=https://goproxy.cn,direct; export GOSUMDB=sum.golang.google.cn
 go="/opt/toolchain/linux-libstdcxx/cgotool-wrapper.${TARGETARCH}-musl"
-${go} mod init caddy; ${go} mod tidy; ${go} build -v -o caddy_${TARGETARCH}
+${go} mod init caddy; ${go} mod tidy; ${go} build -v -buildmode=pie -o caddy_${TARGETARCH}
 EOT
 
 
