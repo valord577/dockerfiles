@@ -44,12 +44,6 @@ RUN --mount=type=secret,id=S3_R2_ACCOUNT_ID,env=S3_R2_ACCOUNT_ID \
     --mount=type=secret,id=S3_R2_STORAGE_BUCKET,env=S3_R2_STORAGE_BUCKET \
     ./extract_linux_sysroot.sh
 # ----------------------------
-ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
-ARG MINGW_VERSION="20250114"
-ARG MINGW_DEFAULT="ucrt-ubuntu-20.04"
-COPY "extract_llvm-mingw.sh" "extract_llvm-mingw.sh"
-RUN ./extract_llvm-mingw.sh
-# ----------------------------
 ARG NDK_URL="https://dl.google.com/android/repository"
 COPY "extract_ndk_r27d.sh" "extract_ndk_r27d.sh"
 RUN ./extract_ndk_r27d.sh
@@ -63,6 +57,14 @@ COPY "extract_cmake.sh" "extract_cmake.sh"
 RUN ./extract_cmake.sh
 ENV PATH="${CMAKE_ROOT}/bin:${PATH}"
 # ----------------------------
+ARG MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download"
+ARG MINGW_VERSION="20250114"
+ARG MINGW_DEFAULT="ucrt-ubuntu-20.04"
+COPY "extract_llvm-mingw.sh" "extract_llvm-mingw.sh"
+RUN ./extract_llvm-mingw.sh
+# ----------------------------
+ENV GOLANG_SDK="1.27.4"
+ENV GOLANG_SDK_ROOT="/opt/golang"
 COPY "extract_golang.sh" "extract_golang.sh"
 RUN ./extract_golang.sh
 # ----------------------------
